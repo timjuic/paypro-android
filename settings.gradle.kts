@@ -15,4 +15,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "PayPro"
 include(":app")
- 
+include(":core")
+include(":network")
+include(":auth")
