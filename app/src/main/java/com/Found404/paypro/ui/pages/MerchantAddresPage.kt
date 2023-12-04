@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,10 +32,10 @@ import androidx.compose.ui.unit.sp
 fun MerchantAddress(
     onButtonNextClick: () -> Unit
 ) {
-    var cityName by remember { mutableStateOf("") }
-    var streetName by remember { mutableStateOf("") }
-    var streetNumber by remember { mutableStateOf("") }
-    var postalCode by remember { mutableStateOf("") }
+    val cityName by remember { mutableStateOf("") }
+    val streetName by remember { mutableStateOf("") }
+    val streetNumber by remember { mutableStateOf("") }
+    val postalCode by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -58,52 +57,23 @@ fun MerchantAddress(
                 horizontal = 20.dp
             )
         )
-        TextField(
-            modifier = Modifier
-                .padding(
-                    vertical = 10.dp
-                ),
-            value = cityName,
-            onValueChange = { cityName = it },
-            label = {Text("City")}
-        )
-        TextField(
-            modifier = Modifier
-                .padding(
-                    vertical = 10.dp
-                ),
-            value = streetName,
-            onValueChange = { streetName = it },
-            label = {Text("Street")}
-        )
-        TextField(
-            modifier = Modifier
-                .padding(
-                    vertical = 10.dp
-                ),
-            value = streetNumber,
-            onValueChange = { streetNumber = it },
-            label = {Text("Street number")}
-        )
-        TextField(
-            modifier = Modifier
-                .padding(
-                    vertical = 10.dp
-                ),
-            value = postalCode,
-            onValueChange = { postalCode = it },
-            label = {Text("Postal code")}
-        )
+        CreateTextField(textParam = cityName)
+        CreateTextField(textParam = streetName)
+        CreateTextField(textParam = streetNumber)
+        CreateTextField(textParam = postalCode)
+
         Box(modifier = Modifier.fillMaxSize()){
             Button(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(
                         horizontal = 20.dp,
-                        vertical = 20.dp)
+                        vertical = 20.dp
+                    )
                     .size(
                         width = 130.dp,
-                        height = 60.dp),
+                        height = 60.dp
+                    ),
                 onClick = {
                     /*TODO*/
                 },
@@ -120,7 +90,20 @@ fun MerchantAddress(
         }
     }
 }
-
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CreateTextField(textParam: String){
+    var text = textParam
+    TextField(
+        modifier = Modifier
+            .padding(
+                vertical = 10.dp
+            ),
+        value = text,
+        onValueChange = { text = it },
+        label = {Text("Postal code")}
+    )
+}
 @Preview
 @Composable
 fun MerchantAddress() {
