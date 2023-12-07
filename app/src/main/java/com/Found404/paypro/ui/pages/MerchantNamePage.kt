@@ -70,7 +70,7 @@ fun MerchantName(
                         width = 130.dp,
                         height = 60.dp),
                 onClick = {
-                    onButtonNextClick
+                    onButtonNextClick()
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Blue
@@ -89,5 +89,5 @@ fun MerchantName(
 @Preview
 @Composable
 fun MerchantName() {
-    MerchantName({})
+    MerchantName(onButtonNextClick = {})
 }

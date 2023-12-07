@@ -52,7 +52,7 @@ fun AddingMerchants(
                     .size(56.dp)
                     .align(Alignment.BottomEnd),
                 onClick = {
-                    onCreateMerchantButtonClick
+                    onCreateMerchantButtonClick()
                 },
                 shape = CircleShape,
                 containerColor = Color.Blue,
@@ -67,5 +67,5 @@ fun AddingMerchants(
 @Preview
 @Composable
 fun AddingMerchantsPreview() {
-    AddingMerchants({})
+    AddingMerchants(onCreateMerchantButtonClick = {})
 }

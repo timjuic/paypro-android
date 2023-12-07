@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
 
                     NavHost(navController, startDestination = "addingMerchants"){
-                        composable("entry"){
+                        composable("addingMerchants"){
 //                            EntryPage(
 //                                TODO implement entry page for login and registration
 //                            )
@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
                         composable("merchantCreated"){
                             MerchantCreated(
                                 onButtonFinishClick = {
-                                    navController.navigate("home")
+                                    navController.navigate("addingMerchants") //TODO change to home page once it is completed
                                 }
                             )
                         }
@@ -83,18 +83,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-            text = "Hello $name!",
-            modifier = modifier
-    )
-}
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun Preview() {
     PayProTheme {
-        Greeting("Android")
     }
 }

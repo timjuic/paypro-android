@@ -75,7 +75,7 @@ fun MerchantAddress(
                         height = 60.dp
                     ),
                 onClick = {
-                    onButtonNextClick
+                    onButtonNextClick()
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Blue
@@ -107,5 +107,5 @@ fun CreateTextField(textParam: String){
 @Preview
 @Composable
 fun MerchantAddress() {
-    MerchantAddress({})
+    MerchantAddress(onButtonNextClick = {})
 }

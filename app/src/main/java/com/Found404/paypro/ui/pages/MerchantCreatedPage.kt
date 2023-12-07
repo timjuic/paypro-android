@@ -104,7 +104,7 @@ fun MerchantCreated(
                         height = 60.dp
                     ),
                 onClick = {
-                    onButtonFinishClick
+                    onButtonFinishClick()
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Blue
@@ -123,5 +123,5 @@ fun MerchantCreated(
 @Preview
 @Composable
 fun MerchantCreated() {
-    MerchantCreated({})
+    MerchantCreated(onButtonFinishClick = {})
 }

@@ -82,7 +82,7 @@ fun CardPayments(
                         height = 60.dp
                     ),
                 onClick = {
-                    onButtonFinishClick
+                    onButtonFinishClick()
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Blue
@@ -114,5 +114,5 @@ fun CreateRow(cardNameParam: String, cardTypeParam: Boolean){
 @Preview
 @Composable
 fun CardPayments() {
-    CardPayments({})
+    CardPayments(onButtonFinishClick = {})
 }
