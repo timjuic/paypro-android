@@ -30,7 +30,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun MerchantCreated(
-    onButtonFinishClick: () -> Unit
+    onButtonFinishClick: () -> Unit,
+    onButtonPrevClick: () -> Unit
 ) {
 
     Column(
@@ -116,6 +117,28 @@ fun MerchantCreated(
                     fontWeight = FontWeight.Bold
                 )
             }
+            Button(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(
+                        horizontal = 20.dp,
+                        vertical = 20.dp)
+                    .size(
+                        width = 130.dp,
+                        height = 60.dp),
+                onClick = {
+                    onButtonPrevClick()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Gray
+                )
+            ) {
+                Text(text = "Previous",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }
@@ -123,5 +146,5 @@ fun MerchantCreated(
 @Preview
 @Composable
 fun MerchantCreated() {
-    MerchantCreated(onButtonFinishClick = {})
+    MerchantCreated(onButtonFinishClick = {}, onButtonPrevClick = {})
 }

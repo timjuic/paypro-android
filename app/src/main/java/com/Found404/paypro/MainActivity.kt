@@ -45,6 +45,9 @@ class MainActivity : ComponentActivity() {
                             AddingMerchants(
                                 onCreateMerchantButtonClick = {
                                     navController.navigate("merchantName")
+                                },
+                                onButtonCancelClick = {
+                                    navController.navigate("merchantCreated") //TODO change to home page once it is completed
                                 }
                             )
                         }
@@ -52,6 +55,9 @@ class MainActivity : ComponentActivity() {
                             MerchantName(
                                 onButtonNextClick = {
                                     navController.navigate("merchantAddress")
+                                },
+                                onButtonPrevClick = {
+                                    navController.navigate("addingMerchants")
                                 }
                             )
                         }
@@ -59,6 +65,9 @@ class MainActivity : ComponentActivity() {
                             MerchantAddress(
                                 onButtonNextClick = {
                                     navController.navigate("cardPayments")
+                                },
+                                onButtonPrevClick = {
+                                    navController.navigate("merchantName")
                                 }
                             )
                         }
@@ -66,6 +75,9 @@ class MainActivity : ComponentActivity() {
                             CardPayments(
                                 onButtonFinishClick = {
                                     navController.navigate("merchantCreated")
+                                },
+                                onButtonPrevClick = {
+                                    navController.navigate("merchantAddress")
                                 }
                             )
                         }
@@ -73,6 +85,9 @@ class MainActivity : ComponentActivity() {
                             MerchantCreated(
                                 onButtonFinishClick = {
                                     navController.navigate("addingMerchants") //TODO change to home page once it is completed
+                                },
+                                onButtonPrevClick = {
+                                    navController.navigate("cardPayments")
                                 }
                             )
                         }

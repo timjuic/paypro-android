@@ -29,7 +29,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun CardPayments(
-    onButtonFinishClick: () -> Unit
+    onButtonFinishClick: () -> Unit,
+    onButtonPrevClick: () -> Unit
 ) {
 
     Column(
@@ -94,6 +95,28 @@ fun CardPayments(
                     fontWeight = FontWeight.Bold
                 )
             }
+            Button(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(
+                        horizontal = 20.dp,
+                        vertical = 20.dp)
+                    .size(
+                        width = 130.dp,
+                        height = 60.dp),
+                onClick = {
+                    onButtonPrevClick()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Gray
+                )
+            ) {
+                Text(text = "Previous",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }
@@ -114,5 +137,5 @@ fun CreateRow(cardNameParam: String, cardTypeParam: Boolean){
 @Preview
 @Composable
 fun CardPayments() {
-    CardPayments(onButtonFinishClick = {})
+    CardPayments(onButtonFinishClick = {}, onButtonPrevClick = {})
 }
