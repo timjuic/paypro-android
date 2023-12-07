@@ -75,7 +75,7 @@ fun MerchantAddress(
                         height = 60.dp
                     ),
                 onClick = {
-                    /*TODO*/
+                    onButtonNextClick
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Blue

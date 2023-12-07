@@ -52,7 +52,7 @@ fun AddingMerchants(
                     .size(56.dp)
                     .align(Alignment.BottomEnd),
                 onClick = {
-                    /*TODO*/
+                    onCreateMerchantButtonClick
                 },
                 shape = CircleShape,
                 containerColor = Color.Blue,
