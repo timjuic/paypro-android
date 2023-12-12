@@ -58,10 +58,10 @@ fun MerchantAddress(
                 horizontal = 20.dp
             )
         )
-        CreateTextField(textParam = cityName)
-        CreateTextField(textParam = streetName)
-        CreateTextField(textParam = streetNumber)
-        CreateTextField(textParam = postalCode)
+        CreateTextField(textParam = cityName, displayText = "City name")
+        CreateTextField(textParam = streetName, displayText = "Street name")
+        CreateTextField(textParam = streetNumber, displayText = "Street number")
+        CreateTextField(textParam = postalCode, displayText = "Postal code")
 
         Box(modifier = Modifier.fillMaxSize()){
             Button(
@@ -115,7 +115,7 @@ fun MerchantAddress(
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateTextField(textParam: String){
+fun CreateTextField(textParam: String, displayText: String){
     var text = textParam
     TextField(
         modifier = Modifier
@@ -124,7 +124,7 @@ fun CreateTextField(textParam: String){
             ),
         value = text,
         onValueChange = { text = it },
-        label = {Text("Postal code")}
+        label = {Text(displayText)}
     )
 }
 @Preview
