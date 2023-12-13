@@ -1,5 +1,6 @@
 package com.Found404.paypro.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -27,15 +28,18 @@ fun PayProButton(
     OutlinedButton(
         onClick = { onClick() },
         modifier = modifier
-            .background(buttonColor)
             .fillMaxWidth()
-            .border(2.dp, Color.Black, shape = RoundedCornerShape(15.dp)),
-        colors = ButtonColors()
+            .padding(top = 20.dp)
+            .height(50.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
+        border = BorderStroke(2.dp, Color.Black),
+        shape = RoundedCornerShape(15.dp)
     ) {
         Text(
             text = text,
             color = Color.White,
             fontWeight = FontWeight.Bold,
+            fontSize = 18.sp
         )
     }
 }
