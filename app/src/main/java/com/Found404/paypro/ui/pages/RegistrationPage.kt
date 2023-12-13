@@ -24,18 +24,18 @@ import com.Found404.paypro.ui.components.Title
 @Composable
 fun RegisterScreen() {
 
-
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("")}
     var passwordRepeat by remember { mutableStateOf("")}
 
     Column(modifier = Modifier.padding(16.dp)) {
         Title(text = "PayPro")
-        
-        LabeledTextInput(label = "Email", value = username, onValueChange = { newUsername ->
-            username = newUsername
-        })
-        
+
+        LabeledTextInput(label = "First Name", value = firstName, onValueChange = { newFirstName -> firstName = newFirstName })
+        LabeledTextInput(label = "Last Name", value = lastName, onValueChange = { newLastName -> lastName = newLastName })
+        LabeledTextInput(label = "Email", value = username, onValueChange = { newUsername -> username = newUsername })
         LabeledTextInput(label = "Password", value = password, onValueChange = { newPassword -> password = newPassword})
         LabeledTextInput(label = "Repeat Password", value = passwordRepeat, onValueChange = { newPassword -> passwordRepeat = newPassword})
 
