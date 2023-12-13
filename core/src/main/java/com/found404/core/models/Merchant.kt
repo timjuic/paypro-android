@@ -6,5 +6,5 @@ data class Merchant (
     var streetName: String = "",
     var postCode: Int = 0,
     var streetNumber: Int = 0,
-    var acceptedCards: List<String> = listOf("")
+    var cardTypes: List<String> = listOf("")
 )

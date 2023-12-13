@@ -115,39 +115,37 @@ fun MerchantAddress(
                         height = 60.dp
                     ),
                 onClick = {
-                    if (merchantModel.streetName != null &&
-                        merchantModel.streetNumber != null &&
-                        merchantModel.postCode != null) {
+                     if (!merchantModel.cityName.matches(Regex("^[a-zA-Z]+$"))) {
+                        Toast.makeText(
+                            context,
+                            "Please input a valid city name",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    else if (!merchantModel.streetName.matches(Regex("^[a-zA-Z]+$"))) {
+                        Toast.makeText(
+                            context,
+                            "Please input a valid street name",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                }
+                    else if (!merchantModel.streetNumber.toString().matches(Regex("^[1-9]+$"))) {
+                        Toast.makeText(
+                            context,
+                            "Please input a valid street number",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                }
+                    else if (!merchantModel.postCode.toString().matches(Regex("^[1-9]+$"))) {
+                        Toast.makeText(
+                            context,
+                            "Please input a valid postal code",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                }
+                    else {
                         onButtonNextClick()
                     }
-                    else if (merchantModel.streetName != null){
-                        Toast.makeText(
-                            context,
-                            "Please input street name",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    else if (merchantModel.cityName != null){
-                        Toast.makeText(
-                            context,
-                            "Please input city name",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                }
-                    else if (merchantModel.postCode != null){
-                        Toast.makeText(
-                            context,
-                            "Please input postal code",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                }
-                    else if (merchantModel.streetNumber != null){
-                        Toast.makeText(
-                            context,
-                            "Please input street number",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                }
 
                 },
                 colors = ButtonDefaults.buttonColors(
