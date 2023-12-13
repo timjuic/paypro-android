@@ -29,7 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.Found404.paypro.viewModels.AddMerchantViewModel
 import com.found404.core.models.Merchant
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,6 +61,7 @@ fun MerchantName(
         )
         TextField(
             value = merchantModel.fullName,
+            singleLine = true,
             onValueChange = { newFullName ->
                 merchantModel = merchantModel.copy(fullName = newFullName)
             },
@@ -135,7 +135,6 @@ fun MerchantName(
 @Preview
 @Composable
 fun MerchantNamePreview() {
-    val viewModel = AddMerchantViewModel()
     MerchantName(
         onButtonNextClick = {},
         onButtonPrevClick = {}
