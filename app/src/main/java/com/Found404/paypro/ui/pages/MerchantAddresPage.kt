@@ -30,7 +30,8 @@ import androidx.compose.ui.unit.sp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MerchantAddress(
-    onButtonNextClick: () -> Unit
+    onButtonNextClick: () -> Unit,
+    onButtonPrevClick: () -> Unit
 ) {
     val cityName by remember { mutableStateOf("") }
     val streetName by remember { mutableStateOf("") }
@@ -57,10 +58,10 @@ fun MerchantAddress(
                 horizontal = 20.dp
             )
         )
-        CreateTextField(textParam = cityName)
-        CreateTextField(textParam = streetName)
-        CreateTextField(textParam = streetNumber)
-        CreateTextField(textParam = postalCode)
+        CreateTextField(textParam = cityName, displayText = "City name")
+        CreateTextField(textParam = streetName, displayText = "Street name")
+        CreateTextField(textParam = streetNumber, displayText = "Street number")
+        CreateTextField(textParam = postalCode, displayText = "Postal code")
 
         Box(modifier = Modifier.fillMaxSize()){
             Button(
@@ -75,7 +76,7 @@ fun MerchantAddress(
                         height = 60.dp
                     ),
                 onClick = {
-                    /*TODO*/
+                    onButtonNextClick()
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Blue
@@ -87,12 +88,34 @@ fun MerchantAddress(
                     fontWeight = FontWeight.Bold
                 )
             }
+            Button(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(
+                        horizontal = 20.dp,
+                        vertical = 20.dp)
+                    .size(
+                        width = 130.dp,
+                        height = 60.dp),
+                onClick = {
+                    onButtonPrevClick()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Gray
+                )
+            ) {
+                Text(text = "Previous",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateTextField(textParam: String){
+fun CreateTextField(textParam: String, displayText: String){
     var text = textParam
     TextField(
         modifier = Modifier
@@ -101,11 +124,11 @@ fun CreateTextField(textParam: String){
             ),
         value = text,
         onValueChange = { text = it },
-        label = {Text("Postal code")}
+        label = {Text(displayText)}
     )
 }
 @Preview
 @Composable
 fun MerchantAddress() {
-    MerchantAddress({})
+    MerchantAddress(onButtonNextClick = {}, onButtonPrevClick ={})
 }

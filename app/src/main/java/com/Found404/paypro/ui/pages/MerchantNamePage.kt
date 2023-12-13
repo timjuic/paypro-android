@@ -27,13 +27,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.Found404.paypro.viewModels.AddMerchantViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MerchantName(
-    onButtonNextClick: () -> Unit
+    viewModel: AddMerchantViewModel,
+    onButtonNextClick: () -> Unit,
+    onButtonPrevClick: () -> Unit
 ) {
-    var merchantName by remember { mutableStateOf("Eg. Konzum") }
+    var merchantName by remember { mutableStateOf(viewModel.merchant?.fullName ?: "") }
 
     Column(
         modifier = Modifier
@@ -53,7 +56,7 @@ fun MerchantName(
             modifier = Modifier.padding(
                 vertical = 100.dp,
                 horizontal = 20.dp
-                )
+            )
         )
         TextField(
             value = merchantName,
@@ -65,18 +68,47 @@ fun MerchantName(
                     .align(Alignment.BottomEnd)
                     .padding(
                         horizontal = 20.dp,
-                        vertical = 20.dp)
+                        vertical = 20.dp
+                    )
                     .size(
                         width = 130.dp,
-                        height = 60.dp),
+                        height = 60.dp
+                    ),
                 onClick = {
-                    /*TODO*/
+                    viewModel.merchant = viewModel.merchant?.copy(fullName = merchantName)
+                    onButtonNextClick()
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Blue
                 )
             ) {
-                Text(text = "Next",
+                Text(
+                    text = "Next",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            Button(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(
+                        horizontal = 20.dp,
+                        vertical = 20.dp
+                    )
+                    .size(
+                        width = 130.dp,
+                        height = 60.dp
+                    ),
+                onClick = {
+                    onButtonPrevClick()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Gray
+                )
+            ) {
+                Text(
+                    text = "Previous",
                     color = Color.White,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
@@ -88,6 +120,11 @@ fun MerchantName(
 
 @Preview
 @Composable
-fun MerchantName() {
-    MerchantName({})
+fun MerchantNamePreview() {
+    val viewModel = AddMerchantViewModel()
+    MerchantName(
+        viewModel = viewModel,
+        onButtonNextClick = {},
+        onButtonPrevClick = {}
+    )
 }
