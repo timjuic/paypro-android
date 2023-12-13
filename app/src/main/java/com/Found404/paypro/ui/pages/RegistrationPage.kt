@@ -24,7 +24,6 @@ import com.Found404.paypro.ui.components.Title
 @Composable
 fun RegisterScreen() {
 
-
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("")}
     var passwordRepeat by remember { mutableStateOf("")}
