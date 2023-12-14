@@ -2,56 +2,34 @@ package com.found404.ValidationLogic
 
 class MerchantDataValidator {
 
-    fun validateMerchantName(merchantName: String) : ValidationStatus {
+    fun validateMerchantName(merchantName: String) : Boolean {
         val nameRegex = "^[A-Z][a-zA-Z0-9\\s&'m@_\$-]{1,49}\$"
 
-        return if (merchantName.matches(nameRegex.toRegex())) {
-            ValidationStatus(true)
-        } else {
-            ValidationStatus(false, "Please input a valid merchant name!")
-        }
+        return merchantName.matches(nameRegex.toRegex())
     }
 
-    fun validateStreetName(merchantStreetName: String) : ValidationStatus {
+    fun validateStreetName(merchantStreetName: String) : Boolean {
         val streetNameRegex = "^[a-zA-Z]+$"
 
-        return if (merchantStreetName.matches(streetNameRegex.toRegex())) {
-            ValidationStatus(true)
-        } else {
-            ValidationStatus(false, "Please input a valid merchant name!")
-        }
+        return merchantStreetName.matches(streetNameRegex.toRegex())
     }
 
-    fun validateCityName(merchantCityName : String) : ValidationStatus {
+    fun validateCityName(merchantCityName : String) : Boolean {
         val cityNameRegex = "^[a-zA-Z]+$"
 
-        return if (merchantCityName.matches(cityNameRegex.toRegex())) {
-            ValidationStatus(true)
-        } else {
-            ValidationStatus(false, "Please input a valid merchant name!")
-        }
+        return merchantCityName.matches(cityNameRegex.toRegex())
     }
 
-    fun validatePostCode(merchantPostCode : Int) : ValidationStatus {
+    fun validatePostCode(merchantPostCode : Int) : Boolean {
         val postCodeRegex = "^[1-9]+$"
 
-        return if (merchantPostCode.toString().matches(postCodeRegex.toRegex())) {
-            ValidationStatus(true)
-        } else {
-            ValidationStatus(false, "Please input a valid merchant name!")
-        }
+        return merchantPostCode.toString().matches(postCodeRegex.toRegex())
     }
 
-    fun validateStreetNumber(merchantStreetNumber: Int) : ValidationStatus {
+    fun validateStreetNumber(merchantStreetNumber: Int) : Boolean {
         val streetNumberRegex = "^[1-9]+$"
 
-        return if (merchantStreetNumber.toString().matches(streetNumberRegex.toRegex())) {
-            ValidationStatus(true)
-        } else {
-            ValidationStatus(false, "Please input a valid merchant name!")
-        }
+        return merchantStreetNumber.toString().matches(streetNumberRegex.toRegex())
     }
 
 }
-
-data class ValidationStatus(val success: Boolean, val errorMessage: String? = null)

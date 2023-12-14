@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.found404.ValidationLogic.MerchantDataValidator
 import com.found404.core.models.Merchant
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,6 +40,8 @@ fun MerchantName(
 ) {
     var merchantModel by remember { mutableStateOf( Merchant()) }
     var showErrorMessage by remember { mutableStateOf(false) }
+
+    val validator = MerchantDataValidator()
 
     Column(
         modifier = Modifier
@@ -90,7 +93,7 @@ fun MerchantName(
                         height = 60.dp
                     ),
                 onClick = {
-                    if (merchantModel.fullName.matches(Regex("^[A-Z][a-zA-Z0-9\\s&'m@_\$-]{1,49}\$"))){
+                    if (validator.validateMerchantName((merchantModel.fullName))){
                         showErrorMessage = false
                         onButtonNextClick()
                     }

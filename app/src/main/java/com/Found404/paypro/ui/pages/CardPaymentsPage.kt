@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.found404.ValidationLogic.MerchantDataValidator
 import com.found404.core.models.Merchant
 
 @Composable
@@ -40,6 +41,7 @@ fun CardPayments(
     var atLeastOneChecked by remember { mutableStateOf(false) }
     var showErrorMessage by remember { mutableStateOf(false) }
 
+    val validator = MerchantDataValidator()
     val context = LocalContext.current
 
     Column(
