@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun TextInput(
+fun PayProTextInput(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String = "Enter your username",
