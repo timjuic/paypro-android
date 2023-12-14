@@ -1,5 +1,6 @@
 package com.Found404.paypro.ui.pages
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,20 +24,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.Found404.paypro.viewModels.AddMerchantViewModel
+import com.found404.core.models.Merchant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MerchantName(
-    viewModel: AddMerchantViewModel,
     onButtonNextClick: () -> Unit,
     onButtonPrevClick: () -> Unit
 ) {
-    var merchantName by remember { mutableStateOf(viewModel.merchant?.fullName ?: "") }
+    var merchantModel by remember { mutableStateOf( Merchant()) }
 
     Column(
         modifier = Modifier
@@ -59,10 +60,14 @@ fun MerchantName(
             )
         )
         TextField(
-            value = merchantName,
-            onValueChange = { merchantName = it },
+            value = merchantModel.fullName,
+            singleLine = true,
+            onValueChange = { newFullName ->
+                merchantModel = merchantModel.copy(fullName = newFullName)
+            },
         )
         Box(modifier = Modifier.fillMaxSize()){
+            val context = LocalContext.current
             Button(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -75,8 +80,17 @@ fun MerchantName(
                         height = 60.dp
                     ),
                 onClick = {
-                    viewModel.merchant = viewModel.merchant?.copy(fullName = merchantName)
-                    onButtonNextClick()
+                    if (merchantModel.fullName != null){
+                        onButtonNextClick()
+                    }
+                    else {
+                        Toast.makeText(
+                            context,
+                            "Please input a merchant name",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Blue
@@ -121,9 +135,7 @@ fun MerchantName(
 @Preview
 @Composable
 fun MerchantNamePreview() {
-    val viewModel = AddMerchantViewModel()
     MerchantName(
-        viewModel = viewModel,
         onButtonNextClick = {},
         onButtonPrevClick = {}
     )
