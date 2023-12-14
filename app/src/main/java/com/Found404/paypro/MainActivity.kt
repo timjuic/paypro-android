@@ -1,34 +1,27 @@
 package com.Found404.paypro
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.Found404.paypro.ui.pages.RegisterScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.Found404.paypro.context.MerchantAuth
 import com.Found404.paypro.ui.pages.AddingMerchants
 import com.Found404.paypro.ui.pages.CardPayments
 import com.Found404.paypro.ui.pages.MerchantAddress
 import com.Found404.paypro.ui.pages.MerchantCreated
 import com.Found404.paypro.ui.pages.MerchantName
 import com.Found404.paypro.ui.theme.PayProTheme
-import com.Found404.paypro.viewModels.AddMerchantViewModel
 
 class MainActivity : ComponentActivity() {
-    private val viewModelMerchant: AddMerchantViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -39,7 +32,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    val merchantViewModel: AddMerchantViewModel = viewModel()
 
                     NavHost(navController, startDestination = "addingMerchants"){
                         composable("addingMerchants"){
@@ -58,21 +50,9 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("merchantName") {
-                            val context = LocalContext.current
                             MerchantName(
-                                viewModel = viewModelMerchant,
                                 onButtonNextClick = {
-                                    val merchantData = MerchantAuth.merchantData!!
-                                    Log.i("null pointer", "MerchantData$merchantData")
-                                    if (merchantData.fullName != null) {
                                         navController.navigate("merchantAddress")
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Please input a merchant name",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
                                 },
                                 onButtonPrevClick = {
                                     navController.navigate("addingMerchants")
