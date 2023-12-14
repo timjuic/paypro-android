@@ -17,26 +17,46 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.Found404.paypro.RegistrationServiceImpl
 import com.Found404.paypro.ui.components.LabeledTextInput
 import com.Found404.paypro.ui.components.PayProButton
 import com.Found404.paypro.ui.components.Title
 
+
 @Composable
 fun RegisterScreen() {
 
-    var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("")}
     var passwordRepeat by remember { mutableStateOf("")}
 
+    val registrationService = RegistrationServiceImpl()
+    val registrationValidator = registrationService.validator
+
     Column(modifier = Modifier.padding(16.dp)) {
         Title(text = "PayPro")
-        
-        LabeledTextInput(label = "Email", value = username, onValueChange = { newUsername ->
-            username = newUsername
-        })
-        
-        LabeledTextInput(label = "Password", value = password, onValueChange = { newPassword -> password = newPassword})
-        LabeledTextInput(label = "Repeat Password", value = passwordRepeat, onValueChange = { newPassword -> passwordRepeat = newPassword})
+
+        LabeledTextInput(
+            label = "Email",
+            value = email,
+            onValueChange = { newEmail -> email = newEmail },
+            placeholder = "John.Smith@gmail.com",
+            validation = { email -> registrationValidator.validateEmail(email).success }
+        )
+
+        LabeledTextInput(
+            label = "Password",
+            value = password,
+            onValueChange = { newPassword -> password = newPassword},
+            validation = { email -> registrationValidator.validateWeakPassword(email).success }
+        )
+
+        LabeledTextInput(
+            label = "Repeat Password",
+            value = passwordRepeat,
+            onValueChange = { newPassword -> passwordRepeat = newPassword},
+            validation = { email -> registrationValidator.validateWeakPassword(email).success }
+        )
 
         PayProButton(text = "Register", onClick = { /*TODO*/ })
 
@@ -54,5 +74,8 @@ fun RegisterScreen() {
                 textAlign = TextAlign.Start,
                 )
         }
+
+        PayProButton(text = "Sign Up with Google", onClick = { /*TODO*/ }, buttonColor = Color.Gray)
+
     }
 }
