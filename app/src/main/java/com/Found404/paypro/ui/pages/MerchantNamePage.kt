@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.found404.ValidationLogic.MerchantDataValidator
 import com.found404.core.models.Merchant
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,6 +39,9 @@ fun MerchantName(
     onButtonPrevClick: () -> Unit
 ) {
     var merchantModel by remember { mutableStateOf( Merchant()) }
+    var showErrorMessage by remember { mutableStateOf(false) }
+
+    val validator = MerchantDataValidator()
 
     Column(
         modifier = Modifier
@@ -66,6 +70,15 @@ fun MerchantName(
                 merchantModel = merchantModel.copy(fullName = newFullName)
             },
         )
+        if (showErrorMessage) {
+            Text(
+                text = "Please input a valid merchant name!",
+                color = Color.Red,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
+
         Box(modifier = Modifier.fillMaxSize()){
             val context = LocalContext.current
             Button(
@@ -80,13 +93,15 @@ fun MerchantName(
                         height = 60.dp
                     ),
                 onClick = {
-                    if (merchantModel.fullName != null){
+                    if (validator.validateMerchantName((merchantModel.fullName))){
+                        showErrorMessage = false
                         onButtonNextClick()
                     }
                     else {
+                        showErrorMessage = true
                         Toast.makeText(
                             context,
-                            "Please input a merchant name",
+                            "Please input a valid merchant name!",
                             Toast.LENGTH_SHORT
                         ).show()
                     }

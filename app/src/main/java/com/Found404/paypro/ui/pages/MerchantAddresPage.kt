@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.found404.ValidationLogic.MerchantDataValidator
 import com.found404.core.models.Merchant
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +39,10 @@ fun MerchantAddress(
     onButtonPrevClick: () -> Unit
 ) {
 
-    var merchantModel by remember { mutableStateOf( Merchant()) }
+    var merchantModel by remember { mutableStateOf(Merchant()) }
+    var showErrorMessage by remember { mutableStateOf(false) }
+
+    val validator = MerchantDataValidator()
 
     Column(
         modifier = Modifier
@@ -100,6 +104,10 @@ fun MerchantAddress(
             }
         )
 
+        if (showErrorMessage) {
+            showErrorMessages(validator, merchantModel)
+            showTextField(validator, merchantModel)
+        }
 
         Box(modifier = Modifier.fillMaxSize()){
             val context = LocalContext.current
@@ -115,38 +123,13 @@ fun MerchantAddress(
                         height = 60.dp
                     ),
                 onClick = {
-                     if (!merchantModel.cityName.matches(Regex("^[a-zA-Z]+$"))) {
-                        Toast.makeText(
-                            context,
-                            "Please input a valid city name",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    else if (!merchantModel.streetName.matches(Regex("^[a-zA-Z]+$"))) {
-                        Toast.makeText(
-                            context,
-                            "Please input a valid street name",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                }
-                    else if (!merchantModel.streetNumber.toString().matches(Regex("^[1-9]+$"))) {
-                        Toast.makeText(
-                            context,
-                            "Please input a valid street number",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                }
-                    else if (!merchantModel.postCode.toString().matches(Regex("^[1-9]+$"))) {
-                        Toast.makeText(
-                            context,
-                            "Please input a valid postal code",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                }
-                    else {
+                    if (validate(merchantModel.cityName, merchantModel.streetName,
+                            merchantModel.streetNumber, merchantModel.postCode)) {
+                        showErrorMessage = true
+                    } else {
+                        showErrorMessage = false
                         onButtonNextClick()
                     }
-
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Blue
@@ -167,6 +150,7 @@ fun MerchantAddress(
                     .size(
                         width = 130.dp,
                         height = 60.dp),
+
                 onClick = {
                     onButtonPrevClick()
                 },
@@ -184,8 +168,73 @@ fun MerchantAddress(
     }
 }
 
+fun validate(cityName: String, streetName: String, streetNumber: Int, postCode: Int) : Boolean {
+    return cityName.isBlank() || streetName.isBlank() || streetNumber == 0 || postCode == 0
+}
+@Composable
+fun showErrorMessages(validator: MerchantDataValidator, merchantModel: Merchant) {
+    val context = LocalContext.current
+    if (!validator.validateCityName(merchantModel.cityName)) {
+        Toast.makeText(context, "Invalid city name!", Toast.LENGTH_SHORT).show()
+    }
+
+    if (!validator.validateStreetName(merchantModel.streetName)) {
+        Toast.makeText(context, "Invalid street name!", Toast.LENGTH_SHORT).show()
+    }
+
+    if (!validator.validateStreetNumber(merchantModel.streetNumber)) {
+        Toast.makeText(context, "Invalid street number!", Toast.LENGTH_SHORT).show()
+    }
+
+    if (!validator.validatePostCode(merchantModel.postCode)) {
+        Toast.makeText(context, "Invalid postal code!", Toast.LENGTH_SHORT).show()
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun showTextField(validator: MerchantDataValidator, merchantModel: Merchant) {
+    if (!validator.validateCityName(merchantModel.cityName)) {
+        Text(
+            text = "Please input a valid city name!",
+            color = Color.Red,
+            fontSize = 16.sp,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+    }
+
+    if (!validator.validateStreetName(merchantModel.streetName)) {
+        Text(
+            text = "Please input a valid street name!",
+            color = Color.Red,
+            fontSize = 16.sp,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+    }
+
+    if (!validator.validateStreetNumber(merchantModel.streetNumber)) {
+        Text(
+            text = "Please input a valid street number!",
+            color = Color.Red,
+            fontSize = 16.sp,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+    }
+
+    if (!validator.validatePostCode(merchantModel.postCode)) {
+        Text(
+            text = "Please input a valid postal code!",
+            color = Color.Red,
+            fontSize = 16.sp,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+    }
+}
 @Preview
 @Composable
-fun MerchantAddress() {
-    MerchantAddress(onButtonNextClick = {}, onButtonPrevClick ={})
+fun MerchantAddressPreview() {
+    MerchantAddress(
+        onButtonNextClick = {},
+        onButtonPrevClick = {}
+    )
 }
