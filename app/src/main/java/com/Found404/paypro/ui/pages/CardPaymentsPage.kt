@@ -38,6 +38,7 @@ fun CardPayments(
 ) {
     var merchantModel by remember { mutableStateOf(Merchant()) }
     var atLeastOneChecked by remember { mutableStateOf(false) }
+    var showErrorMessage by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
@@ -114,12 +115,15 @@ fun CardPayments(
                 onClick = {
                     if (atLeastOneChecked) {
                         onButtonFinishClick()
+                        showErrorMessage = false
                     } else {
+                        showErrorMessage = true
                         Toast.makeText(
                             context,
-                            "Please select at least one option",
+                            "Please select at least one option!",
                             Toast.LENGTH_SHORT
                         ).show()
+
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -133,6 +137,14 @@ fun CardPayments(
                     fontWeight = FontWeight.Bold
                 )
             }
+        }
+        if (showErrorMessage) {
+            Text(
+                text = "Please select at least one option!",
+                color = Color.Red,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
     }
 }
