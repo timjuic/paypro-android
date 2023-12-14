@@ -3,7 +3,9 @@ package com.Found404.paypro
 class RegistrationValidator() {
 
     fun validateEmail(email: String): ValidationStatus {
-        return if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        val emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+
+        return if (email.matches(emailRegex.toRegex())) {
             ValidationStatus(true)
         } else {
             ValidationStatus(false, "Invalid email address")
@@ -45,19 +47,43 @@ class RegistrationValidator() {
     }
 
     fun validateFirstName(firstName: String): ValidationStatus {
-        return if (firstName.isNotEmpty()) {
+        val nameRegex = "^[\\p{L}]+$"
+
+        return if (firstName.matches(nameRegex.toRegex())) {
             ValidationStatus(true)
         } else {
-            ValidationStatus(false, "First name cannot be empty")
+            ValidationStatus(false, "First name should only contain letters")
         }
     }
 
     fun validateLastName(lastName: String): ValidationStatus {
-        return if (lastName.isNotEmpty()) {
+        val nameRegex = "^[\\p{L}]+$"
+
+        return if (lastName.matches(nameRegex.toRegex())) {
             ValidationStatus(true)
         } else {
-            ValidationStatus(false, "Last name cannot be empty")
+            ValidationStatus(false, "Last name should only contain letters")
         }
+    }
+
+    fun validateAll(
+        firstName: String,
+        lastName: String,
+        email: String,
+        password: String
+    ): ValidationStatus {
+        val emailStatus = validateEmail(email)
+        val usernameStatus = validateCommonUsername(email)
+        val weakPasswordStatus = validateWeakPassword(password)
+        val firstNameStatus = validateFirstName(firstName)
+        val lastNameStatus = validateLastName(lastName)
+
+        val allStatus = listOf(
+            emailStatus, usernameStatus, weakPasswordStatus, firstNameStatus, lastNameStatus
+        )
+
+        val validationFailed = allStatus.find { !it.success }
+        return validationFailed ?: ValidationStatus(true)
     }
 }
 
