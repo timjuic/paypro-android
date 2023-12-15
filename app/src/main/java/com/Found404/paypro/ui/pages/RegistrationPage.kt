@@ -112,6 +112,11 @@ fun RegisterPage(navController: NavController) {
         PayProButton(
             text = "Register",
             onClick = {
+                if (password != passwordRepeat) {
+                    registrationErrorMessage = "Passwords do not match!"
+                    return@PayProButton
+                }
+
                 coroutineScope.launch {
                     registrationResponse = registrationService.registerUser(firstName, lastName, email, password)
 
@@ -128,7 +133,7 @@ fun RegisterPage(navController: NavController) {
 
                         Toast.makeText(context, "You've successfully registered!", Toast.LENGTH_SHORT).show()
 
-                        navController.navigate("addingMerchants")
+                        navController.navigate("login")
                     }
                 }
             }
