@@ -36,6 +36,7 @@ fun PayProLabeledTextInput(
     placeholder: String = "Enter your text",
     onFieldFocusChanged: (Boolean) -> Unit = {},
     validation: ((String) -> Boolean)? = null,
+    validationErrorMessage: String? = "Please provide a valid",
     imeAction: ImeAction = ImeAction.Next,
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
@@ -94,7 +95,7 @@ fun PayProLabeledTextInput(
 
         if (showError) {
             Text(
-                text = "Please provide a valid ${label.lowercase(Locale.ROOT)}!",
+                text = "$validationErrorMessage ${label.lowercase(Locale.ROOT)}!",
                 color = Color.Red,
                 fontSize = 12.sp,
                 fontFamily = customFontFamily,
