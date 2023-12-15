@@ -17,24 +17,35 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.Found404.paypro.R
 import java.util.Locale
 
 @Composable
-fun LabeledTextInput(
+fun PayProLabeledTextInput(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String = "Enter your text",
     onFieldFocusChanged: (Boolean) -> Unit = {},
-    validation: ((String) -> Boolean)? = null
+    validation: ((String) -> Boolean)? = null,
+    imeAction: ImeAction = ImeAction.Next,
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     var isFocused by remember { mutableStateOf(false) }
     var showError by remember { mutableStateOf(false) }
     var hasUserInteracted by remember { mutableStateOf(false) }
+
+    val customFontFamily = FontFamily(
+        Font(R.font.montserrat_bold, FontWeight.Bold),
+    )
 
     Column(
         modifier = Modifier
@@ -42,34 +53,34 @@ fun LabeledTextInput(
     ) {
         Text(
             text = label,
-            fontSize = 18.sp,
+            fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
+            fontFamily = customFontFamily,
             modifier = Modifier
-                .padding(bottom = 4.dp, top = 12.dp)
+                .padding(bottom = 3.dp, top = 8.dp)
         )
 
         OutlinedTextField(
             value = value,
             onValueChange = { newValue ->
                 onValueChange(newValue)
-                // Set hasUserInteracted to true when the user starts typing
                 hasUserInteracted = true
             },
+            singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
                 .onFocusChanged { focusState ->
                     isFocused = focusState.isFocused
                     onFieldFocusChanged(isFocused)
-
-                    // Show error message only when unfocused, user has interacted, and there's a validation error
                     showError = !isFocused && hasUserInteracted && validation?.invoke(value) == false
                 },
             placeholder = { Text(text = placeholder) },
             textStyle = LocalTextStyle.current.copy(fontSize = 16.sp),
             keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text
+                keyboardType = KeyboardType.Text,
+                imeAction = imeAction
             ),
-            shape = RoundedCornerShape(15.dp),
+            shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = Color.LightGray,
                 unfocusedContainerColor = Color.LightGray,
@@ -78,16 +89,17 @@ fun LabeledTextInput(
                 unfocusedBorderColor = if (showError) Color.Red else Color.Black,
                 errorBorderColor = Color.Red
             ),
+            visualTransformation = visualTransformation
         )
 
-        // Show validation error message if there is one
         if (showError) {
             Text(
                 text = "Please provide a valid ${label.lowercase(Locale.ROOT)}!",
                 color = Color.Red,
                 fontSize = 12.sp,
+                fontFamily = customFontFamily,
                 modifier = Modifier
-                    .padding(top = 4.dp)
+                    .padding(top = 3.dp, bottom = 4.dp)
             )
         }
     }
