@@ -51,27 +51,6 @@ class MerchantDataValidator {
             ValidationStatus(false, "Invalid street number!")
         }
     }
-
-    fun validateAll (
-        merchantName: String,
-        merchantStreetName: String,
-        merchantCityName: String,
-        merchantPostCode: Int,
-        merchantStreetNumber: Int
-    ) : ValidationStatus {
-        val merchantNameStatus = validateMerchantName(merchantName)
-        val merchantStreetNameStatus = validateStreetName(merchantStreetName)
-        val merchantCityNameStatus = validateCityName(merchantCityName)
-        val merchantPostCodeStatus = validatePostCode(merchantPostCode)
-        val merchantStreetNumberStatus = validateStreetNumber(merchantStreetNumber)
-
-        val allStatus = listOf(
-            merchantNameStatus, merchantStreetNameStatus, merchantCityNameStatus, merchantPostCodeStatus, merchantStreetNumberStatus
-        )
-
-        val validationFailed = allStatus.find { !it.success }
-        return validationFailed ?: ValidationStatus(true)
-    }
 }
 
 data class ValidationStatus(val success: Boolean, val errorMessage: String? = null)

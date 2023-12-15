@@ -1,5 +1,6 @@
 package com.Found404.paypro.ui.pages
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,11 +28,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.found404.ValidationLogic.MerchantDataValidator
+import androidx.navigation.NavController
 import com.found404.core.models.Merchant
+import com.found404.core.models.MerchantViewModel
+import com.found404.core.models.SharedPreferencesManager
 import com.found404.network.AddingMerchantsResult
 import com.found404.network.AddingMerchantsServiceImplementation
 import kotlinx.coroutines.Dispatchers
@@ -40,15 +42,14 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun CardPayments(
-    onButtonFinishClick: () -> Unit,
-    onButtonPrevClick: () -> Unit
+    navController: NavController
 ) {
     var merchantModel by remember { mutableStateOf(Merchant()) }
     var atLeastOneChecked by remember { mutableStateOf(false) }
     var showErrorMessage by remember { mutableStateOf(false) }
 
-    val validator = MerchantDataValidator()
     val context = LocalContext.current
+    val sharedPreferencesManager = getAllSavedData(context)
 
     val addingMerchantsService = AddingMerchantsServiceImplementation()
     var addingMerchantsResult by remember {
@@ -109,7 +110,7 @@ fun CardPayments(
                     .weight(1f)
                     .height(60.dp),
                 onClick = {
-                    onButtonPrevClick()
+                    navController.navigate("merchantAddress")
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Gray
@@ -130,13 +131,13 @@ fun CardPayments(
                 onClick = {
                     coroutineScope.launch {
                         addingMerchantsResult = addingMerchantsService.addMerchant(
-                            merchantModel.fullName,
-                            merchantModel.streetName,
-                            merchantModel.cityName,
-                            merchantModel.postCode,
-                            merchantModel.streetNumber
+                            sharedPreferencesManager.merchantData.fullName,
+                            sharedPreferencesManager.merchantData.streetName,
+                            sharedPreferencesManager.merchantData.cityName,
+                            sharedPreferencesManager.merchantData.postCode,
+                            sharedPreferencesManager.merchantData.streetNumber
                         )
-
+                        println("adding merchtans result" + addingMerchantsResult!!.success + addingMerchantsResult!!.errorMessage + addingMerchantsResult!!.message)
                         withContext(Dispatchers.Main){
                             if (addingMerchantsResult == null) {
                                 showErrorMessage = true
@@ -147,11 +148,10 @@ fun CardPayments(
                                 ).show()
                             }
                         }
-
-                    }
-                    if (atLeastOneChecked) {
-                        onButtonFinishClick()
-                        showErrorMessage = false
+                        if (atLeastOneChecked) {
+                            navController.navigate("merchantCreated")
+                            showErrorMessage = false
+                        }
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -196,8 +196,14 @@ fun CreateRow(cardNameParam: String, cardTypeParam: Boolean, onCheckedChange: (B
     }
 }
 
-@Preview
-@Composable
-fun CardPayments() {
-    CardPayments(onButtonFinishClick = {}, onButtonPrevClick = {})
+fun getAllSavedData(context: Context): MerchantViewModel {
+    val merchantViewModel = MerchantViewModel()
+
+    merchantViewModel.merchantData.fullName = SharedPreferencesManager.getMerchantName(context).toString()
+    merchantViewModel.merchantData.streetName = SharedPreferencesManager.getMerchantStreetName(context).toString()
+    merchantViewModel.merchantData.cityName = SharedPreferencesManager.getMerchantCity(context).toString()
+    merchantViewModel.merchantData.postCode = SharedPreferencesManager.getMerchantPostCode(context)
+    merchantViewModel.merchantData.streetNumber = SharedPreferencesManager.getMerchantStreetNumber(context)
+
+    return merchantViewModel
 }

@@ -1,5 +1,6 @@
 package com.Found404.paypro.ui.pages
 
+import android.os.Bundle
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,22 +27,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.found404.ValidationLogic.MerchantDataValidator
-import com.found404.core.models.Merchant
+import com.found404.core.models.MerchantViewModel
+import com.found404.core.models.SharedPreferencesManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MerchantName(
-    onButtonNextClick: () -> Unit,
-    onButtonPrevClick: () -> Unit
+    navController: NavController
 ) {
-    var merchantModel by remember { mutableStateOf( Merchant()) }
+    var merchantName by remember { mutableStateOf( "") }
     var showErrorMessage by remember { mutableStateOf(false) }
+    val merchantViewModel = MerchantViewModel()
 
     val validator = MerchantDataValidator()
+
+    val bundle = Bundle()
 
     Column(
         modifier = Modifier
@@ -64,10 +68,10 @@ fun MerchantName(
             )
         )
         TextField(
-            value = merchantModel.fullName,
+            value = merchantName,
             singleLine = true,
             onValueChange = { newFullName ->
-                merchantModel = merchantModel.copy(fullName = newFullName)
+                merchantName = newFullName
             },
         )
         if (showErrorMessage) {
@@ -93,15 +97,19 @@ fun MerchantName(
                         height = 60.dp
                     ),
                 onClick = {
-                    if (validator.validateMerchantName((merchantModel.fullName)).success){
+                    if (validator.validateMerchantName(merchantName).success){
                         showErrorMessage = false
-                        onButtonNextClick()
+                        merchantViewModel.merchantData.fullName = merchantName
+
+                        SharedPreferencesManager.saveMerchantName(context, merchantName)
+
+                        navController.navigate("merchantAddress")
                     }
                     else {
                         showErrorMessage = true
                         Toast.makeText(
                             context,
-                            validator.validateMerchantName((merchantModel.fullName)).errorMessage,
+                            validator.validateMerchantName(merchantName).errorMessage,
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -130,7 +138,7 @@ fun MerchantName(
                         height = 60.dp
                     ),
                 onClick = {
-                    onButtonPrevClick()
+                    navController.navigate("addingMerchants")
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Gray
@@ -145,13 +153,4 @@ fun MerchantName(
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun MerchantNamePreview() {
-    MerchantName(
-        onButtonNextClick = {},
-        onButtonPrevClick = {}
-    )
 }

@@ -16,59 +16,24 @@ fun AppNavigation() {
 
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = "registration"){
+    NavHost(navController, startDestination = "merchantName"){
                         composable("registration"){
                             RegisterScreen(navController = navController)
                         }
                         composable("addingMerchants"){
-                            AddingMerchants(
-                                onCreateMerchantButtonClick = {
-                                    navController.navigate("merchantName")
-                                },
-                                onButtonCancelClick = {
-                                    navController.navigate("merchantCreated") //TODO change to home page once it is completed
-                                }
-                            )
+                            AddingMerchants(navController = navController)
                         }
                         composable("merchantName") {
-                            MerchantName(
-                                onButtonNextClick = {
-                                    navController.navigate("merchantAddress")
-                                },
-                                onButtonPrevClick = {
-                                    navController.navigate("addingMerchants")
-                                }
-                            )
+                            MerchantName(navController = navController)
                         }
                         composable("merchantAddress"){
-                            MerchantAddress(
-                                onButtonNextClick = {
-                                    navController.navigate("cardPayments")
-                                },
-                                onButtonPrevClick = {
-                                    navController.navigate("merchantName")
-                                }
-                            )
+                            MerchantAddress(navController = navController)
                         }
                         composable("cardPayments"){
-                            CardPayments(
-                                onButtonFinishClick = {
-                                    navController.navigate("merchantCreated")
-                                },
-                                onButtonPrevClick = {
-                                    navController.navigate("merchantAddress")
-                                }
-                            )
+                            CardPayments(navController = navController)
                         }
                         composable("merchantCreated"){
-                            MerchantCreated(
-                                onButtonFinishClick = {
-                                    navController.navigate("addingMerchants") //TODO change to home page once it is completed
-                                },
-                                onButtonPrevClick = {
-                                    navController.navigate("cardPayments")
-                                }
-                            )
+                            MerchantCreated(navController = navController)
                         }
                     }
 }

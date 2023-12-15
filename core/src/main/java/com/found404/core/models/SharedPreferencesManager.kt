@@ -1,0 +1,63 @@
+package com.found404.core.models
+
+import android.content.Context
+import android.content.SharedPreferences
+
+object SharedPreferencesManager {
+    private const val PREFERENCES_NAME = "MyAppPreferences"
+
+    private const val KEY_MERCHANT_NAME = "merchantName"
+    private const val KEY_MERCHANT_CITY = "merchantCity"
+    private const val KEY_STREET_NAME = "streetName"
+    private const val KEY_STREET_NUMBER = "streetNumber"
+    private const val KEY_POSTAL_CODE = "postalCode"
+
+    fun saveMerchantName(context: Context, merchantName: String) {
+        val sharedPreferences: SharedPreferences =
+            context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.putString(KEY_MERCHANT_NAME, merchantName)
+        editor.apply()
+    }
+
+    fun getMerchantName(context: Context): String? {
+        val sharedPreferences: SharedPreferences =
+            context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(KEY_MERCHANT_NAME, null)
+    }
+
+    fun saveMerchantAddress(context: Context, merchantCity: String, streetName: String, streetNumber: Int, postalCode: Int) {
+        val sharedPreferences: SharedPreferences =
+            context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.putString(KEY_MERCHANT_CITY, merchantCity)
+        editor.putString(KEY_STREET_NAME, streetName)
+        editor.putInt(KEY_STREET_NUMBER, streetNumber)
+        editor.putInt(KEY_POSTAL_CODE, postalCode)
+        editor.apply()
+    }
+
+    fun getMerchantCity(context: Context): String? {
+        val sharedPreferences: SharedPreferences =
+            context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(KEY_MERCHANT_CITY, null)
+    }
+
+    fun getMerchantStreetName(context: Context): String? {
+        val sharedPreferences: SharedPreferences =
+            context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(KEY_STREET_NAME, null)
+    }
+
+    fun getMerchantStreetNumber(context: Context): Int {
+        val sharedPreferences: SharedPreferences =
+            context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getInt(KEY_STREET_NUMBER, 0)
+    }
+
+    fun getMerchantPostCode(context: Context): Int {
+        val sharedPreferences: SharedPreferences =
+            context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getInt(KEY_POSTAL_CODE, 0)
+    }
+}
