@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 fun PayProTextInput(
     value: String,
     onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
     placeholder: String = "Enter your username",
 ) {
     OutlinedTextField(
@@ -25,7 +26,7 @@ fun PayProTextInput(
         onValueChange = { newValue ->
             onValueChange(newValue)
         },
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth(),
         placeholder = { Text(text = placeholder) },
         textStyle = LocalTextStyle.current.copy(fontSize = 16.sp),

@@ -74,7 +74,7 @@ fun PayProLabeledTextInput(
                 keyboardType = KeyboardType.Text,
                 imeAction = imeAction
             ),
-            shape = RoundedCornerShape(15.dp),
+            shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = Color.LightGray,
                 unfocusedContainerColor = Color.LightGray,

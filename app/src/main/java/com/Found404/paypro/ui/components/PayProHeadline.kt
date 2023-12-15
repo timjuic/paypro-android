@@ -15,7 +15,10 @@ import androidx.compose.ui.unit.sp
 import com.Found404.paypro.R
 
 @Composable
-fun PayProHeadline(text: String) {
+fun PayProHeadline(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
     val customFontFamily = FontFamily(
         Font(R.font.montserrat_black, FontWeight.Black),
     )
@@ -27,7 +30,7 @@ fun PayProHeadline(text: String) {
         style = MaterialTheme.typography.headlineLarge,
         textAlign = TextAlign.Center,
         fontFamily = customFontFamily,
-        modifier = Modifier
+        modifier = modifier
             .padding(all = 10.dp)
             .fillMaxWidth()
     )

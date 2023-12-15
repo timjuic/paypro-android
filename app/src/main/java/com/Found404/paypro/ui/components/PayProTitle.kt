@@ -15,7 +15,10 @@ import androidx.compose.ui.unit.sp
 import com.Found404.paypro.R
 
 @Composable
-fun PayProTitle(text: String) {
+fun PayProTitle(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
     val customFontFamily = FontFamily(
         Font(R.font.montserrat_bold, FontWeight.Bold),
     )
@@ -27,7 +30,7 @@ fun PayProTitle(text: String) {
         style = MaterialTheme.typography.titleMedium,
         textAlign = TextAlign.Left,
         fontFamily = customFontFamily,
-        modifier = Modifier
+        modifier = modifier
             .padding(top = 8.dp, bottom = 10.dp)
             .fillMaxWidth()
     )
