@@ -174,27 +174,43 @@ fun validate(cityName: String, streetName: String, streetNumber: Int, postCode: 
 @Composable
 fun showErrorMessages(validator: MerchantDataValidator, merchantModel: Merchant) {
     val context = LocalContext.current
-    if (!validator.validateCityName(merchantModel.cityName)) {
-        Toast.makeText(context, "Invalid city name!", Toast.LENGTH_SHORT).show()
+    if (!validator.validateCityName(merchantModel.cityName).success) {
+        Toast.makeText(
+            context,
+            validator.validateCityName(merchantModel.cityName).errorMessage,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
-    if (!validator.validateStreetName(merchantModel.streetName)) {
-        Toast.makeText(context, "Invalid street name!", Toast.LENGTH_SHORT).show()
+    if (!validator.validateStreetName(merchantModel.streetName).success) {
+        Toast.makeText(
+            context,
+            validator.validateStreetName(merchantModel.streetName).errorMessage,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
-    if (!validator.validateStreetNumber(merchantModel.streetNumber)) {
-        Toast.makeText(context, "Invalid street number!", Toast.LENGTH_SHORT).show()
+    if (!validator.validateStreetNumber(merchantModel.streetNumber).success) {
+        Toast.makeText(
+            context,
+            validator.validateStreetNumber(merchantModel.streetNumber).errorMessage,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
-    if (!validator.validatePostCode(merchantModel.postCode)) {
-        Toast.makeText(context, "Invalid postal code!", Toast.LENGTH_SHORT).show()
+    if (!validator.validatePostCode(merchantModel.postCode).success) {
+        Toast.makeText(
+            context,
+            validator.validatePostCode(merchantModel.postCode).errorMessage,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun showTextField(validator: MerchantDataValidator, merchantModel: Merchant) {
-    if (!validator.validateCityName(merchantModel.cityName)) {
+    if (!validator.validateCityName(merchantModel.cityName).success) {
         Text(
             text = "Please input a valid city name!",
             color = Color.Red,
@@ -203,7 +219,7 @@ fun showTextField(validator: MerchantDataValidator, merchantModel: Merchant) {
         )
     }
 
-    if (!validator.validateStreetName(merchantModel.streetName)) {
+    if (!validator.validateStreetName(merchantModel.streetName).success) {
         Text(
             text = "Please input a valid street name!",
             color = Color.Red,
@@ -212,7 +228,7 @@ fun showTextField(validator: MerchantDataValidator, merchantModel: Merchant) {
         )
     }
 
-    if (!validator.validateStreetNumber(merchantModel.streetNumber)) {
+    if (!validator.validateStreetNumber(merchantModel.streetNumber).success) {
         Text(
             text = "Please input a valid street number!",
             color = Color.Red,
@@ -221,7 +237,7 @@ fun showTextField(validator: MerchantDataValidator, merchantModel: Merchant) {
         )
     }
 
-    if (!validator.validatePostCode(merchantModel.postCode)) {
+    if (!validator.validatePostCode(merchantModel.postCode).success) {
         Text(
             text = "Please input a valid postal code!",
             color = Color.Red,

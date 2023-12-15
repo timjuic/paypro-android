@@ -93,7 +93,7 @@ fun MerchantName(
                         height = 60.dp
                     ),
                 onClick = {
-                    if (validator.validateMerchantName((merchantModel.fullName))){
+                    if (validator.validateMerchantName((merchantModel.fullName)).success){
                         showErrorMessage = false
                         onButtonNextClick()
                     }
@@ -101,7 +101,7 @@ fun MerchantName(
                         showErrorMessage = true
                         Toast.makeText(
                             context,
-                            "Please input a valid merchant name!",
+                            validator.validateMerchantName((merchantModel.fullName)).errorMessage,
                             Toast.LENGTH_SHORT
                         ).show()
                     }

@@ -8,7 +8,7 @@ class MerchantDataValidator {
         return if(merchantName.matches(nameRegex.toRegex())) {
             ValidationStatus(true)
         } else {
-            ValidationStatus(false, "Invalid merchant name")
+            ValidationStatus(false, "Invalid merchant name!")
         }
     }
 
@@ -18,7 +18,7 @@ class MerchantDataValidator {
         return if (merchantStreetName.matches(streetNameRegex.toRegex())) {
             ValidationStatus(true)
         } else {
-            ValidationStatus(false, "Invalid street name")
+            ValidationStatus(false, "Invalid street name!")
         }
     }
 
@@ -28,7 +28,7 @@ class MerchantDataValidator {
         return if (merchantCityName.matches(cityNameRegex.toRegex())){
             ValidationStatus(true)
         } else {
-            return ValidationStatus(false, "Invalid city name")
+            return ValidationStatus(false, "Invalid city name!")
         }
     }
 
@@ -38,7 +38,7 @@ class MerchantDataValidator {
         return if (merchantPostCode.toString().matches(postCodeRegex.toRegex())) {
             ValidationStatus(true)
         } else {
-            return ValidationStatus(false, "Invalid postal code")
+            return ValidationStatus(false, "Invalid postal code!")
         }
     }
 
@@ -48,7 +48,7 @@ class MerchantDataValidator {
         return if (merchantStreetNumber.toString().matches(streetNumberRegex.toRegex())){
             ValidationStatus(true)
         } else {
-            ValidationStatus(false, "Invalid street number")
+            ValidationStatus(false, "Invalid street number!")
         }
     }
 
