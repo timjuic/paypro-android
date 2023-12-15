@@ -48,7 +48,6 @@ class RegistrationServiceImpl : RegistrationService {
             RegistrationResult(false, "Registration failed", error = e.message)
         }
     }
-
 }
 
 data class RegistrationResponse(
