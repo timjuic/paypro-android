@@ -10,7 +10,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
 class RegistrationServiceImpl : RegistrationService {
-    val validator: RegistrationValidator = RegistrationValidator()
+    val validator: AuthValidator = AuthValidator()
     private val gson = Gson()
     private val client = OkHttpClient()
 

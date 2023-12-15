@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.Found404.paypro.ui.pages.AddingMerchants
 import com.Found404.paypro.ui.pages.CardPayments
+import com.Found404.paypro.ui.pages.LoginPage
 import com.Found404.paypro.ui.pages.MerchantAddress
 import com.Found404.paypro.ui.pages.MerchantCreated
 import com.Found404.paypro.ui.pages.MerchantName
@@ -20,6 +21,9 @@ fun AppNavigation() {
     NavHost(navController, startDestination = "welcome"){
         composable("welcome") {
             WelcomePage(navController = navController)
+        }
+        composable("login") {
+            LoginPage(navController = navController)
         }
         composable("registration"){
             RegisterPage(navController = navController)
