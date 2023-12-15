@@ -1,6 +1,7 @@
 package com.Found404.paypro
 
 
+import com.Found404.paypro.responses.RegistrationResponse
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,18 +20,20 @@ class RegistrationServiceImpl : RegistrationService {
         lastName: String,
         email: String,
         password: String
-    ): RegistrationResult = withContext(Dispatchers.IO) {
+    ): RegistrationResponse = withContext(Dispatchers.IO) {
         if (!validator.validateAll(firstName, lastName, email, password).success) {
-            return@withContext RegistrationResult(false, "Validation failed")
+            return@withContext RegistrationResponse(false, "Validation failed")
         }
+
+        val hashedPassword = AuthUtils.hashPassword(password)
 
         val requestBody = gson.toJson(
             mapOf(
                 "firstName" to firstName,
                 "lastName" to lastName,
                 "emailAddress" to email,
-                "password" to password,
-                "repeatedPassword" to password,
+                "password" to hashedPassword,
+                "repeatedPassword" to hashedPassword,
             )
         ).toString().toRequestBody("application/json".toMediaType())
 
@@ -42,18 +45,9 @@ class RegistrationServiceImpl : RegistrationService {
         return@withContext try {
             val response = client.newCall(request).execute()
             val responseBody = response.body?.string()
-            val result = gson.fromJson(responseBody, RegistrationResponse::class.java)
-            RegistrationResult(result.success, result.message, result.errorCode, result.errorMessage)
+            gson.fromJson(responseBody, RegistrationResponse::class.java)
         } catch (e: Exception) {
-            RegistrationResult(false, "Registration failed", error = e.message)
+            RegistrationResponse(false, "Registration failed", error = e.message)
         }
     }
-
 }
-
-data class RegistrationResponse(
-    val success: Boolean,
-    val message: String,
-    val errorCode: Int? = null,
-    val errorMessage: String? = null
-)

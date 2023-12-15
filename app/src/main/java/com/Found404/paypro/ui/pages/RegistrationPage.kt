@@ -1,5 +1,6 @@
 package com.Found404.paypro.ui.pages
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
@@ -28,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.Found404.paypro.R
-import com.Found404.paypro.RegistrationResult
+import com.Found404.paypro.responses.RegistrationResponse
 import com.Found404.paypro.RegistrationServiceImpl
 import com.Found404.paypro.ui.components.PayProLabeledTextInput
 import com.Found404.paypro.ui.components.PayProButton
@@ -51,11 +53,12 @@ fun RegisterPage(navController: NavController) {
     val registrationService = RegistrationServiceImpl()
     val authValidator = registrationService.validator
 
-    var registrationResult by remember { mutableStateOf<RegistrationResult?>(null) }
+    var registrationResponse by remember { mutableStateOf<RegistrationResponse?>(null) }
 
     val coroutineScope = rememberCoroutineScope()
     var registrationErrorMessage by remember { mutableStateOf<String?>(null) }
 
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -109,21 +112,28 @@ fun RegisterPage(navController: NavController) {
         PayProButton(
             text = "Register",
             onClick = {
+                if (password != passwordRepeat) {
+                    registrationErrorMessage = "Passwords do not match!"
+                    return@PayProButton
+                }
+
                 coroutineScope.launch {
-                    registrationResult = registrationService.registerUser(firstName, lastName, email, password)
+                    registrationResponse = registrationService.registerUser(firstName, lastName, email, password)
 
                     withContext(Dispatchers.Main) {
-                        if (registrationResult == null) {
+                        if (registrationResponse == null) {
                             registrationErrorMessage = "Backend server couldn't be reached. Please try again later"
                             return@withContext
                         }
 
-                        if (!registrationResult!!.success) {
-                            registrationErrorMessage = registrationResult!!.message
+                        if (!registrationResponse!!.success) {
+                            registrationErrorMessage = registrationResponse!!.message
                             return@withContext
                         }
 
-                        navController.navigate("addingMerchants")
+                        Toast.makeText(context, "You've successfully registered!", Toast.LENGTH_SHORT).show()
+
+                        navController.navigate("login")
                     }
                 }
             }
