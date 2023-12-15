@@ -34,7 +34,11 @@ android {
 
 dependencies {
 
+
     implementation("androidx.core:core-ktx:1.11.0")
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation ("com.squareup.okhttp3:okhttp:4.11.0")
+
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     implementation("com.google.android.gms:play-services-base:18.2.0")
