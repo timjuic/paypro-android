@@ -1,5 +1,6 @@
 package com.Found404.paypro.ui.pages
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
@@ -56,6 +58,7 @@ fun RegisterPage(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
     var registrationErrorMessage by remember { mutableStateOf<String?>(null) }
 
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -123,7 +126,9 @@ fun RegisterPage(navController: NavController) {
                             return@withContext
                         }
 
-                        navController.navigate("addingMerchants")
+                        Toast.makeText(context, "You've successfully registered!", Toast.LENGTH_SHORT).show()
+
+                        navController.navigate("login")
                     }
                 }
             }
