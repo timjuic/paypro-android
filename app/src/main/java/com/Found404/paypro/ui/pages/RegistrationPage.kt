@@ -49,7 +49,7 @@ fun RegisterPage(navController: NavController) {
     var lastName by remember { mutableStateOf("TesterLastName")}
 
     val registrationService = RegistrationServiceImpl()
-    val registrationValidator = registrationService.validator
+    val authValidator = registrationService.validator
 
     var registrationResult by remember { mutableStateOf<RegistrationResult?>(null) }
 
@@ -70,7 +70,7 @@ fun RegisterPage(navController: NavController) {
             value = firstName,
             onValueChange = { newFirstName   -> firstName = newFirstName },
             placeholder = "John",
-            validation = { firstName -> registrationValidator.validateFirstName(firstName).success }
+            validation = { firstName -> authValidator.validateFirstName(firstName).success }
         )
 
         PayProLabeledTextInput(
@@ -78,7 +78,7 @@ fun RegisterPage(navController: NavController) {
             value = lastName,
             onValueChange = { newLastName   -> lastName = newLastName },
             placeholder = "Smith",
-            validation = { lastName -> registrationValidator.validateFirstName(lastName).success }
+            validation = { lastName -> authValidator.validateFirstName(lastName).success }
         )
 
         PayProLabeledTextInput(
@@ -86,14 +86,14 @@ fun RegisterPage(navController: NavController) {
             value = email,
             onValueChange = { newEmail -> email = newEmail },
             placeholder = "John.Smith@gmail.com",
-            validation = { email -> registrationValidator.validateEmail(email).success }
+            validation = { email -> authValidator.validateEmail(email).success }
         )
 
         PayProLabeledTextInput(
             label = "Password",
             value = password,
             onValueChange = { newPassword -> password = newPassword},
-            validation = { email -> registrationValidator.validateWeakPassword(email).success },
+            validation = { email -> authValidator.validateWeakPassword(email).success },
             visualTransformation = PasswordVisualTransformation()
         )
 
@@ -101,7 +101,7 @@ fun RegisterPage(navController: NavController) {
             label = "Repeat Password",
             value = passwordRepeat,
             onValueChange = { newPassword -> passwordRepeat = newPassword},
-            validation = { email -> registrationValidator.validateWeakPassword(email).success },
+            validation = { email -> authValidator.validateWeakPassword(email).success },
             imeAction = ImeAction.Done,
             visualTransformation = PasswordVisualTransformation()
         )

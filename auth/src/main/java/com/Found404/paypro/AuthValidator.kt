@@ -1,6 +1,6 @@
 package com.Found404.paypro
 
-class RegistrationValidator() {
+class AuthValidator() {
 
     fun validateEmail(email: String): ValidationStatus {
         val emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
