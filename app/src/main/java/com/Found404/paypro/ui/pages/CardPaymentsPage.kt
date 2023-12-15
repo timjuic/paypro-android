@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +32,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.found404.ValidationLogic.MerchantDataValidator
 import com.found404.core.models.Merchant
+import com.found404.network.AddingMerchantsResult
+import com.found404.network.AddingMerchantsServiceImplementation
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun CardPayments(
@@ -43,6 +49,13 @@ fun CardPayments(
 
     val validator = MerchantDataValidator()
     val context = LocalContext.current
+
+    val addingMerchantsService = AddingMerchantsServiceImplementation()
+    var addingMerchantsResult by remember {
+        mutableStateOf<AddingMerchantsResult?>(null)
+    }
+
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -115,17 +128,30 @@ fun CardPayments(
                     .weight(1f)
                     .height(60.dp),
                 onClick = {
+                    coroutineScope.launch {
+                        addingMerchantsResult = addingMerchantsService.addMerchant(
+                            merchantModel.fullName,
+                            merchantModel.streetName,
+                            merchantModel.cityName,
+                            merchantModel.postCode,
+                            merchantModel.streetNumber
+                        )
+
+                        withContext(Dispatchers.Main){
+                            if (addingMerchantsResult == null) {
+                                showErrorMessage = true
+                                Toast.makeText(
+                                    context,
+                                    "Please select at least one option!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+
+                    }
                     if (atLeastOneChecked) {
                         onButtonFinishClick()
                         showErrorMessage = false
-                    } else {
-                        showErrorMessage = true
-                        Toast.makeText(
-                            context,
-                            "Please select at least one option!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
