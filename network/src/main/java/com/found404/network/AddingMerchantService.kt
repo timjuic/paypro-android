@@ -1,7 +1,7 @@
 package com.found404.network
 
 interface AddingMerchantService {
-    suspend fun registerUser(merchantName: String,
+    suspend fun addMerchant(merchantName: String,
                              merchantStreetName: String,
                              merchantCityName: String,
                              merchantPostCode: Int,

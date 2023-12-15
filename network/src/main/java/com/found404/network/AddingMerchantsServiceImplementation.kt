@@ -14,7 +14,7 @@ class AddingMerchantsServiceImplementation : AddingMerchantService{
     private val gson = Gson()
     private val client = OkHttpClient()
 
-    override suspend fun registerUser(
+    override suspend fun addMerchant(
         merchantName: String,
         merchantStreetName: String,
         merchantCityName: String,
