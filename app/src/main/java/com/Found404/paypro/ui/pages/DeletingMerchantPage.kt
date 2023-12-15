@@ -8,32 +8,28 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-
+import com.Found404.paypro.ui.components.PayProButton
+import com.Found404.paypro.ui.components.TextInput
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeletingMerchants(
-    onCreateMerchantButtonClick: () -> Unit
 ){
 
     var merchantName by remember { mutableStateOf("Eg. Konzum") }
@@ -71,30 +67,14 @@ fun DeletingMerchants(
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
-
-                TextField(
-                    value = merchantName,
-                    onValueChange = { newValue -> merchantName = newValue }
-                )
-                Button(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .align(End)
-                        .padding(16.dp)
-
-
-
-                ) {
-                    Text(text = "Delete")
-                    }
+                TextInput(value = merchantName, onValueChange = {newValue -> merchantName = newValue})
+                PayProButton(text = "Delete", onClick = { /*TODO*/ }, buttonColor = Color.Red)
                 }
             }
         }
     }
-
-
 @Preview
 @Composable
 fun DeletingMerchantPreview() {
-    DeletingMerchants({})
+    DeletingMerchants()
 }

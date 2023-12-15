@@ -6,6 +6,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.Found404.paypro.ui.pages.AddingMerchants
 import com.Found404.paypro.ui.pages.CardPayments
+import com.Found404.paypro.ui.pages.DeletingMerchants
+import com.Found404.paypro.ui.pages.DisplayListOfMerchant
 import com.Found404.paypro.ui.pages.MerchantAddress
 import com.Found404.paypro.ui.pages.MerchantCreated
 import com.Found404.paypro.ui.pages.MerchantName
@@ -16,7 +18,14 @@ fun AppNavigation() {
 
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = "registration"){
+    NavHost(navController, startDestination = "displayingMerchants"){
+                        composable("displayingMerchants"){
+                            DisplayListOfMerchant(viewModel = MerchantService())
+                        }
+                        composable("deletingMerchant"){
+                            DeletingMerchants ()
+
+                        }
                         composable("registration"){
                             RegisterScreen(navController = navController)
                         }
