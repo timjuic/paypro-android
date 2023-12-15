@@ -11,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,6 +28,10 @@ fun PayProButton(
     textColor: Color = Color.White,
     leadingIcon: ImageVector? = null
 ) {
+    val customFontFamily = FontFamily(
+        Font(R.font.montserrat_bold, FontWeight.Bold),
+    )
+
     OutlinedButton(
         onClick = { onClick() },
         modifier = modifier
@@ -52,7 +58,8 @@ fun PayProButton(
                 text = text,
                 color = textColor,
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
+                fontSize = 18.sp,
+                fontFamily = customFontFamily
             )
         }
     }

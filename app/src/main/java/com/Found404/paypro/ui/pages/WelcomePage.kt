@@ -44,7 +44,7 @@ fun WelcomePage(navController: NavController) {
         )
 
         PayProButton(
-            text = "Sign Up With Google",
+            text = "Google Sign Up",
             onClick = { /* TODO */ },
             leadingIcon = ImageVector.vectorResource(id = R.drawable.ic_google),
             buttonColor = Color.Transparent,
