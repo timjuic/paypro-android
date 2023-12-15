@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.Found404.paypro.R
-import com.Found404.paypro.RegistrationResult
+import com.Found404.paypro.responses.RegistrationResponse
 import com.Found404.paypro.RegistrationServiceImpl
 import com.Found404.paypro.ui.components.PayProLabeledTextInput
 import com.Found404.paypro.ui.components.PayProButton
@@ -53,7 +53,7 @@ fun RegisterPage(navController: NavController) {
     val registrationService = RegistrationServiceImpl()
     val registrationValidator = registrationService.validator
 
-    var registrationResult by remember { mutableStateOf<RegistrationResult?>(null) }
+    var registrationResponse by remember { mutableStateOf<RegistrationResponse?>(null) }
 
     val coroutineScope = rememberCoroutineScope()
     var registrationErrorMessage by remember { mutableStateOf<String?>(null) }
@@ -113,22 +113,22 @@ fun RegisterPage(navController: NavController) {
             text = "Register",
             onClick = {
                 coroutineScope.launch {
-                    registrationResult = registrationService.registerUser(firstName, lastName, email, password)
+                    registrationResponse = registrationService.registerUser(firstName, lastName, email, password)
 
                     withContext(Dispatchers.Main) {
-                        if (registrationResult == null) {
+                        if (registrationResponse == null) {
                             registrationErrorMessage = "Backend server couldn't be reached. Please try again later"
                             return@withContext
                         }
 
-                        if (!registrationResult!!.success) {
-                            registrationErrorMessage = registrationResult!!.message
+                        if (!registrationResponse!!.success) {
+                            registrationErrorMessage = registrationResponse!!.message
                             return@withContext
                         }
 
                         Toast.makeText(context, "You've successfully registered!", Toast.LENGTH_SHORT).show()
 
-                        navController.navigate("login")
+                        navController.navigate("addingMerchants")
                     }
                 }
             }
