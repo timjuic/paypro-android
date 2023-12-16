@@ -1,11 +1,12 @@
 package com.Found404.paypro.ui.pages
 
+import android.widget.Toast
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.Found404.paypro.ui.components.PayProButton
@@ -30,18 +32,19 @@ import com.Found404.paypro.ui.components.PayProLabeledDropdown
 import com.Found404.paypro.ui.components.PayProLabeledTextInput
 import com.Found404.paypro.ui.components.PayProTitle
 import com.Found404.paypro.ui.theme.PurpleGrey40
-import com.Found404.paypro.ui.theme.PurpleGrey80
-
-enum class PosTypes {
-    SoftPOS,
-    SmartPOS
-}
+import com.found404.ValidationLogic.TerminalDataValidator
+import com.found404.core.models.Terminal
+import com.found404.core.models.enums.StatusType
+import com.found404.core.models.enums.TerminalType
 
 @Composable
-fun AddingTerminal() {
+fun AddingTerminal(mid: Int = 1) {
     var tid by remember { mutableStateOf("") }
-    val posTypes = enumValues<PosTypes>().map { it.name }
+    val posTypes = enumValues<TerminalType>().map { it.name }
     var selectedPosType by remember { mutableStateOf( "") }
+
+    val validator = TerminalDataValidator();
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -78,8 +81,8 @@ fun AddingTerminal() {
 
             PayProLabeledDropdown(
                 label = "Terminal Type",
-                onItemSelected = { selectedItem ->
-                                 selectedPosType = selectedItem
+                onItemSelected = {selectedType ->
+                    selectedPosType = selectedType
                 },
                 items = posTypes)
 
@@ -100,7 +103,12 @@ fun AddingTerminal() {
 
                 PayProButton(
                     text = "Create",
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        val terminal = validator.createTerminal(tid, mid, selectedPosType,  context)
+                        if(terminal != null) {
+                            Toast.makeText(context, "Sve super, salje se", Toast.LENGTH_SHORT).show()
+                        }
+                    },
                     modifier = Modifier.width(150.dp)
                 )
             }

@@ -102,6 +102,7 @@ fun PayProLabeledDropdown(
                         onClick = {
                             selectedItem = item
                             isExpanded = false
+                            onItemSelected(item)
                         }
                     )
                 }
