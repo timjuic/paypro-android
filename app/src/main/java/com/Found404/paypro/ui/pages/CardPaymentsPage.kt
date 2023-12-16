@@ -53,6 +53,7 @@ fun CardPayments(
 
     val context = LocalContext.current
     val sharedPreferencesManager = getAllSavedData(context)
+    val defaultStatus = "Active"
 
     val addingMerchantsService = AddingMerchantsServiceImplementation()
     val creditCardsService = CreditCardsService()
@@ -149,7 +150,8 @@ fun CardPayments(
                             sharedPreferencesManager.merchantData.cityName,
                             sharedPreferencesManager.merchantData.postCode,
                             sharedPreferencesManager.merchantData.streetNumber,
-                            selectedCards
+                            selectedCards,
+                            defaultStatus
                         )
                         println(
                             "adding merchants result " + addingMerchantsResult!!.success + " " + addingMerchantsResult!!.errorMessage + " " + addingMerchantsResult!!.message + " "

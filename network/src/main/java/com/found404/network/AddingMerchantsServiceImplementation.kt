@@ -18,7 +18,8 @@ class AddingMerchantsServiceImplementation : AddingMerchantService{
         merchantCityName: String,
         merchantPostCode: Int,
         merchantStreetNumber: Int,
-        acceptedCards: List<String>
+        acceptedCards: List<String>,
+        status: String
     ): AddingMerchantsResult  = withContext(Dispatchers.IO) {
 
         val requestBody = gson.toJson(
@@ -30,7 +31,8 @@ class AddingMerchantsServiceImplementation : AddingMerchantService{
                     "streetNumber" to merchantStreetNumber.toString(),
                     "postalCode" to merchantPostCode.toString()
                 ),
-                "acceptedCards" to acceptedCards
+                "acceptedCards" to acceptedCards,
+                "status" to status
             )
         ).toString().toRequestBody("application/json".toMediaType())
         println("requestbody " + gson.toJson(
@@ -41,7 +43,9 @@ class AddingMerchantsServiceImplementation : AddingMerchantService{
                     "streetName" to merchantStreetName,
                     "streetNumber" to merchantStreetNumber.toString(),
                     "postalCode" to merchantPostCode.toString()
-                )
+                ),
+                "acceptedCards" to acceptedCards,
+                "status" to status
             )
         ).toString())
         val jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXRpamFrbGphaWNAZ21haWwuY29tIiwiZXhwIjoxNzAyNzM5MTAxLCJpYXQiOjE3MDI3MzczMDEsImlzX2FkbWluIjpmYWxzZSwibGFzdF9uYW1lIjoiS2xqYWljIiwiaWQiOiIyNiIsImZpcnN0X25hbWUiOiJNYXRpamEifQ.INvzWktskeYNqvxTH-y7Gs7gzAc17ejsamv2Vij9Tp4"
