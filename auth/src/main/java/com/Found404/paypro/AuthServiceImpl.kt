@@ -56,10 +56,6 @@ class AuthServiceImpl : AuthService {
     }
 
     override suspend fun loginUser(email: String, password: String, context: Context): LoginResponse = withContext(Dispatchers.IO) {
-//        if (!validator.validateLogin(email, password).success) {
-//            return@withContext LoginResponse(false, "Validation failed")
-//        }
-
         val hashedPassword = AuthUtils.hashPassword(password)
 
         val requestBody = gson.toJson(
@@ -79,7 +75,7 @@ class AuthServiceImpl : AuthService {
             val responseBody = response.body?.string()
             val loginResponse = gson.fromJson(responseBody, LoginResponse::class.java)
             if (loginResponse.success) {
-                saveLoggedInUser(loginResponse.data!!.accessToken, email, context)
+                saveLoggedInUser(loginResponse.data!!.accessToken, context)
             }
 
             loginResponse
@@ -88,17 +84,18 @@ class AuthServiceImpl : AuthService {
         }
     }
 
-    private fun saveLoggedInUser(jwt: String?, email: String, context: Context) {
-        jwt?.let {
-            val jwtParser = JWT.decode(it)
+    private fun saveLoggedInUser(jwt: String?, context: Context) {
+        jwt?.let { jwtToken ->
+            val jwtParser = JWT.decode(jwtToken)
             val userId = jwtParser.claims["id"]?.asString()
+            val userEmail = jwtParser.claims["sub"]?.asString()
 
             val sharedPreferences = context.getSharedPreferences("user_info", Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
 
             editor.putString("user_id", userId)
-            editor.putString("user_email", email)
-            editor.putString("jwt_token", it)
+            editor.putString("user_email", userEmail)
+            editor.putString("jwt_token", jwtToken)
 
             editor.apply()
         }
