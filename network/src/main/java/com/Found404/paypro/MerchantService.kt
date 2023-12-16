@@ -23,7 +23,7 @@ class MerchantService {
 
     suspend fun getMerchantForUser(userId: String): List<Merchant>? = withContext(Dispatchers.IO){
         var url ="http://158.220.113.254:8086/api/merchant/$userId"
-        val jwtToken: String = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXRpamFrbGphaWNAZ21haWwuY29tIiwiZXhwIjoxNzAyNjc1Njc5LCJpYXQiOjE3MDI2NzM4NzksImlzX2FkbWluIjpmYWxzZSwibGFzdF9uYW1lIjoiS2xqYWljIiwiaWQiOiIyNiIsImZpcnN0X25hbWUiOiJNYXRpamEifQ.DE5aPVyur3eiAomehYgXbGYm5f08I5cNAeYxjjkkVhM"
+        val jwtToken: String = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXRpamFrbGphaWNAZ21haWwuY29tIiwiZXhwIjoxNzAyNzI0Mzg4LCJpYXQiOjE3MDI3MjI1ODgsImlzX2FkbWluIjpmYWxzZSwibGFzdF9uYW1lIjoiS2xqYWljIiwiaWQiOiIyNiIsImZpcnN0X25hbWUiOiJNYXRpamEifQ.muuI8quiIAtBY-p1vPEg6pTnrYA69f6O1pIBAJUmc2s"
 
 
                 val request = Request.Builder()

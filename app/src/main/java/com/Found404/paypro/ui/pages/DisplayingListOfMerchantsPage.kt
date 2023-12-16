@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,16 +19,22 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.Found404.paypro.MerchantService
+import com.Found404.paypro.ui.components.PayProButton
+import com.Found404.paypro.ui.components.TextInput
 import com.Found404.paypro.ui.components.Title
 import responses.Merchant
 
@@ -35,6 +42,8 @@ import responses.Merchant
 fun DisplayListOfMerchant(viewModel: MerchantService){
 
     val dataState = remember { mutableStateOf<List<Merchant>>(emptyList())}
+    val popupState = remember { mutableStateMapOf<String, Boolean>() }
+    var merchantName by remember { mutableStateOf("") }
 
     LaunchedEffect(true){
         val newMerchants =viewModel.getMerchantForUser("2")
@@ -81,7 +90,10 @@ fun DisplayListOfMerchant(viewModel: MerchantService){
                     Text(text = Merchant.merchantName, color = Color.Black, style = TextStyle(fontSize = 30.sp))
                     Button(
                         modifier = Modifier.align(Alignment.End),
-                        onClick = { /* Handle edit button click */ }
+                        onClick = {
+                            merchantName = Merchant.merchantName
+                            popupState[Merchant.merchantName] = true
+                        }
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Edit,
@@ -89,13 +101,51 @@ fun DisplayListOfMerchant(viewModel: MerchantService){
                             modifier = Modifier.size(24.dp)
                         )
                     }
-
+                    if (popupState[Merchant.merchantName] == true) {
+                        PopupContent(
+                            merchantName = merchantName,
+                            onClosePopup = { popupState[Merchant.merchantName] = false }
+                        )
+                    }
                 }
-                //Text(text = Merchant.merchantName, color = Color.Black, style = TextStyle(fontSize = 30.sp))
             }
         }
     }
 }
+
+@Composable
+fun PopupContent(merchantName: String, onClosePopup: () -> Unit) {
+    var currentMerchantName by remember { mutableStateOf(merchantName) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.Black.copy(alpha = 0.5f))
+            .padding(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = "Enter your full Merchant name to delete",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+            TextInput(
+                value = currentMerchantName,
+                onValueChange = { newValue -> currentMerchantName = newValue}
+            )
+            PayProButton(
+                text = "Delete", onClick = {
+                    onClosePopup()
+                },
+                buttonColor = Color.Red
+            )
+        }
+    }
+}
+
 @Preview
 @Composable
 fun DisplayingListOfMerchantPreview() {
