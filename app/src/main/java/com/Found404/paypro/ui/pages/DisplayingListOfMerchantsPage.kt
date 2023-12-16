@@ -2,6 +2,7 @@ package com.Found404.paypro.ui.pages
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Button
@@ -71,9 +73,10 @@ fun DisplayListOfMerchant(viewModel: MerchantService){
         items(merchants){Merchant ->
             Box(modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
-                .background(color = Color.LightGray)
-                .padding(horizontal = 16.dp),
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+                .background(color = Color.LightGray, shape = RoundedCornerShape(16.dp))
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+
 
             ){
                 Column(
@@ -101,14 +104,21 @@ fun DisplayListOfMerchant(viewModel: MerchantService){
                             modifier = Modifier.size(24.dp)
                         )
                     }
-                    if (popupState[Merchant.merchantName] == true) {
-                        PopupContent(
-                            merchantName = merchantName,
-                            onClosePopup = { popupState[Merchant.merchantName] = false }
-                        )
-                    }
                 }
             }
+        }
+    }
+    merchants.forEach { Merchant ->
+        if (popupState[Merchant.merchantName] == true) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    PopupContent(
+                        merchantName = merchantName,
+                        onClosePopup = { popupState[Merchant.merchantName] = false }
+                    )
+                }
         }
     }
 }
@@ -117,34 +127,38 @@ fun DisplayListOfMerchant(viewModel: MerchantService){
 fun PopupContent(merchantName: String, onClosePopup: () -> Unit) {
     var currentMerchantName by remember { mutableStateOf(merchantName) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.Black.copy(alpha = 0.5f))
-            .padding(16.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = Color.LightGray, shape = RoundedCornerShape(16.dp))
+                .border(
+                    width = 1.dp,
+                    color = Color.Black,
+                    shape = RoundedCornerShape(16.dp)
+                )
         ) {
-            Text(
-                text = "Enter your full Merchant name to delete",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-            TextInput(
-                value = currentMerchantName,
-                onValueChange = { newValue -> currentMerchantName = newValue}
-            )
-            PayProButton(
-                text = "Delete", onClick = {
-                    onClosePopup()
-                },
-                buttonColor = Color.Red
-            )
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "Enter your full Merchant name to delete",
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+                TextInput(
+                    value = currentMerchantName,
+                    onValueChange = { newValue -> currentMerchantName = newValue }
+                )
+                PayProButton(
+                    text = "Delete", onClick = {
+                        onClosePopup()
+                    },
+                    buttonColor = Color.Red
+                )
+            }
         }
     }
-}
 
 @Preview
 @Composable
