@@ -33,7 +33,6 @@ import com.found404.ValidationLogic.MerchantDataValidator
 import com.found404.core.models.MerchantViewModel
 import com.found404.core.models.SharedPreferencesManager
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MerchantAddress(
     navController: NavController

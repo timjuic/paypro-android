@@ -11,6 +11,7 @@ object SharedPreferencesManager {
     private const val KEY_STREET_NAME = "streetName"
     private const val KEY_STREET_NUMBER = "streetNumber"
     private const val KEY_POSTAL_CODE = "postalCode"
+    private const val KEY_ACCEPTED_CARDS = "acceptedCards"
 
     fun saveMerchantName(context: Context, merchantName: String) {
         val sharedPreferences: SharedPreferences =
@@ -59,5 +60,19 @@ object SharedPreferencesManager {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
         return sharedPreferences.getInt(KEY_POSTAL_CODE, 0)
+    }
+
+    fun saveAcceptedCards(context: Context, acceptedCards: Set<String>) {
+        val sharedPreferences: SharedPreferences =
+            context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.putStringSet(KEY_ACCEPTED_CARDS, acceptedCards)
+        editor.apply()
+    }
+
+    fun getAcceptedCards(context: Context): Set<String>? {
+        val sharedPreferences: SharedPreferences =
+            context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getStringSet(KEY_ACCEPTED_CARDS, null)
     }
 }

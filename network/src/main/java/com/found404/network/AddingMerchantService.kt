@@ -5,6 +5,7 @@ interface AddingMerchantService {
                              merchantStreetName: String,
                              merchantCityName: String,
                              merchantPostCode: Int,
-                             merchantStreetNumber: Int
+                             merchantStreetNumber: Int,
+                            acceptedCards: List<String>
     ) : AddingMerchantsResult
 }

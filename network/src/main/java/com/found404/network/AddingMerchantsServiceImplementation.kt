@@ -18,6 +18,7 @@ class AddingMerchantsServiceImplementation : AddingMerchantService{
         merchantCityName: String,
         merchantPostCode: Int,
         merchantStreetNumber: Int,
+        acceptedCards: List<String>
     ): AddingMerchantsResult  = withContext(Dispatchers.IO) {
 
         val requestBody = gson.toJson(
@@ -28,7 +29,8 @@ class AddingMerchantsServiceImplementation : AddingMerchantService{
                     "streetName" to merchantStreetName,
                     "streetNumber" to merchantStreetNumber.toString(),
                     "postalCode" to merchantPostCode.toString()
-                )
+                ),
+                "acceptedCards" to acceptedCards
             )
         ).toString().toRequestBody("application/json".toMediaType())
         println("requestbody " + gson.toJson(
@@ -42,7 +44,7 @@ class AddingMerchantsServiceImplementation : AddingMerchantService{
                 )
             )
         ).toString())
-        val jwtToken: String = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXRpamFrbGphaWNAZ21haWwuY29tIiwiZXhwIjoxNzAyNjc0NzY0LCJpYXQiOjE3MDI2NzI5NjQsImlzX2FkbWluIjpmYWxzZSwibGFzdF9uYW1lIjoiS2xqYWljIiwiaWQiOiIyNiIsImZpcnN0X25hbWUiOiJNYXRpamEifQ.Md0IfFYci0-vkg9_T_iSCD4I-bPxQCQvm33BrnTvKck"
+        val jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXRpamFrbGphaWNAZ21haWwuY29tIiwiZXhwIjoxNzAyNzM5MTAxLCJpYXQiOjE3MDI3MzczMDEsImlzX2FkbWluIjpmYWxzZSwibGFzdF9uYW1lIjoiS2xqYWljIiwiaWQiOiIyNiIsImZpcnN0X25hbWUiOiJNYXRpamEifQ.INvzWktskeYNqvxTH-y7Gs7gzAc17ejsamv2Vij9Tp4"
         val request = Request.Builder()
             .url("http://158.220.113.254:8086/api/merchant")
             .header("Authorization", "Bearer $jwtToken")

@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +18,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,11 +32,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.found404.core.models.CreditCardType
 import com.found404.core.models.Merchant
 import com.found404.core.models.MerchantViewModel
 import com.found404.core.models.SharedPreferencesManager
 import com.found404.network.AddingMerchantsResult
 import com.found404.network.AddingMerchantsServiceImplementation
+import com.found404.network.CreditCardsService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -52,17 +55,26 @@ fun CardPayments(
     val sharedPreferencesManager = getAllSavedData(context)
 
     val addingMerchantsService = AddingMerchantsServiceImplementation()
+    val creditCardsService = CreditCardsService()
+
     var addingMerchantsResult by remember {
         mutableStateOf<AddingMerchantsResult?>(null)
     }
 
+    var cardTypes by remember { mutableStateOf<List<CreditCardType>>(emptyList()) }
+
     val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = true) {
+        coroutineScope.launch {
+            cardTypes = creditCardsService.getCreditCardTypes() ?: emptyList()
+        }
+    }
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding()
+            .fillMaxSize()
+            .padding(16.dp)
             .background(color = Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -78,37 +90,36 @@ fun CardPayments(
                 horizontal = 16.dp
             )
         )
-
-        val cardTypes = listOf("Visa", "Master", "Maestro", "Diners", "American Express")
+        println("Card Types: $cardTypes")
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.Start
         ) {
             for (cardType in cardTypes) {
-                CreateRow(cardNameParam = cardType, cardTypeParam = merchantModel.cardTypes.contains(cardType)) {
-                    merchantModel = if (merchantModel.cardTypes.contains(cardType)) {
-                        merchantModel.copy(cardTypes = merchantModel.cardTypes - cardType)
+                CreateRow(
+                    cardNameParam = cardType.name,
+                    cardTypeParam = merchantModel.cardTypes.contains(cardType.name)
+                ) {
+                    merchantModel = if (merchantModel.cardTypes.contains(cardType.name)) {
+                        merchantModel.copy(cardTypes = merchantModel.cardTypes - cardType.name)
                     } else {
-                        merchantModel.copy(cardTypes = merchantModel.cardTypes + cardType)
+                        merchantModel.copy(cardTypes = merchantModel.cardTypes + cardType.name)
                     }
-                    atLeastOneChecked = cardTypes.any { type -> merchantModel.cardTypes.contains(type) }
+                    atLeastOneChecked =
+                        cardTypes.any { type -> merchantModel.cardTypes.contains(type.name) }
                 }
             }
         }
 
+        Spacer(modifier = Modifier.height(16.dp))
+
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
         ) {
             Button(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(60.dp),
                 onClick = {
                     navController.navigate("merchantAddress")
                 },
@@ -118,27 +129,32 @@ fun CardPayments(
             ) {
                 Text(
                     text = "Previous",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
                 )
             }
+
             Spacer(modifier = Modifier.width(16.dp))
+
             Button(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(60.dp),
                 onClick = {
                     coroutineScope.launch {
+                        val selectedCards =
+                            cardTypes.filter { it.name in merchantModel.cardTypes }.map { it.name }
+
                         addingMerchantsResult = addingMerchantsService.addMerchant(
                             sharedPreferencesManager.merchantData.fullName,
                             sharedPreferencesManager.merchantData.streetName,
                             sharedPreferencesManager.merchantData.cityName,
                             sharedPreferencesManager.merchantData.postCode,
-                            sharedPreferencesManager.merchantData.streetNumber
+                            sharedPreferencesManager.merchantData.streetNumber,
+                            selectedCards
                         )
-                        println("adding merchtans result" + addingMerchantsResult!!.success + addingMerchantsResult!!.errorMessage + addingMerchantsResult!!.message)
-                        withContext(Dispatchers.Main){
+                        println(
+                            "adding merchants result " + addingMerchantsResult!!.success + " " + addingMerchantsResult!!.errorMessage + " " + addingMerchantsResult!!.message + " "
+                        )
+                        withContext(Dispatchers.Main) {
                             if (addingMerchantsResult == null) {
                                 showErrorMessage = true
                                 Toast.makeText(
@@ -160,17 +176,18 @@ fun CardPayments(
             ) {
                 Text(
                     text = "Finish",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
                 )
             }
         }
+
         if (showErrorMessage) {
             Text(
                 text = "Please select at least one option!",
                 color = Color.Red,
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 modifier = Modifier.padding(top = 8.dp)
             )
         }
