@@ -1,6 +1,7 @@
 package com.Found404.paypro
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -19,9 +20,15 @@ fun AppNavigation() {
     val navController = rememberNavController()
 
     NavHost(navController, startDestination = "welcome"){
+        val authServiceImpl = AuthServiceImpl()
         composable("welcome") {
-            WelcomePage(navController = navController)
+            if (authServiceImpl.isJwtValid(LocalContext.current)) {
+                WelcomePage(navController = navController)
+            } else {
+                LoginPage(navController = navController)
+            }
         }
+
         composable("login") {
             LoginPage(navController = navController)
         }
