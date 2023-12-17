@@ -1,6 +1,11 @@
 package com.Found404.paypro
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,7 +27,16 @@ fun AppNavigation() {
     NavHost(navController, startDestination = "welcome"){
         val authServiceImpl = AuthServiceImpl()
         composable("welcome") {
-            if (authServiceImpl.isJwtValid(LocalContext.current)) {
+            val context = LocalContext.current
+            var isJwtValid by remember {
+                mutableStateOf<Boolean?>(false)
+            }
+
+            LaunchedEffect(authServiceImpl) {
+                isJwtValid = authServiceImpl.isJwtValid(context)
+            }
+
+            if (isJwtValid == true) {
                 WelcomePage(navController = navController)
             } else {
                 LoginPage(navController = navController)
