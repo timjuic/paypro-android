@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.Found404.paypro.R
 import com.Found404.paypro.responses.RegistrationResponse
-import com.Found404.paypro.RegistrationServiceImpl
+import com.Found404.paypro.AuthServiceImpl
 import com.Found404.paypro.ui.components.PayProLabeledTextInput
 import com.Found404.paypro.ui.components.PayProButton
 import com.Found404.paypro.ui.components.PayProHeadline
@@ -44,13 +44,13 @@ import kotlinx.coroutines.withContext
 @Composable
 fun RegisterPage(navController: NavController) {
 
-    var email by remember { mutableStateOf("TestEmail@gmail.com") }
-    var password by remember { mutableStateOf("testing123")}
-    var passwordRepeat by remember { mutableStateOf("testing123")}
-    var firstName by remember { mutableStateOf("Tester")}
-    var lastName by remember { mutableStateOf("TesterLastName")}
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("")}
+    var passwordRepeat by remember { mutableStateOf("")}
+    var firstName by remember { mutableStateOf("")}
+    var lastName by remember { mutableStateOf("")}
 
-    val registrationService = RegistrationServiceImpl()
+    val registrationService = AuthServiceImpl()
     val authValidator = registrationService.validator
 
     var registrationResponse by remember { mutableStateOf<RegistrationResponse?>(null) }

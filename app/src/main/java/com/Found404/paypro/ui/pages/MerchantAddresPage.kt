@@ -26,23 +26,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.found404.ValidationLogic.MerchantDataValidator
-import com.found404.core.models.Merchant
+import com.found404.core.models.MerchantViewModel
+import com.found404.core.models.SharedPreferencesManager
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MerchantAddress(
-    onButtonNextClick: () -> Unit,
-    onButtonPrevClick: () -> Unit
+    navController: NavController
 ) {
 
-    var merchantModel by remember { mutableStateOf(Merchant()) }
+    var merchantCity by remember { mutableStateOf("") }
+    var merchantPostalCode by remember { mutableStateOf(0) }
+    var merchantStreetName by remember { mutableStateOf("") }
+    var merchantStreetNumber by remember { mutableStateOf(0) }
     var showErrorMessage by remember { mutableStateOf(false) }
 
     val validator = MerchantDataValidator()
+    val merchantViewModel = MerchantViewModel()
 
     Column(
         modifier = Modifier
@@ -67,46 +70,40 @@ fun MerchantAddress(
         TextField(
             singleLine = true,
             label = {Text("City name")},
-            value = merchantModel.cityName,
+            value = merchantCity,
             onValueChange = { newCityName ->
-                merchantModel = merchantModel.copy(cityName = newCityName)
+                merchantCity =  newCityName
             },
         )
         TextField(
             singleLine = true,
             label = {Text("Street name")},
-            value = merchantModel.streetName,
+            value = merchantStreetName,
             onValueChange = { newStreetName ->
-                merchantModel = merchantModel.copy(streetName = newStreetName)
+                merchantStreetName = newStreetName
             },
         )
         TextField(
             singleLine = true,
             label = { Text("Street number") },
-            value = if (merchantModel.streetNumber == 0) "" else merchantModel.streetNumber.toString(),
+            value = if (merchantStreetNumber == 0) "" else merchantStreetNumber.toString(),
             onValueChange = { newStreetNumber ->
-                val parsedValue = newStreetNumber.toIntOrNull()
-                if (parsedValue != null) {
-                    merchantModel = merchantModel.copy(streetNumber = parsedValue)
-                }
+                merchantStreetNumber = newStreetNumber.toIntOrNull() ?: 0
             }
         )
 
         TextField(
             singleLine = true,
             label = { Text("Postal code") },
-            value = if (merchantModel.postCode == 0) "" else merchantModel.postCode.toString(),
+            value = if (merchantPostalCode == 0) "" else merchantPostalCode.toString(),
             onValueChange = { newPostCode ->
-                val parsedValue = newPostCode.toIntOrNull()
-                if (parsedValue != null) {
-                    merchantModel = merchantModel.copy(postCode = parsedValue)
-                }
+                merchantPostalCode = newPostCode.toIntOrNull() ?: 0
             }
         )
 
         if (showErrorMessage) {
-            showErrorMessages(validator, merchantModel)
-            showTextField(validator, merchantModel)
+            showErrorMessages(validator, merchantCity, merchantStreetNumber, merchantPostalCode, merchantStreetName)
+            showTextField(validator, merchantCity, merchantStreetNumber, merchantPostalCode, merchantStreetName)
         }
 
         Box(modifier = Modifier.fillMaxSize()){
@@ -123,12 +120,25 @@ fun MerchantAddress(
                         height = 60.dp
                     ),
                 onClick = {
-                    if (validate(merchantModel.cityName, merchantModel.streetName,
-                            merchantModel.streetNumber, merchantModel.postCode)) {
+                    if (validate(merchantCity, merchantStreetName,
+                            merchantStreetNumber.toInt(), merchantPostalCode.toInt())) {
                         showErrorMessage = true
                     } else {
                         showErrorMessage = false
-                        onButtonNextClick()
+                        merchantViewModel.merchantData.cityName = merchantCity
+                        merchantViewModel.merchantData.streetNumber = merchantStreetNumber.toInt()
+                        merchantViewModel.merchantData.streetName = merchantStreetName
+                        merchantViewModel.merchantData.postCode = merchantPostalCode.toInt()
+
+                        SharedPreferencesManager.saveMerchantAddress(
+                            context,
+                            merchantCity,
+                            merchantStreetName,
+                            merchantStreetNumber.toInt(),
+                            merchantPostalCode.toInt()
+                        )
+
+                        navController.navigate("cardPayments")
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -152,7 +162,7 @@ fun MerchantAddress(
                         height = 60.dp),
 
                 onClick = {
-                    onButtonPrevClick()
+                    navController.navigate("merchantName")
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Gray
@@ -172,29 +182,57 @@ fun validate(cityName: String, streetName: String, streetNumber: Int, postCode: 
     return cityName.isBlank() || streetName.isBlank() || streetNumber == 0 || postCode == 0
 }
 @Composable
-fun showErrorMessages(validator: MerchantDataValidator, merchantModel: Merchant) {
+fun showErrorMessages(
+    validator: MerchantDataValidator,
+    merchantCity: String,
+    merchantStreetNumber: Int,
+    merchantPostalCode: Int,
+    merchantStreetName: String
+) {
     val context = LocalContext.current
-    if (!validator.validateCityName(merchantModel.cityName)) {
-        Toast.makeText(context, "Invalid city name!", Toast.LENGTH_SHORT).show()
+    if (!validator.validateCityName(merchantCity).success) {
+        Toast.makeText(
+            context,
+            validator.validateCityName(merchantCity).errorMessage,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
-    if (!validator.validateStreetName(merchantModel.streetName)) {
-        Toast.makeText(context, "Invalid street name!", Toast.LENGTH_SHORT).show()
+    if (!validator.validateStreetName(merchantStreetName).success) {
+        Toast.makeText(
+            context,
+            validator.validateStreetName(merchantStreetName).errorMessage,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
-    if (!validator.validateStreetNumber(merchantModel.streetNumber)) {
-        Toast.makeText(context, "Invalid street number!", Toast.LENGTH_SHORT).show()
+    if (!validator.validateStreetNumber(merchantStreetNumber).success) {
+        Toast.makeText(
+            context,
+            validator.validateStreetNumber(merchantStreetNumber).errorMessage,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
-    if (!validator.validatePostCode(merchantModel.postCode)) {
-        Toast.makeText(context, "Invalid postal code!", Toast.LENGTH_SHORT).show()
+    if (!validator.validatePostCode(merchantPostalCode).success) {
+        Toast.makeText(
+            context,
+            validator.validatePostCode(merchantPostalCode).errorMessage,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun showTextField(validator: MerchantDataValidator, merchantModel: Merchant) {
-    if (!validator.validateCityName(merchantModel.cityName)) {
+fun showTextField(
+    validator: MerchantDataValidator,
+    merchantCity: String,
+    merchantStreetNumber: Int,
+    merchantPostalCode: Int,
+    merchantStreetName: String
+) {
+    if (!validator.validateCityName(merchantCity).success) {
         Text(
             text = "Please input a valid city name!",
             color = Color.Red,
@@ -203,7 +241,7 @@ fun showTextField(validator: MerchantDataValidator, merchantModel: Merchant) {
         )
     }
 
-    if (!validator.validateStreetName(merchantModel.streetName)) {
+    if (!validator.validateStreetName(merchantStreetName).success) {
         Text(
             text = "Please input a valid street name!",
             color = Color.Red,
@@ -212,7 +250,7 @@ fun showTextField(validator: MerchantDataValidator, merchantModel: Merchant) {
         )
     }
 
-    if (!validator.validateStreetNumber(merchantModel.streetNumber)) {
+    if (!validator.validateStreetNumber(merchantStreetNumber).success) {
         Text(
             text = "Please input a valid street number!",
             color = Color.Red,
@@ -221,7 +259,7 @@ fun showTextField(validator: MerchantDataValidator, merchantModel: Merchant) {
         )
     }
 
-    if (!validator.validatePostCode(merchantModel.postCode)) {
+    if (!validator.validatePostCode(merchantPostalCode).success) {
         Text(
             text = "Please input a valid postal code!",
             color = Color.Red,
@@ -229,12 +267,4 @@ fun showTextField(validator: MerchantDataValidator, merchantModel: Merchant) {
             modifier = Modifier.padding(top = 8.dp)
         )
     }
-}
-@Preview
-@Composable
-fun MerchantAddressPreview() {
-    MerchantAddress(
-        onButtonNextClick = {},
-        onButtonPrevClick = {}
-    )
 }
