@@ -119,6 +119,11 @@ class AuthServiceImpl : AuthService {
         return UserData(userId, userEmail, jwtToken, refreshToken)
     }
 
+    fun getAuthToken(context: Context): String? {
+        val loggedInUser = getLoggedInUser(context)
+        return loggedInUser.jwtToken
+    }
+
     suspend fun isJwtValid(context: Context): Boolean {
         val userData = getLoggedInUser(context)
 
@@ -132,7 +137,7 @@ class AuthServiceImpl : AuthService {
                 val expirationTimestamp = jwtParser.expiresAt.time
                 val currentTime = System.currentTimeMillis()
 
-                if (false) {
+                if (currentTime <= expirationTimestamp) {
                     // Access token is still valid
                     true
                 } else {
@@ -168,6 +173,8 @@ class AuthServiceImpl : AuthService {
         val requestBody = FormBody.Builder()
             .add("refreshToken", refreshToken)
             .build()
+
+        println("REFRESH TOKEN" + refreshToken)
 
         var refreshToken1 = refreshToken
 

@@ -43,27 +43,26 @@ fun AppNavigation() {
             }
         }
 
-            composable("login") {
-                LoginPage(navController = navController)
-            }
-            composable("registration"){
-                RegisterPage(navController = navController)
-            }
-            composable("addingMerchants"){
-                AddingMerchants(navController = navController)
-            }
-            composable("merchantName") {
-                MerchantName(navController = navController)
-            }
-            composable("merchantAddress"){
-                MerchantAddress(navController = navController)
-            }
-            composable("cardPayments"){
-                CardPayments(navController = navController)
-            }
-            composable("merchantCreated"){
-                MerchantCreated(navController = navController)
-            }
+        composable("login") {
+            LoginPage(navController = navController)
+        }
+        composable("registration"){
+            RegisterPage(navController = navController)
+        }
+        composable("addingMerchants"){
+            AddingMerchants(navController = navController)
+        }
+        composable("merchantName") {
+            MerchantName(navController = navController)
+        }
+        composable("merchantAddress"){
+            MerchantAddress(navController = navController)
+        }
+        composable("cardPayments"){
+            CardPayments(navController = navController)
+        }
+        composable("merchantCreated"){
+            MerchantCreated(navController = navController)
         }
     }
 }
