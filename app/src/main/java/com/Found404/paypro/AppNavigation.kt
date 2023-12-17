@@ -37,67 +37,33 @@ fun AppNavigation() {
             }
 
             if (isJwtValid == true) {
-                WelcomePage(navController = navController)
+                AddingMerchants(navController = navController)
             } else {
-                LoginPage(navController = navController)
+                WelcomePage(navController = navController)
             }
         }
 
-        composable("login") {
-            LoginPage(navController = navController)
-        }
-        composable("registration"){
-            RegisterPage(navController = navController)
-        }
-        composable("addingMerchants"){
-            AddingMerchants(
-                onCreateMerchantButtonClick = {
-                    navController.navigate("merchantName")
-                },
-                onButtonCancelClick = {
-                    navController.navigate("merchantCreated") //TODO change to home page once it is completed
-                }
-            )
-        }
-        composable("merchantName") {
-            MerchantName(
-                onButtonNextClick = {
-                    navController.navigate("merchantAddress")
-                },
-                onButtonPrevClick = {
-                    navController.navigate("addingMerchants")
-                }
-            )
-        }
-        composable("merchantAddress"){
-            MerchantAddress(
-                onButtonNextClick = {
-                    navController.navigate("cardPayments")
-                },
-                onButtonPrevClick = {
-                    navController.navigate("merchantName")
-                }
-            )
-        }
-        composable("cardPayments"){
-            CardPayments(
-                onButtonFinishClick = {
-                    navController.navigate("merchantCreated")
-                },
-                onButtonPrevClick = {
-                    navController.navigate("merchantAddress")
-                }
-            )
-        }
-        composable("merchantCreated"){
-            MerchantCreated(
-                onButtonFinishClick = {
-                    navController.navigate("addingMerchants") //TODO change to home page once it is completed
-                },
-                onButtonPrevClick = {
-                    navController.navigate("cardPayments")
-                }
-            )
+            composable("login") {
+                LoginPage(navController = navController)
+            }
+            composable("registration"){
+                RegisterPage(navController = navController)
+            }
+            composable("addingMerchants"){
+                AddingMerchants(navController = navController)
+            }
+            composable("merchantName") {
+                MerchantName(navController = navController)
+            }
+            composable("merchantAddress"){
+                MerchantAddress(navController = navController)
+            }
+            composable("cardPayments"){
+                CardPayments(navController = navController)
+            }
+            composable("merchantCreated"){
+                MerchantCreated(navController = navController)
+            }
         }
     }
 }

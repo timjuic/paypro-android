@@ -24,14 +24,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
 fun MerchantCreated(
-    onButtonFinishClick: () -> Unit,
-    onButtonPrevClick: () -> Unit
+    navController: NavController
 ) {
 
     Column(
@@ -105,7 +104,7 @@ fun MerchantCreated(
                         height = 60.dp
                     ),
                 onClick = {
-                    onButtonFinishClick()
+                    navController.navigate("addingMerchants")
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Blue
@@ -127,7 +126,7 @@ fun MerchantCreated(
                         width = 130.dp,
                         height = 60.dp),
                 onClick = {
-                    onButtonPrevClick()
+                    navController.navigate("cardPayments")
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Gray
@@ -143,8 +142,8 @@ fun MerchantCreated(
     }
 }
 
-@Preview
-@Composable
-fun MerchantCreated() {
-    MerchantCreated(onButtonFinishClick = {}, onButtonPrevClick = {})
-}
+//@Preview
+//@Composable
+//fun MerchantCreated() {
+//    MerchantCreated(onButtonFinishClick = {}, onButtonPrevClick = {})
+//}

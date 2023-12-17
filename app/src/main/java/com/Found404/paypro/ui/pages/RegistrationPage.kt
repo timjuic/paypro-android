@@ -44,11 +44,11 @@ import kotlinx.coroutines.withContext
 @Composable
 fun RegisterPage(navController: NavController) {
 
-    var email by remember { mutableStateOf("tester@gmail.com") }
-    var password by remember { mutableStateOf("testtest")}
-    var passwordRepeat by remember { mutableStateOf("testtest")}
-    var firstName by remember { mutableStateOf("tester")}
-    var lastName by remember { mutableStateOf("tester")}
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("")}
+    var passwordRepeat by remember { mutableStateOf("")}
+    var firstName by remember { mutableStateOf("")}
+    var lastName by remember { mutableStateOf("")}
 
     val registrationService = AuthServiceImpl()
     val authValidator = registrationService.validator

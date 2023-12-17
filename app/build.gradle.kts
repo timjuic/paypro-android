@@ -50,6 +50,7 @@ dependencies {
 
     implementation(project(mapOf("path" to ":core")))
     implementation(project(mapOf("path" to ":auth")))
+    implementation(project(mapOf("path" to ":network")))
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
