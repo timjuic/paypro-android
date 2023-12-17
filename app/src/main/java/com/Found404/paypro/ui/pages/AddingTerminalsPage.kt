@@ -1,7 +1,6 @@
 package com.Found404.paypro.ui.pages
 
 import android.widget.Toast
-import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,12 +19,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.Found404.paypro.ui.components.PayProButton
 import com.Found404.paypro.ui.components.PayProHeadline
 import com.Found404.paypro.ui.components.PayProLabeledDropdown
@@ -33,15 +32,23 @@ import com.Found404.paypro.ui.components.PayProLabeledTextInput
 import com.Found404.paypro.ui.components.PayProTitle
 import com.Found404.paypro.ui.theme.PurpleGrey40
 import com.found404.ValidationLogic.TerminalDataValidator
-import com.found404.core.models.Terminal
-import com.found404.core.models.enums.StatusType
 import com.found404.core.models.enums.TerminalType
+import com.found404.network.service.implementation.TerminalServiceImpl
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
-fun AddingTerminal(mid: Int = 1) {
+fun AddingTerminal(navController: NavController, mid: Int = 2) {
     var tid by remember { mutableStateOf("") }
     val posTypes = enumValues<TerminalType>().map { it.name }
     var selectedPosType by remember { mutableStateOf( "") }
+    val terminalService = TerminalServiceImpl()
+    val coroutineScope = CoroutineScope(Dispatchers.Default)
 
     val validator = TerminalDataValidator();
     val context = LocalContext.current
@@ -104,9 +111,27 @@ fun AddingTerminal(mid: Int = 1) {
                 PayProButton(
                     text = "Create",
                     onClick = {
-                        val terminal = validator.createTerminal(tid, mid, selectedPosType,  context)
+                        val terminal = validator.createTerminal(tid, selectedPosType, context)
                         if(terminal != null) {
-                            Toast.makeText(context, "Sve super, salje se", Toast.LENGTH_SHORT).show()
+                            coroutineScope.launch {
+                                try {
+                                    val response = terminalService.addTerminal(terminal, mid)
+
+                                    withContext(Dispatchers.Main) {
+                                        if(response.success) {
+                                            Toast.makeText(context, response.message, Toast.LENGTH_SHORT).show()
+                                        }
+                                        else {
+                                            Toast.makeText(context, response.errorMessage, Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                } catch (ex: Exception) {
+                                    withContext(Dispatchers.Main) {
+                                        Toast.makeText(context, "An unknown message occurred!", Toast.LENGTH_SHORT).show()
+                                    }
+                                    ex.printStackTrace()
+                                }
+                            }
                         }
                     },
                     modifier = Modifier.width(150.dp)
@@ -114,10 +139,4 @@ fun AddingTerminal(mid: Int = 1) {
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun AddingTerminalsPreview() {
-    AddingTerminal()
 }

@@ -2,14 +2,15 @@ package com.found404.ValidationLogic
 
 import android.content.Context
 import android.widget.Toast
+import com.found404.core.models.Status
 import com.found404.core.models.Terminal
 import com.found404.core.models.enums.StatusType
 import com.found404.core.models.enums.TerminalType
 
 class TerminalDataValidator {
-    private val terminal_allowed_characters = """^[a-zA-Z0-9 \${'$'}&'@_-]{2,20}${'$'}""".toRegex()
+    private val terminal_allowed_characters = """^[a-zA-Z0-9 ${'$'}&'@_-]{2,20}${'$'}""".toRegex()
 
-    fun createTerminal(terminalKey: String, mid: Int, terminalType: String, context: Context): Terminal? {
+    fun createTerminal(terminalKey: String, terminalType: String, context: Context): Terminal? {
         if(!validateKey(terminalKey)) {
             Toast.makeText(context, "Terminal key is invalid!", Toast.LENGTH_SHORT).show()
             return null
@@ -19,11 +20,15 @@ class TerminalDataValidator {
             return null
         }
 
+        val status = Status(
+            statusId = 1,
+            statusName = "Active"
+        )
+
         return Terminal(
             terminalKey = terminalKey,
-            merchant = mid,
-            type = TerminalType.valueOf(terminalType),
-            status = StatusType.Active
+            type = TerminalType.valueOf(terminalType).ordinal,
+            status = status
         )
     }
 

@@ -5,7 +5,6 @@ import com.found404.core.models.enums.TerminalType
 
 data class Terminal(
     var terminalKey: String,
-    var merchant: Int,
-    var type: TerminalType,
-    var status: StatusType
+    var type: Int,
+    var status: Status
 )
