@@ -1,6 +1,11 @@
 package com.Found404.paypro
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,35 +25,44 @@ fun AppNavigation() {
     val navController = rememberNavController()
 
     NavHost(navController, startDestination = "welcome"){
-          val authServiceImpl = AuthServiceImpl()
-            composable("welcome") {
-                if (authServiceImpl.isJwtValid(LocalContext.current)) {
-                    AddingMerchants(navController = navController)
-                } else {
-                    WelcomePage(navController = navController)
-                }
+        val authServiceImpl = AuthServiceImpl()
+        composable("welcome") {
+            val context = LocalContext.current
+            var isJwtValid by remember {
+                mutableStateOf<Boolean?>(false)
             }
 
-            composable("login") {
-                LoginPage(navController = navController)
+            LaunchedEffect(authServiceImpl) {
+                isJwtValid = authServiceImpl.isJwtValid(context)
             }
-            composable("registration"){
-                RegisterPage(navController = navController)
-            }
-            composable("addingMerchants"){
+
+            if (isJwtValid == true) {
                 AddingMerchants(navController = navController)
-            }
-            composable("merchantName") {
-                MerchantName(navController = navController)
-            }
-            composable("merchantAddress"){
-                MerchantAddress(navController = navController)
-            }
-            composable("cardPayments"){
-                CardPayments(navController = navController)
-            }
-            composable("merchantCreated"){
-                MerchantCreated(navController = navController)
+            } else {
+                WelcomePage(navController = navController)
             }
         }
+
+        composable("login") {
+            LoginPage(navController = navController)
+        }
+        composable("registration"){
+            RegisterPage(navController = navController)
+        }
+        composable("addingMerchants"){
+            AddingMerchants(navController = navController)
+        }
+        composable("merchantName") {
+            MerchantName(navController = navController)
+        }
+        composable("merchantAddress"){
+            MerchantAddress(navController = navController)
+        }
+        composable("cardPayments"){
+            CardPayments(navController = navController)
+        }
+        composable("merchantCreated"){
+            MerchantCreated(navController = navController)
+        }
+    }
 }
