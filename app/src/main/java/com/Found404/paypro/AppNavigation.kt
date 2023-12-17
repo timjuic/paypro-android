@@ -19,13 +19,13 @@ fun AppNavigation() {
 
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = "merchantName"){
+    NavHost(navController, startDestination = "welcome"){
           val authServiceImpl = AuthServiceImpl()
             composable("welcome") {
                 if (authServiceImpl.isJwtValid(LocalContext.current)) {
-                    WelcomePage(navController = navController)
+                    AddingMerchants(navController = navController)
                 } else {
-                    LoginPage(navController = navController)
+                    WelcomePage(navController = navController)
                 }
             }
 
@@ -33,7 +33,7 @@ fun AppNavigation() {
                 LoginPage(navController = navController)
             }
             composable("registration"){
-                RegisterScreen(navController = navController)
+                RegisterPage(navController = navController)
             }
             composable("addingMerchants"){
                 AddingMerchants(navController = navController)
