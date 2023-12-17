@@ -1,10 +1,15 @@
 package com.found404.core.models
-
+enum class MerchantStatus {
+    Active,
+    Disabled,
+    Pending
+}
 data class Merchant (
     var fullName: String = "",
     var cityName: String = "",
     var streetName: String = "",
     var postCode: Int = 0,
     var streetNumber: Int = 0,
-    var cardTypes: List<String> = listOf("")
+    var cardTypes: List<String> = listOf(""),
+    var status: MerchantStatus = MerchantStatus.Active
 )
