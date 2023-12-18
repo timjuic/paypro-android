@@ -47,11 +47,11 @@ fun AddingTerminal(navController: NavController, mid: Int = 2) {
     var tid by remember { mutableStateOf("") }
     val posTypes = enumValues<TerminalType>().map { it.name }
     var selectedPosType by remember { mutableStateOf( "") }
-    val terminalService = TerminalServiceImpl()
     val coroutineScope = CoroutineScope(Dispatchers.Default)
 
     val validator = TerminalDataValidator();
     val context = LocalContext.current
+    val terminalService = TerminalServiceImpl(context)
 
     Column(
         modifier = Modifier
