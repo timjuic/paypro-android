@@ -1,6 +1,6 @@
-package com.Found404.paypro
+package com.found404.network
 
-data class RegistrationResult(
+data class AddingMerchantsResult(
     val success: Boolean,
     val message: String,
     val errorCode: Int? = null,
