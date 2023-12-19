@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,21 +34,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.Found404.paypro.MerchantService
 import com.Found404.paypro.ui.components.PayProButton
-import com.Found404.paypro.ui.components.TextInput
-import com.Found404.paypro.ui.components.Title
+import com.Found404.paypro.ui.components.PayProTextInput
+import com.Found404.paypro.ui.components.PayProTitle
 import responses.Merchant
 
 @Composable
-fun DisplayListOfMerchant(viewModel: MerchantService){
-
+fun DisplayListOfMerchant(navController: NavController){
+    val merchantService = MerchantService()
     val dataState = remember { mutableStateOf<List<Merchant>>(emptyList())}
     val popupState = remember { mutableStateMapOf<String, Boolean>() }
     var merchantName by remember { mutableStateOf("") }
 
     LaunchedEffect(true){
-        val newMerchants =viewModel.getMerchantForUser("2")
+        val newMerchants =merchantService.getMerchantsForUser("2")
         newMerchants?.let { dataState.value=it
             println("New Merchants: $it")
         }
@@ -67,8 +68,8 @@ fun DisplayListOfMerchant(viewModel: MerchantService){
         verticalArrangement = Arrangement.Top
         )
         {
-            item { 
-                Title(text = "PayPro")
+            item {
+                PayProTitle(text = "PayPro")
             }
         items(merchants){Merchant ->
             Box(modifier = Modifier
@@ -115,7 +116,7 @@ fun DisplayListOfMerchant(viewModel: MerchantService){
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     PopupContent(
-                        merchantName = merchantName,
+                        chosenMerchant = Merchant,
                         onClosePopup = { popupState[Merchant.merchantName] = false }
                     )
                 }
@@ -124,8 +125,9 @@ fun DisplayListOfMerchant(viewModel: MerchantService){
 }
 
 @Composable
-fun PopupContent(merchantName: String, onClosePopup: () -> Unit) {
-    var currentMerchantName by remember { mutableStateOf(merchantName) }
+fun PopupContent(chosenMerchant: Merchant, onClosePopup: () -> Unit) {
+    var currentMerchantName by remember { mutableStateOf(chosenMerchant.merchantName) }
+
 
         Box(
             modifier = Modifier
@@ -146,12 +148,12 @@ fun PopupContent(merchantName: String, onClosePopup: () -> Unit) {
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
-                TextInput(
-                    value = currentMerchantName,
+                PayProTextInput(
+                    value = "",
                     onValueChange = { newValue -> currentMerchantName = newValue }
                 )
                 PayProButton(
-                    text = "Delete", onClick = {
+                    text = "Delete", onClick =  {
                         onClosePopup()
                     },
                     buttonColor = Color.Red
@@ -160,9 +162,6 @@ fun PopupContent(merchantName: String, onClosePopup: () -> Unit) {
         }
     }
 
-@Preview
-@Composable
-fun DisplayingListOfMerchantPreview() {
-    DisplayListOfMerchant(viewModel = MerchantService())
-}
+
+
 
