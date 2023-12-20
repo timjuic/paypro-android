@@ -25,8 +25,9 @@ fun AppNavigation(onGoogleSignIn: () -> Unit) {
 
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = "welcome") {
-        val authServiceImpl = AuthServiceImpl()
+    NavHost(navController, startDestination = "welcome"){
+        val authServiceImpl = createAuthService("http://158.220.113.254:8086")
+
         composable("welcome") {
             val context = LocalContext.current
             var isJwtValid by remember {

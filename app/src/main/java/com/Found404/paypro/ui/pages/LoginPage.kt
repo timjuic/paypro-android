@@ -21,7 +21,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.Found404.paypro.AuthServiceImpl
+import com.Found404.paypro.createAuthService
 import com.Found404.paypro.ui.components.PayProButton
 import com.Found404.paypro.ui.components.PayProHeadline
 import com.Found404.paypro.ui.components.PayProLabeledTextInput
@@ -33,7 +33,7 @@ fun LoginPage(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    val authService = AuthServiceImpl()
+    val authService = createAuthService("http://158.220.113.254:8086")
 
     val coroutineScope = rememberCoroutineScope()
     var loginErrorMessage by remember { mutableStateOf<String?>(null) }
@@ -67,7 +67,7 @@ fun LoginPage(navController: NavController) {
             text = "Login",
             onClick = {
                 coroutineScope.launch {
-                    val loginResult = authService.loginUser(email, password, context)
+                    val loginResult = authService.loginUser("/api/auth/login", email, password, context)
                     println(loginResult.success.toString() + " " + loginResult.data)
 
                     if (loginResult.success) {

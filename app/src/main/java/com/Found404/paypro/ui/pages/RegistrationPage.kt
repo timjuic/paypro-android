@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.Found404.paypro.R
 import com.Found404.paypro.responses.RegistrationResponse
-import com.Found404.paypro.AuthServiceImpl
+import com.Found404.paypro.createAuthService
 import com.Found404.paypro.ui.components.PayProLabeledTextInput
 import com.Found404.paypro.ui.components.PayProButton
 import com.Found404.paypro.ui.components.PayProHeadline
@@ -50,8 +50,8 @@ fun RegisterPage(navController: NavController) {
     var firstName by remember { mutableStateOf("")}
     var lastName by remember { mutableStateOf("")}
 
-    val registrationService = AuthServiceImpl()
-    val authValidator = registrationService.validator
+    val authService = createAuthService("http://158.220.113.254:8086")
+    val authValidator = authService.validator
 
     var registrationResponse by remember { mutableStateOf<RegistrationResponse?>(null) }
 
@@ -118,7 +118,7 @@ fun RegisterPage(navController: NavController) {
                 }
 
                 coroutineScope.launch {
-                    registrationResponse = registrationService.registerUser(firstName, lastName, email, password)
+                    registrationResponse = authService.registerUser("/api/auth/register", firstName, lastName, email, password)
 
                     withContext(Dispatchers.Main) {
                         if (registrationResponse == null) {
