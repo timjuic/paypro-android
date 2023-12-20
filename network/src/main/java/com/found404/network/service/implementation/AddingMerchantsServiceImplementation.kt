@@ -1,5 +1,7 @@
 package com.found404.network.service.implementation
 
+import android.content.Context
+import com.Found404.paypro.AuthServiceImpl
 import com.found404.network.result.AddingMerchantsResult
 import com.found404.network.service.AddingMerchantService
 import com.google.gson.Gson
@@ -14,7 +16,10 @@ class AddingMerchantsServiceImplementation : AddingMerchantService {
     private val gson = Gson()
     private val client = OkHttpClient()
 
+    private val authService = AuthServiceImpl()
+
     override suspend fun addMerchant(
+        context: Context,
         merchantName: String,
         merchantStreetName: String,
         merchantCityName: String,
@@ -23,6 +28,8 @@ class AddingMerchantsServiceImplementation : AddingMerchantService {
         acceptedCards: List<String>,
         status: String
     ): AddingMerchantsResult = withContext(Dispatchers.IO) {
+
+
 
         val requestBody = gson.toJson(
             mapOf(
@@ -50,7 +57,8 @@ class AddingMerchantsServiceImplementation : AddingMerchantService {
                 "status" to status
             )
         ).toString())
-        val jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXRpamFrbGphaWNAZ21haWwuY29tIiwiZXhwIjoxNzAyNzM5MTAxLCJpYXQiOjE3MDI3MzczMDEsImlzX2FkbWluIjpmYWxzZSwibGFzdF9uYW1lIjoiS2xqYWljIiwiaWQiOiIyNiIsImZpcnN0X25hbWUiOiJNYXRpamEifQ.INvzWktskeYNqvxTH-y7Gs7gzAc17ejsamv2Vij9Tp4"
+
+        val jwtToken = authService.getAuthToken(context)
         val request = Request.Builder()
             .url("http://158.220.113.254:8086/api/merchant")
             .header("Authorization", "Bearer $jwtToken")

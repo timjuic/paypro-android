@@ -68,7 +68,7 @@ fun CardPayments(
 
     LaunchedEffect(key1 = true) {
         coroutineScope.launch {
-            cardTypes = creditCardsService.getCreditCardTypes() ?: emptyList()
+            cardTypes = creditCardsService.getCreditCardTypes(context) ?: emptyList()
         }
     }
 
@@ -145,6 +145,7 @@ fun CardPayments(
                             cardTypes.filter { it.name in merchantModel.cardTypes }.map { it.name }
 
                         addingMerchantsResult = addingMerchantsService.addMerchant(
+                            context,
                             sharedPreferencesManager.merchantData.fullName,
                             sharedPreferencesManager.merchantData.streetName,
                             sharedPreferencesManager.merchantData.cityName,

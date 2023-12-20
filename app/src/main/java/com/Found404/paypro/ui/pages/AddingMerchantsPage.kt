@@ -62,28 +62,6 @@ fun AddingMerchants(
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
             }
-            Button(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(
-                        horizontal = 20.dp,
-                        vertical = 20.dp)
-                    .size(
-                        width = 130.dp,
-                        height = 60.dp),
-                onClick = {
-                    navController.navigate("merchantCreated")
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Gray
-                )
-            ) {
-                Text(text = "Cancel",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
         }
     }
 }
