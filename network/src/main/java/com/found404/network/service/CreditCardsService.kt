@@ -1,4 +1,4 @@
-package com.found404.network
+package com.found404.network.service
 
 import com.found404.core.models.CreditCardType
 import com.google.gson.Gson

@@ -10,6 +10,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.Found404.paypro.R
@@ -18,6 +19,7 @@ import com.Found404.paypro.R
 fun PayProTitle(
     text: String,
     modifier: Modifier = Modifier,
+    fontSize: TextUnit = 20.sp
 ) {
     val customFontFamily = FontFamily(
         Font(R.font.montserrat_bold, FontWeight.Bold),
@@ -25,7 +27,7 @@ fun PayProTitle(
 
     Text(
         text = text,
-        fontSize = 20.sp,
+        fontSize = fontSize,
         fontWeight = FontWeight.Bold,
         style = MaterialTheme.typography.titleMedium,
         textAlign = TextAlign.Left,
