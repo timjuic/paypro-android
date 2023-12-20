@@ -1,4 +1,4 @@
-package com.found404.network
+package com.found404.network.result
 
 data class AddingMerchantsResult(
     val success: Boolean,

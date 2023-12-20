@@ -1,5 +1,7 @@
-package com.found404.network
+package com.found404.network.service.implementation
 
+import com.found404.network.result.AddingMerchantsResult
+import com.found404.network.service.AddingMerchantService
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -8,7 +10,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class AddingMerchantsServiceImplementation : AddingMerchantService{
+class AddingMerchantsServiceImplementation : AddingMerchantService {
     private val gson = Gson()
     private val client = OkHttpClient()
 
@@ -20,7 +22,7 @@ class AddingMerchantsServiceImplementation : AddingMerchantService{
         merchantStreetNumber: Int,
         acceptedCards: List<String>,
         status: String
-    ): AddingMerchantsResult  = withContext(Dispatchers.IO) {
+    ): AddingMerchantsResult = withContext(Dispatchers.IO) {
 
         val requestBody = gson.toJson(
             mapOf(

@@ -36,9 +36,9 @@ import com.found404.core.models.CreditCardType
 import com.found404.core.models.Merchant
 import com.found404.core.models.MerchantViewModel
 import com.found404.core.models.SharedPreferencesManager
-import com.found404.network.AddingMerchantsResult
-import com.found404.network.AddingMerchantsServiceImplementation
-import com.found404.network.CreditCardsService
+import com.found404.network.result.AddingMerchantsResult
+import com.found404.network.service.implementation.AddingMerchantsServiceImplementation
+import com.found404.network.service.CreditCardsService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
