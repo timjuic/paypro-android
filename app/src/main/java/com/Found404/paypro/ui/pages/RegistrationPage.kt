@@ -165,7 +165,7 @@ fun RegisterPage(navController: NavController) {
 
         TextButton(
             onClick = {
-
+                navController.navigate("login")
             },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
