@@ -28,7 +28,7 @@ import com.Found404.paypro.ui.components.PayProHeadline
 
 
 @Composable
-fun WelcomePage(navController: NavController) {
+fun WelcomePage(navController: NavController, onGoogleSignIn: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -45,7 +45,7 @@ fun WelcomePage(navController: NavController) {
 
         PayProButton(
             text = "Google Sign Up",
-            onClick = { /* TODO */ },
+            onClick = onGoogleSignIn,
             leadingIcon = ImageVector.vectorResource(id = R.drawable.ic_google),
             buttonColor = Color.Transparent,
             textColor = Color.Black
