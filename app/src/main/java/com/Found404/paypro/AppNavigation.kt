@@ -25,7 +25,7 @@ fun AppNavigation() {
     val navController = rememberNavController()
 
     NavHost(navController, startDestination = "welcome"){
-        val authServiceImpl = AuthServiceImpl()
+        val authServiceImpl = createAuthService("http://158.220.113.254:8086")
         composable("welcome") {
             val context = LocalContext.current
             var isJwtValid by remember {
