@@ -25,7 +25,7 @@ class AddingMerchantsServiceImplementation : AddingMerchantService {
         merchantCityName: String,
         merchantPostCode: Int,
         merchantStreetNumber: Int,
-        acceptedCards: List<String>,
+        acceptedCards: List<Map<String, Any>>,
         status: String
     ): AddingMerchantsResult = withContext(Dispatchers.IO) {
 
@@ -41,9 +41,9 @@ class AddingMerchantsServiceImplementation : AddingMerchantService {
                     "postalCode" to merchantPostCode.toString()
                 ),
                 "acceptedCards" to acceptedCards,
-                "status" to status
+                "status" to mapOf("statusId" to 1, "statusName" to "Active")
             )
-        ).toString().toRequestBody("application/json".toMediaType())
+        ).toRequestBody("application/json".toMediaType())
         println("requestbody " + gson.toJson(
             mapOf(
                 "merchantName" to merchantName,
@@ -54,7 +54,7 @@ class AddingMerchantsServiceImplementation : AddingMerchantService {
                     "postalCode" to merchantPostCode.toString()
                 ),
                 "acceptedCards" to acceptedCards,
-                "status" to status
+                "status" to mapOf("statusId" to 1, "statusName" to "Active")
             )
         ).toString())
 

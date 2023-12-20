@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.found404.core.models.CardBrandType
 import com.found404.core.models.CreditCardType
 import com.found404.core.models.Merchant
 import com.found404.core.models.MerchantViewModel
@@ -62,13 +63,24 @@ fun CardPayments(
         mutableStateOf<AddingMerchantsResult?>(null)
     }
 
-    var cardTypes by remember { mutableStateOf<List<CreditCardType>>(emptyList()) }
+    var cardTypes: List<CreditCardType> by remember { mutableStateOf(emptyList()) }
 
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = true) {
         coroutineScope.launch {
-            cardTypes = creditCardsService.getCreditCardTypes(context) ?: emptyList()
+            try {
+                val retrievedCardTypes = creditCardsService.getCreditCardTypes(context)
+                print("retrievedCardTypes " + retrievedCardTypes)
+                if (retrievedCardTypes != null && retrievedCardTypes.isNotEmpty()) {
+                    cardTypes = retrievedCardTypes
+                } else {
+                    println("Dohvaćanje tipova kartica nije uspjelo.")
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                println("Greška prilikom dohvaćanja tipova kartica.")
+            }
         }
     }
 
@@ -93,22 +105,21 @@ fun CardPayments(
         )
         println("Card Types: $cardTypes")
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            for (cardType in cardTypes) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            cardTypes.forEach { cardType ->
+                var isChecked by remember { mutableStateOf(false) }
                 CreateRow(
-                    cardNameParam = cardType.name,
-                    cardTypeParam = merchantModel.cardTypes.contains(cardType.name)
-                ) {
-                    merchantModel = if (merchantModel.cardTypes.contains(cardType.name)) {
-                        merchantModel.copy(cardTypes = merchantModel.cardTypes - cardType.name)
+                    cardName = cardType.name,
+                    cardId = cardType.cardBrandId,
+                    isChecked = isChecked
+                ) { checked ->
+                    isChecked = checked
+                    merchantModel = if (isChecked) {
+                        merchantModel.copy(cardTypes = merchantModel.cardTypes + CardBrandType.values().first { it.cardBrandId == cardType.cardBrandId })
                     } else {
-                        merchantModel.copy(cardTypes = merchantModel.cardTypes + cardType.name)
+                        merchantModel.copy(cardTypes = merchantModel.cardTypes - CardBrandType.values().first { it.cardBrandId == cardType.cardBrandId })
                     }
-                    atLeastOneChecked =
-                        cardTypes.any { type -> merchantModel.cardTypes.contains(type.name) }
+                    atLeastOneChecked = merchantModel.cardTypes.isNotEmpty()
                 }
             }
         }
@@ -141,24 +152,29 @@ fun CardPayments(
             Button(
                 onClick = {
                     coroutineScope.launch {
-                        val selectedCards =
-                            cardTypes.filter { it.name in merchantModel.cardTypes }.map { it.name }
+                        val selectedCards = cardTypes.filter { cardType ->
+                            merchantModel.cardTypes.any { it.cardBrandId == cardType.cardBrandId }
+                        }.map { cardType ->
+                            mapOf("cardBrandId" to cardType.cardBrandId, "name" to cardType.name)
+                        }
 
-                        addingMerchantsResult = addingMerchantsService.addMerchant(
-                            context,
-                            sharedPreferencesManager.merchantData.fullName,
-                            sharedPreferencesManager.merchantData.streetName,
-                            sharedPreferencesManager.merchantData.cityName,
-                            sharedPreferencesManager.merchantData.postCode,
-                            sharedPreferencesManager.merchantData.streetNumber,
-                            selectedCards,
-                            defaultStatus
-                        )
-                        println(
-                            "adding merchants result " + addingMerchantsResult!!.success + " " + addingMerchantsResult!!.errorMessage + " " + addingMerchantsResult!!.message + " "
-                        )
-                        withContext(Dispatchers.Main) {
-                            if (addingMerchantsResult == null) {
+                        if (selectedCards.isNotEmpty()) {
+                            addingMerchantsResult = addingMerchantsService.addMerchant(
+                                context,
+                                sharedPreferencesManager.merchantData.fullName,
+                                sharedPreferencesManager.merchantData.streetName,
+                                sharedPreferencesManager.merchantData.cityName,
+                                sharedPreferencesManager.merchantData.postCode,
+                                sharedPreferencesManager.merchantData.streetNumber,
+                                selectedCards,
+                                defaultStatus
+                            )
+                            println(
+                                "adding merchants result " + addingMerchantsResult!!.success + " " + addingMerchantsResult!!.errorMessage + " " + addingMerchantsResult!!.message + " "
+
+                            )
+                        } else {
+                            withContext(Dispatchers.Main) {
                                 showErrorMessage = true
                                 Toast.makeText(
                                     context,
@@ -198,19 +214,19 @@ fun CardPayments(
 }
 
 @Composable
-fun CreateRow(cardNameParam: String, cardTypeParam: Boolean, onCheckedChange: (Boolean) -> Unit) {
+fun CreateRow(cardName: String, cardId: Int, isChecked: Boolean, onCheckedChange: (Boolean) -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(vertical = 8.dp)
     ) {
         Checkbox(
-            checked = cardTypeParam,
+            checked = isChecked,
             onCheckedChange = {
                 onCheckedChange(it)
             }
         )
         Text(
-            text = cardNameParam,
+            text = cardName,
             modifier = Modifier.padding(start = 8.dp)
         )
     }

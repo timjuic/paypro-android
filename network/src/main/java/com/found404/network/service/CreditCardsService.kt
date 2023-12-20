@@ -29,7 +29,7 @@ class CreditCardsService {
         return@withContext try {
             val response = client.newCall(request).execute()
             val responseBody = response.body?.string()
-
+            println("responseBody " + responseBody)
             val type = object : TypeToken<ApiResponse<List<CreditCardType>>>() {}.type
 
             val result = gson.fromJson<ApiResponse<List<CreditCardType>>>(responseBody, type)
