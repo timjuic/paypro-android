@@ -32,7 +32,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.found404.core.models.CardBrandType
 import com.found404.core.models.CreditCardType
 import com.found404.core.models.Merchant
 import com.found404.core.models.MerchantViewModel
@@ -114,10 +113,10 @@ fun CardPayments(
                     isChecked = isChecked
                 ) { checked ->
                     isChecked = checked
-                    merchantModel = if (isChecked) {
-                        merchantModel.copy(cardTypes = merchantModel.cardTypes + CardBrandType.values().first { it.cardBrandId == cardType.cardBrandId })
+                    if (isChecked) {
+                        merchantModel.cardTypes = merchantModel.cardTypes + cardType
                     } else {
-                        merchantModel.copy(cardTypes = merchantModel.cardTypes - CardBrandType.values().first { it.cardBrandId == cardType.cardBrandId })
+                        merchantModel.cardTypes = merchantModel.cardTypes - cardType
                     }
                     atLeastOneChecked = merchantModel.cardTypes.isNotEmpty()
                 }
@@ -152,9 +151,7 @@ fun CardPayments(
             Button(
                 onClick = {
                     coroutineScope.launch {
-                        val selectedCards = cardTypes.filter { cardType ->
-                            merchantModel.cardTypes.any { it.cardBrandId == cardType.cardBrandId }
-                        }.map { cardType ->
+                        val selectedCards = merchantModel.cardTypes.map { cardType ->
                             mapOf("cardBrandId" to cardType.cardBrandId, "name" to cardType.name)
                         }
 

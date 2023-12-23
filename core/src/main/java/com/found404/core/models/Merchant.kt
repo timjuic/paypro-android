@@ -10,6 +10,6 @@ data class Merchant (
     var streetName: String = "",
     var postCode: Int = 0,
     var streetNumber: Int = 0,
-    var cardTypes: List<CardBrandType> = emptyList(),
+    var cardTypes: List<CreditCardType> = emptyList(),
     var status: StatusType = StatusType.ACTIVE
 )
