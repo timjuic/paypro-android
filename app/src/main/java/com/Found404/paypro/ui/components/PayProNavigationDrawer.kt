@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Home
@@ -33,13 +33,23 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.Found404.paypro.AuthServiceImpl
+import com.Found404.paypro.R
 import kotlinx.coroutines.launch
+
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PayProNavigationDrawer() {
+fun PayProNavigationDrawer(
+    navController: NavController
+) {
+    val context = LocalContext.current
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -52,8 +62,19 @@ fun PayProNavigationDrawer() {
             ),
             NavigationItem(
                 title = "Logout",
-                selectedIcon = Icons.Filled.ArrowBack,
-                unselectedIcon = Icons.Filled.ArrowBack,
+                selectedIcon = ImageVector.vectorResource(R.drawable.ic_logout),
+                unselectedIcon = ImageVector.vectorResource(R.drawable.ic_logout),
+                onClick = {
+                    AuthServiceImpl.logoutUser(context)
+
+                    navController.navigate("welcome") {
+                        popUpTo("welcome") {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
             )
         )
 
@@ -73,10 +94,15 @@ fun PayProNavigationDrawer() {
                             },
                             selected = index == selectedItemIndex,
                             onClick = {
-//                                            navController.navigate(item.route)
                                 selectedItemIndex = index
                                 scope.launch {
                                     drawerState.close()
+
+                                    item.onClick?.invoke() ?: item.route?.let {
+                                        navController.navigate(
+                                            it
+                                        )
+                                    }
                                 }
                             },
                             icon = {
@@ -114,7 +140,8 @@ fun PayProNavigationDrawer() {
                             }) {
                                 Icon(
                                     imageVector = Icons.Default.Menu,
-                                    contentDescription = "Menu"
+                                    contentDescription = "Menu",
+                                    modifier = Modifier.size(35.dp)
                                 )
                             }
                         }
@@ -132,5 +159,7 @@ data class NavigationItem(
     val title: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
-    val badgeCount: Int? = null
+    val badgeCount: Int? = null,
+    val route: String? = "welcome",
+    val onClick: (() -> Unit)? = null
 )

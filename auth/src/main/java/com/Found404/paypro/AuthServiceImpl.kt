@@ -118,6 +118,19 @@ class AuthServiceImpl(
         }
     }
 
+    companion object {
+        fun logoutUser(context: Context) {
+            val sharedPreferences = context.getSharedPreferences("user_info", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+
+            editor.remove("user_id")
+            editor.remove("user_email")
+            editor.remove("jwt_token")
+            editor.remove("refresh_token")
+
+            editor.apply()
+        }
+    }
 
     private fun getLoggedInUser(context: Context): UserData {
         val sharedPreferences = context.getSharedPreferences("user_info", Context.MODE_PRIVATE)

@@ -22,7 +22,7 @@ fun AddingMerchants(
     navController: NavController
 ) {
 
-    PayProNavigationDrawer()
+    PayProNavigationDrawer(navController)
 
     Box(modifier = Modifier.fillMaxSize()){
         FloatingActionButton(
