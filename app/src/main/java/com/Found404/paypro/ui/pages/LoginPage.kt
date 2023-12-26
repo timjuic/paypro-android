@@ -68,14 +68,16 @@ fun LoginPage(navController: NavController) {
             onClick = {
                 coroutineScope.launch {
                     val loginResult = authService.loginUser("/api/auth/login", email, password, context)
-                    println(loginResult.success.toString() + " " + loginResult.data)
 
                     if (loginResult.success) {
 
-                        navController.navigate("addingMerchants")
+                        navController.navigate("addingMerchants") {
+                            popUpTo("welcome") {
+                                inclusive = true
+                            }
+                        }
                     } else {
                         loginErrorMessage = loginResult.message ?: "Invalid Credentials!"
-                        println("ERROR" + loginErrorMessage)
                     }
                 }
             },
