@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.Found404.paypro.ui.components.PayProNavigationDrawer
 
@@ -29,7 +30,8 @@ fun AddingMerchants(
             modifier = Modifier
                 .padding(16.dp)
                 .size(56.dp)
-                .align(Alignment.BottomEnd),
+                .align(Alignment.BottomEnd)
+                .zIndex(0f),
             onClick = {
                 navController.navigate("merchantName")
             },
