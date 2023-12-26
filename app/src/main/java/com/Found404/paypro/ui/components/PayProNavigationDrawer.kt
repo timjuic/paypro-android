@@ -83,11 +83,9 @@ fun PayProNavigationDrawer(
                     AuthServiceImpl.logoutUser(context)
 
                     navController.navigate("welcome") {
-                        popUpTo("welcome") {
+                        popUpTo("addingMerchants") {
                             inclusive = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
                     }
                 }
             )
