@@ -1,8 +1,8 @@
 package com.found404.network.service
 
 import android.content.Context
-import com.Found404.paypro.AuthServiceImpl
 import com.found404.core.models.CreditCardType
+import com.found404.createAuthService
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +14,7 @@ import responses.ApiResponse
 class CreditCardsService {
     private val gson = Gson()
     private val client = OkHttpClient()
-    private val authService = AuthServiceImpl()
+    private val authService = createAuthService("http://158.220.113.254:8086")
 
     suspend fun getCreditCardTypes(context: Context): List<CreditCardType>? = withContext(Dispatchers.IO) {
         val url = "http://158.220.113.254:8086/api/card-brands"
