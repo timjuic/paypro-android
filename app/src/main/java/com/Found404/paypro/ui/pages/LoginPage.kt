@@ -17,10 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.Found404.paypro.AuthServiceImpl
+import com.Found404.paypro.createAuthService
 import com.Found404.paypro.ui.components.PayProButton
 import com.Found404.paypro.ui.components.PayProHeadline
 import com.Found404.paypro.ui.components.PayProLabeledTextInput
@@ -32,7 +33,7 @@ fun LoginPage(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    val authService = AuthServiceImpl()
+    val authService = createAuthService("http://158.220.113.254:8086")
 
     val coroutineScope = rememberCoroutineScope()
     var loginErrorMessage by remember { mutableStateOf<String?>(null) }
@@ -57,6 +58,7 @@ fun LoginPage(navController: NavController) {
             label = "Password",
             value = password,
             onValueChange = { newPassword -> password = newPassword },
+            visualTransformation = PasswordVisualTransformation()
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -65,15 +67,17 @@ fun LoginPage(navController: NavController) {
             text = "Login",
             onClick = {
                 coroutineScope.launch {
-                    val loginResult = authService.loginUser(email, password, context)
-                    println(loginResult.success.toString() + " " + loginResult.data)
+                    val loginResult = authService.loginUser("/api/auth/login", email, password, context)
 
                     if (loginResult.success) {
 
-                        navController.navigate("addingMerchants")
+                        navController.navigate("addingMerchants") {
+                            popUpTo("welcome") {
+                                inclusive = true
+                            }
+                        }
                     } else {
                         loginErrorMessage = loginResult.message ?: "Invalid Credentials!"
-                        println("ERROR" + loginErrorMessage)
                     }
                 }
             },

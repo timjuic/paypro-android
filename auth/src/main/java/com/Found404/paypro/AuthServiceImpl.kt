@@ -17,12 +17,15 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
-class AuthServiceImpl : AuthService {
+class AuthServiceImpl(
+    private val authConfig: AuthConfig
+) : AuthService {
     val validator: AuthValidator = AuthValidator()
     private val gson = Gson()
     private val client = OkHttpClient()
 
     override suspend fun registerUser(
+        endpointPath: String,
         firstName: String,
         lastName: String,
         email: String,
@@ -45,7 +48,7 @@ class AuthServiceImpl : AuthService {
         ).toString().toRequestBody("application/json".toMediaType())
 
         val request = Request.Builder()
-            .url("http://158.220.113.254:8086/api/auth/register")
+            .url("${authConfig.baseUrl}${endpointPath}")
             .post(requestBody)
             .build()
 
@@ -58,7 +61,13 @@ class AuthServiceImpl : AuthService {
         }
     }
 
-    override suspend fun loginUser(email: String, password: String, context: Context): LoginResponse = withContext(Dispatchers.IO) {
+
+    override suspend fun loginUser(
+        endpointPath: String,
+        email: String,
+        password: String,
+        context: Context
+    ): LoginResponse = withContext(Dispatchers.IO) {
         val hashedPassword = AuthUtils.hashPassword(password)
 
         val requestBody = gson.toJson(
@@ -69,7 +78,7 @@ class AuthServiceImpl : AuthService {
         ).toString().toRequestBody("application/json".toMediaType())
 
         val request = Request.Builder()
-            .url("http://158.220.113.254:8086/api/auth/login")
+            .url("${authConfig.baseUrl}${endpointPath}")
             .post(requestBody)
             .build()
 
@@ -87,6 +96,7 @@ class AuthServiceImpl : AuthService {
         }
     }
 
+
     private fun saveLoggedInUser(loginData: LoginData?, context: Context) {
         loginData?.let { data ->
             val jwtToken = data.accessToken
@@ -95,6 +105,8 @@ class AuthServiceImpl : AuthService {
             val jwtParser = JWT.decode(jwtToken)
             val userId = jwtParser.claims["id"]?.asString()
             val userEmail = jwtParser.claims["sub"]?.asString()
+            val firstName = jwtParser.claims["first_name"]?.asString()
+            val lastName = jwtParser.claims["last_name"]?.asString()
 
             val sharedPreferences = context.getSharedPreferences("user_info", Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
@@ -103,31 +115,53 @@ class AuthServiceImpl : AuthService {
             editor.putString("user_email", userEmail)
             editor.putString("jwt_token", jwtToken)
             editor.putString("refresh_token", refreshToken)
+            editor.putString("first_name", firstName)
+            editor.putString("last_name", lastName)
 
             editor.apply()
         }
     }
 
-    private fun getLoggedInUser(context: Context): UserData {
-        val sharedPreferences = context.getSharedPreferences("user_info", Context.MODE_PRIVATE)
+    companion object {
+        fun logoutUser(context: Context) {
+            val sharedPreferences = context.getSharedPreferences("user_info", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
 
-        val userId = sharedPreferences.getString("user_id", null)
-        val userEmail = sharedPreferences.getString("user_email", null)
-        val jwtToken = sharedPreferences.getString("jwt_token", null)
-        val refreshToken = sharedPreferences.getString("refresh_token", null)
+            editor.remove("user_id")
+            editor.remove("first_name")
+            editor.remove("last_name")
+            editor.remove("user_email")
+            editor.remove("jwt_token")
+            editor.remove("refresh_token")
 
-        return UserData(userId, userEmail, jwtToken, refreshToken)
+            editor.apply()
+        }
+
+        fun getLoggedInUser(context: Context): UserData {
+            val sharedPreferences = context.getSharedPreferences("user_info", Context.MODE_PRIVATE)
+
+            val userId = sharedPreferences.getString("user_id", null)
+            val firstName = sharedPreferences.getString("first_name", null)
+            val lastName = sharedPreferences.getString("last_name", null)
+            val userEmail = sharedPreferences.getString("user_email", null)
+            val jwtToken = sharedPreferences.getString("jwt_token", null)
+            val refreshToken = sharedPreferences.getString("refresh_token", null)
+
+            return UserData(userId, firstName, lastName, userEmail, jwtToken, refreshToken)
+        }
     }
+
 
     fun getAuthToken(context: Context): String? {
         val loggedInUser = getLoggedInUser(context)
         return loggedInUser.jwtToken
     }
 
+
     suspend fun isJwtValid(context: Context): Boolean {
         val userData = getLoggedInUser(context)
 
-        if (userData.userId == null || userData.userEmail == null || userData.refreshToken == null) {
+        if (userData.userId == null || userData.email == null || userData.refreshToken == null) {
             return false
         }
 
@@ -142,7 +176,7 @@ class AuthServiceImpl : AuthService {
                     true
                 } else {
                     // Access token is expired, try to refresh it
-                    val refreshedToken = refreshAccessToken(userData.refreshToken)
+                    val refreshedToken = refreshAccessToken("/api/auth/refresh-token", userData.refreshToken)
                     if (refreshedToken != null) {
                         // Save the refreshed access token
                         saveAccessToken(refreshedToken, context)
@@ -167,16 +201,11 @@ class AuthServiceImpl : AuthService {
     }
 
 
-    private suspend fun refreshAccessToken(refreshToken: String): String? = withContext(Dispatchers.IO) {
-        println("REFRESHTOKEN CALLED")
-        val url = "http://158.220.113.254:8086/api/auth/refresh-token"
+    override suspend fun refreshAccessToken(endpointPath: String, refreshToken: String): String? = withContext(Dispatchers.IO) {
+        val url = "${authConfig.baseUrl}${endpointPath}"
         val requestBody = FormBody.Builder()
             .add("refreshToken", refreshToken)
             .build()
-
-        println("REFRESH TOKEN" + refreshToken)
-
-        var refreshToken1 = refreshToken
 
         val request = Request.Builder()
             .url(url)
@@ -185,7 +214,6 @@ class AuthServiceImpl : AuthService {
 
         try {
             val response = client.newCall(request).execute()
-            println(response.message + response.body)
 
             if (response.isSuccessful) {
                 val responseBody = response.body?.string()
@@ -197,5 +225,4 @@ class AuthServiceImpl : AuthService {
             null
         }
     }
-
 }
