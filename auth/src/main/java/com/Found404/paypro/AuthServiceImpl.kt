@@ -105,6 +105,8 @@ class AuthServiceImpl(
             val jwtParser = JWT.decode(jwtToken)
             val userId = jwtParser.claims["id"]?.asString()
             val userEmail = jwtParser.claims["sub"]?.asString()
+            val firstName = jwtParser.claims["first_name"]?.asString()
+            val lastName = jwtParser.claims["last_name"]?.asString()
 
             val sharedPreferences = context.getSharedPreferences("user_info", Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
@@ -113,21 +115,40 @@ class AuthServiceImpl(
             editor.putString("user_email", userEmail)
             editor.putString("jwt_token", jwtToken)
             editor.putString("refresh_token", refreshToken)
+            editor.putString("first_name", firstName)
+            editor.putString("last_name", lastName)
 
             editor.apply()
         }
     }
 
+    companion object {
+        fun logoutUser(context: Context) {
+            val sharedPreferences = context.getSharedPreferences("user_info", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
 
-    private fun getLoggedInUser(context: Context): UserData {
-        val sharedPreferences = context.getSharedPreferences("user_info", Context.MODE_PRIVATE)
+            editor.remove("user_id")
+            editor.remove("first_name")
+            editor.remove("last_name")
+            editor.remove("user_email")
+            editor.remove("jwt_token")
+            editor.remove("refresh_token")
 
-        val userId = sharedPreferences.getString("user_id", null)
-        val userEmail = sharedPreferences.getString("user_email", null)
-        val jwtToken = sharedPreferences.getString("jwt_token", null)
-        val refreshToken = sharedPreferences.getString("refresh_token", null)
+            editor.apply()
+        }
 
-        return UserData(userId, userEmail, jwtToken, refreshToken)
+        fun getLoggedInUser(context: Context): UserData {
+            val sharedPreferences = context.getSharedPreferences("user_info", Context.MODE_PRIVATE)
+
+            val userId = sharedPreferences.getString("user_id", null)
+            val firstName = sharedPreferences.getString("first_name", null)
+            val lastName = sharedPreferences.getString("last_name", null)
+            val userEmail = sharedPreferences.getString("user_email", null)
+            val jwtToken = sharedPreferences.getString("jwt_token", null)
+            val refreshToken = sharedPreferences.getString("refresh_token", null)
+
+            return UserData(userId, firstName, lastName, userEmail, jwtToken, refreshToken)
+        }
     }
 
 
@@ -140,7 +161,7 @@ class AuthServiceImpl(
     suspend fun isJwtValid(context: Context): Boolean {
         val userData = getLoggedInUser(context)
 
-        if (userData.userId == null || userData.userEmail == null || userData.refreshToken == null) {
+        if (userData.userId == null || userData.email == null || userData.refreshToken == null) {
             return false
         }
 
