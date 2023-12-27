@@ -19,6 +19,7 @@ import com.Found404.paypro.ui.pages.MerchantCreated
 import com.Found404.paypro.ui.pages.MerchantName
 import com.Found404.paypro.ui.pages.RegisterPage
 import com.Found404.paypro.ui.pages.WelcomePage
+import com.found404.network.service.MerchantService
 
 @Composable
 fun AppNavigation(onGoogleSignIn: () -> Unit) {
@@ -39,7 +40,7 @@ fun AppNavigation(onGoogleSignIn: () -> Unit) {
             }
 
             if (isJwtValid == true) {
-                AddingMerchants(navController = navController)
+                AddingMerchants(navController = navController, merchantService = MerchantService())
             } else {
                 WelcomePage(navController = navController, onGoogleSignIn = onGoogleSignIn)
             }
@@ -52,7 +53,7 @@ fun AppNavigation(onGoogleSignIn: () -> Unit) {
             RegisterPage(navController = navController)
         }
         composable("addingMerchants") {
-            AddingMerchants(navController = navController)
+            AddingMerchants(navController = navController, merchantService = MerchantService())
         }
         composable("merchantName") {
             MerchantName(navController = navController)
