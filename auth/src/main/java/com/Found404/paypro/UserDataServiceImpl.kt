@@ -62,4 +62,11 @@ class UserDataServiceImpl : UserDataService {
         val loggedInUser = this.getLoggedInUser(context)
         return loggedInUser.jwtToken
     }
+
+    override fun saveAccessToken(accessToken: String, context: Context) {
+        val sharedPreferences = context.getSharedPreferences("user_info", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("jwt_token", accessToken)
+        editor.apply()
+    }
 }

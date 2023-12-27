@@ -11,4 +11,6 @@ interface UserDataService {
     fun logoutUser(context: Context)
 
     fun getAuthToken(context: Context): String?
+
+    fun saveAccessToken(accessToken: String, context: Context)
 }
