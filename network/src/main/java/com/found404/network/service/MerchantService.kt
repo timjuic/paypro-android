@@ -24,6 +24,7 @@ class MerchantService {
     suspend fun getMerchantsForUser(context: Context): List<MerchantResponse>? = withContext(Dispatchers.IO) {
         val user = AuthServiceImpl.getLoggedInUser(context)
         val userID = user.userId
+        println("userid  " + userID)
         val url = "http://158.220.113.254:8086/api/merchant/$userID"
         val jwtToken = authService.getAuthToken(context)
 
@@ -76,6 +77,31 @@ class MerchantService {
             val type = object : TypeToken<List<Terminal>>() {}.type
             gson.fromJson(responseBody, type)
         } catch (e: Exception) {
+            null
+        }
+    }
+
+    suspend fun deleteTerminal(merchantId: Int, terminalId: String, context: Context): ApiResponse<Unit>? = withContext(Dispatchers.IO) {
+        val url = "http://158.220.113.254:8086/api/merchant/$merchantId/terminal/$terminalId"
+        val jwtToken = authService.getAuthToken(context)
+
+        val request = Request.Builder()
+            .url(url)
+            .header("Authorization", "Bearer $jwtToken")
+            .delete()
+            .build()
+
+        return@withContext try {
+            val response = client.newCall(request).execute()
+            val responseBody = response.body?.string()
+            val apiResponseType = object : TypeToken<ApiResponse<Unit>>() {}.type
+            gson.fromJson<ApiResponse<Unit>>(responseBody, apiResponseType).also {
+                if (!response.isSuccessful) {
+                    println("Error: ${it.errorMessage}")
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
             null
         }
     }
