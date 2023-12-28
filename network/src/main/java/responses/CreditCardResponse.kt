@@ -7,3 +7,4 @@ data class ApiResponse<T>(
     val errorMessage: String? = null, // An optional error message, used in case of an error
     val data: T // The actual data returned by the API, of generic type T
 )
+

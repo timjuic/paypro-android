@@ -1,78 +1,79 @@
 package com.Found404.paypro.ui.pages
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
-import com.Found404.paypro.ui.components.PayProNavigationDrawer
-import com.found404.core.models.Terminal
+import com.Found404.paypro.ui.components.PayProTitle
 import com.found404.network.service.MerchantService
+import androidx.compose.ui.platform.LocalContext
+import com.found404.core.models.MerchantResponse
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import com.found404.network.service.Merchant
-
 
 @Composable
-fun AddingMerchants(
-    navController: NavController,
-    merchantService: MerchantService
-) {
+fun AddingMerchants(navController: NavController) {
+    val merchantService = MerchantService()
     val context = LocalContext.current
-    var merchantsWithTerminals by remember { mutableStateOf(emptyList<Pair<Merchant, List<Terminal>>>()) }
+    var merchants by remember { mutableStateOf<List<MerchantResponse>>(emptyList()) }
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(key1 = true) {
         coroutineScope.launch {
-            val merchants = merchantService.getMerchantsForUser(context)
-            println("Dohvaćeni trgovci: $merchants")
-
-            val terminalsByMerchant = merchants?.associateWith { merchant ->
-                merchantService.getTerminalsForMerchant(merchant.id, context) ?: emptyList()
-            } ?: emptyMap()
-
-            println("Trgovci s terminalima: $terminalsByMerchant")
-            merchantsWithTerminals = terminalsByMerchant.toList()
+            try {
+                val retrievedMerchants = merchantService.getMerchantsForUser(context)
+                print("retrievedMerchants " + retrievedMerchants)
+                if (retrievedMerchants != null && retrievedMerchants.isNotEmpty()) {
+                    merchants = retrievedMerchants
+                } else {
+                    println("Dohvaćanje trgovaca nije uspjelo.")
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                println("Greška prilikom dohvaćanja trgovaca.")
+            }
         }
     }
-
-
-    PayProNavigationDrawer(navController)
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        merchantsWithTerminals.forEach { (merchant, terminals) ->
-            MerchantCard(merchant, terminals)
+    println("merchants = " + merchants)
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(bottom = 76.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            item {
+                PayProTitle(text = "PayPro")
+            }
+            items(merchants) { merchant ->
+                MerchantItem(merchant)
+            }
         }
 
         FloatingActionButton(
             modifier = Modifier
-                .padding(16.dp)
-                .size(56.dp)
                 .align(Alignment.BottomEnd)
-                .zIndex(0f),
+                .padding(16.dp),
             onClick = {
                 navController.navigate("merchantName")
             },
@@ -86,15 +87,36 @@ fun AddingMerchants(
 }
 
 @Composable
-fun MerchantCard(merchant: Merchant, terminals: List<Terminal>) {
-    Card(
-        modifier = Modifier.padding(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+fun MerchantItem(merchant: MerchantResponse) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .background(color = Color.LightGray, shape = RoundedCornerShape(16.dp))
+            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = merchant.fullName, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            terminals.forEach { terminal ->
-                Text(text = "Terminal: ${terminal.terminalKey}", fontSize = 14.sp)
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Your Merchant",
+                style = TextStyle(fontSize = 14.sp),
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Text(text = merchant.merchantName, color = Color.Black, style = TextStyle(fontSize = 30.sp))
+            Text(text = "${merchant.address.streetName}, ${merchant.address.city}")
+            Text(text = "Street No: ${merchant.address.streetNumber}, Postal Code: ${merchant.address.postalCode}")
+            Button(
+                modifier = Modifier.align(Alignment.End),
+                onClick = { /* Handle Edit Click */ }
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Edit,
+                    contentDescription = "Edit Merchant",
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
     }

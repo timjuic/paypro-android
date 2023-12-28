@@ -40,7 +40,7 @@ fun AppNavigation(onGoogleSignIn: () -> Unit) {
             }
 
             if (isJwtValid == true) {
-                AddingMerchants(navController = navController, merchantService = MerchantService())
+                AddingMerchants(navController = navController)
             } else {
                 WelcomePage(navController = navController, onGoogleSignIn = onGoogleSignIn)
             }
@@ -53,7 +53,7 @@ fun AppNavigation(onGoogleSignIn: () -> Unit) {
             RegisterPage(navController = navController)
         }
         composable("addingMerchants") {
-            AddingMerchants(navController = navController, merchantService = MerchantService())
+            AddingMerchants(navController = navController)
         }
         composable("merchantName") {
             MerchantName(navController = navController)

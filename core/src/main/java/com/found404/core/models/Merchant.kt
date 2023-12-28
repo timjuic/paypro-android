@@ -13,3 +13,22 @@ data class Merchant (
     var cardTypes: List<CreditCardType> = emptyList(),
     var status: StatusType = StatusType.ACTIVE
 )
+
+data class MerchantResponse(
+    val merchantId: Int,
+    val merchantName: String,
+    val address: Address,
+    val acceptedCards: List<CreditCardType>,
+    val terminals: List<Terminal>,
+    val merchantCreatedAt: String,
+    val status: Status
+)
+
+data class Address(
+    val streetName: String,
+    val city: String,
+    val streetNumber: String,
+    val postalCode: Int
+)
+
+
