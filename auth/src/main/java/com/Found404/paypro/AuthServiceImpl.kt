@@ -9,10 +9,6 @@ import com.Found404.paypro.responses.RegistrationResponse
 class AuthServiceImpl(
     authConfig: AuthConfig
 ) : AuthFacade {
-    init {
-        AuthConfigManager.initialize(authConfig)
-    }
-
     private lateinit var authenticationService: AuthenticationService
     private lateinit var registrationService: RegistrationService
     private lateinit var userDataService: UserDataService
