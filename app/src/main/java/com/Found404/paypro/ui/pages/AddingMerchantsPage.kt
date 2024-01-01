@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import com.Found404.paypro.ui.components.PayProTitle
 import com.found404.network.service.MerchantService
 import androidx.compose.ui.platform.LocalContext
+import com.Found404.paypro.ui.components.MerchantItem
 import com.found404.core.models.MerchantResponse
 import kotlinx.coroutines.launch
 
@@ -84,88 +85,6 @@ fun AddingMerchants(navController: NavController) {
             contentColor = Color.White
         ) {
             Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
-        }
-    }
-}
-
-@Composable
-fun MerchantItem(merchant: MerchantResponse, onDeleteTerminal: (String) -> Unit) {
-    var showPopup by remember { mutableStateOf(false) }
-    var selectedTerminalId by remember { mutableStateOf("") }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 16.dp)
-            .background(color = Color.LightGray, shape = RoundedCornerShape(16.dp))
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Your Merchant",
-                style = TextStyle(fontSize = 14.sp),
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(text = merchant.merchantName, color = Color.Black, style = TextStyle(fontSize = 30.sp))
-            Text(text = "${merchant.address.streetName}, ${merchant.address.city}")
-            Text(text = "Street No: ${merchant.address.streetNumber}, Postal Code: ${merchant.address.postalCode}")
-
-            merchant.terminals.forEach { terminal ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "Terminal: ${terminal.terminalKey}")
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete Terminal",
-                        modifier = Modifier
-                            .clickable {
-                                selectedTerminalId = terminal.terminalKey
-                                showPopup = true
-                            }
-                    )
-                }
-            }
-        }
-    }
-
-    if (showPopup) {
-        DeleteTerminalPopup(
-            terminalId = selectedTerminalId,
-            onConfirm = {
-                onDeleteTerminal(selectedTerminalId)
-                showPopup = false
-            },
-            onCancel = { showPopup = false }
-        )
-    }
-}
-@Composable
-fun DeleteTerminalPopup(terminalId: String, onConfirm: () -> Unit, onCancel: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .background(color = Color.White, shape = RoundedCornerShape(16.dp))
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text("Please confirm that you want to delete terminal $terminalId.")
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = onConfirm) {
-                Text("Confirm")
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = onCancel) {
-                Text("Cancel")
-            }
         }
     }
 }
