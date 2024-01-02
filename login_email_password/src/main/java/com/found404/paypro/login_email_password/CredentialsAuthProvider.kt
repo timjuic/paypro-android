@@ -1,7 +1,9 @@
 package com.found404.paypro.login_email_password
 
-import com.found404.core.exceptions.ServerUnreachableException
-import com.found404.core.models.AuthCallbacks
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import com.found404.core.AuthCallbacks
 import com.found404.core.models.LoginCredentials
 import com.found404.core.models.LoginResponse
 import com.google.gson.Gson
@@ -12,7 +14,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class CredentialsAuthProvider(private val baseUrl: String) : AuthProvider<LoginCredentials, LoginResponse> {
+class CredentialsAuthProvider(private val baseUrl: String) : AuthProvider<LoginCredentials, LoginResponse>, AuthDisplayable {
     private val gson = Gson()
     private val client = OkHttpClient()
 
@@ -34,7 +36,7 @@ class CredentialsAuthProvider(private val baseUrl: String) : AuthProvider<LoginC
             .build()
 
         withContext(Dispatchers.IO) {
-            try {
+
                 val response = client.newCall(request).execute()
                 val responseBody = response.body?.string()
                 val loginResponse = gson.fromJson(responseBody, LoginResponse::class.java)
@@ -43,11 +45,19 @@ class CredentialsAuthProvider(private val baseUrl: String) : AuthProvider<LoginC
 //                    userDataService.saveLoggedInUser(loginResponse.data, context)
                     callbacks.onSuccessfulLogin(loginResponse)
                 } else {
-                    callbacks.onFailedLogin(loginResponse.errorMessage ?: "Login failed")
+                    callbacks.onFailedLogin(loginResponse)
                 }
-            } catch (e: Exception) {
-                callbacks.onServerUnreachable(ServerUnreachableException("Server couldn't be reached! Please try again later."))
-            }
+
+        }
+    }
+
+
+    @Composable
+    override fun DisplayButton(authProviderClickListener: AuthProviderClickListener) {
+        Button(onClick = {
+            authProviderClickListener.onAuthProviderClick()
+        }) {
+            Text("Credentials Auth")
         }
     }
 }

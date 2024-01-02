@@ -9,7 +9,7 @@ class AuthServiceImpl(
     authConfig: com.found404.core.AuthConfig
 ) : AuthFacade {
     private lateinit var jwtAuthStrategy: JWTAuthStrategy
-    private lateinit var userDataService: UserDataService
+    private lateinit var userDataService: UserDataServiceImpl
 
     init {
         initializeServices()
@@ -17,8 +17,8 @@ class AuthServiceImpl(
     }
 
     private fun initializeServices() {
-        jwtAuthStrategy = JWTAuthStrategyImpl(userDataService)
         userDataService = UserDataServiceImpl()
+        jwtAuthStrategy = JWTAuthStrategyImpl(userDataService)
     }
 
 
