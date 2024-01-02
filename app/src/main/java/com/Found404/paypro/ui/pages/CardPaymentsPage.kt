@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -32,6 +33,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.Found404.paypro.ui.components.PayProButton
+import com.Found404.paypro.ui.components.PayProHeadline
+import com.Found404.paypro.ui.components.PayProTitle
 import com.found404.core.models.CreditCardType
 import com.found404.core.models.Merchant
 import com.found404.core.models.MerchantViewModel
@@ -91,12 +95,8 @@ fun CardPayments(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
+        PayProHeadline(
             text = "Select card payments that you accept",
-            fontSize = 50.sp,
-            lineHeight = 50.sp,
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(
                 vertical = 32.dp,
                 horizontal = 16.dp
@@ -130,25 +130,19 @@ fun CardPayments(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
-            Button(
+            PayProButton(
+                text = "Previous",
                 onClick = {
                     navController.navigate("merchantAddress")
                 },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Gray
-                )
-            ) {
-                Text(
-                    text = "Previous",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-            }
+                buttonColor = Color.Gray,
+                modifier = Modifier.size(150.dp, 70.dp)
+            )
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Button(
+            PayProButton(
+                text = "Finish",
                 onClick = {
                     coroutineScope.launch {
                         val selectedCards = merchantModel.cardTypes.map { cardType ->
@@ -186,17 +180,9 @@ fun CardPayments(
                         }
                     }
                 },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Blue
+                buttonColor = Color.Blue,
+                modifier = Modifier.size(120.dp, 70.dp)
                 )
-            ) {
-                Text(
-                    text = "Finish",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-            }
         }
 
         if (showErrorMessage) {
@@ -222,8 +208,9 @@ fun CreateRow(cardName: String, cardId: Int, isChecked: Boolean, onCheckedChange
                 onCheckedChange(it)
             }
         )
-        Text(
+        PayProTitle(
             text = cardName,
+            fontSize = 16.sp,
             modifier = Modifier.padding(start = 8.dp)
         )
     }
