@@ -1,37 +1,82 @@
 package com.Found404.paypro.ui.pages
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.Found404.paypro.ui.components.PayProNavigationDrawer
+import com.Found404.paypro.ui.components.PayProTitle
+import com.found404.network.service.MerchantService
+import androidx.compose.ui.platform.LocalContext
+import com.Found404.paypro.ui.components.MerchantItem
+import com.found404.core.models.MerchantResponse
+import kotlinx.coroutines.launch
 
 @Composable
-fun AddingMerchants(
-    navController: NavController
-) {
+fun AddingMerchants(navController: NavController) {
+    val merchantService = MerchantService()
+    val context = LocalContext.current
+    var merchants by remember { mutableStateOf<List<MerchantResponse>>(emptyList()) }
+    val coroutineScope = rememberCoroutineScope()
 
-    PayProNavigationDrawer(navController)
+    LaunchedEffect(key1 = true) {
+        coroutineScope.launch {
+            val retrievedMerchants = merchantService.getMerchantsForUser(context)
+            if (!retrievedMerchants.isNullOrEmpty()) {
+                merchants = retrievedMerchants
+            }
+        }
+    }
 
-    Box(modifier = Modifier.fillMaxSize()){
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(bottom = 76.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            item {
+                PayProTitle(text = "PayPro")
+            }
+            items(merchants) { merchant ->
+                MerchantItem(merchant, onDeleteTerminal = { terminalId ->
+                    coroutineScope.launch {
+                        val response = merchantService.deleteTerminal(merchant.merchantId, terminalId, context)
+                        if (response?.success == true) {
+                            val updatedMerchants = merchantService.getMerchantsForUser(context)
+                            merchants = updatedMerchants ?: emptyList()
+                        } else {
+                            println("Error deleting terminal: ${response?.errorMessage}")
+                        }
+                    }
+                })
+            }
+        }
+
         FloatingActionButton(
             modifier = Modifier
-                .padding(16.dp)
-                .size(56.dp)
                 .align(Alignment.BottomEnd)
-                .zIndex(0f),
+                .padding(16.dp),
             onClick = {
                 navController.navigate("merchantName")
             },
