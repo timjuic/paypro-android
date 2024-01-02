@@ -53,7 +53,7 @@ fun MerchantAddress(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding()
+            .padding(16.dp)
             .background(color = Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround,
