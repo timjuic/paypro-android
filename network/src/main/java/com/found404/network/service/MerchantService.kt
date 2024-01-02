@@ -105,5 +105,31 @@ class MerchantService {
             null
         }
     }
+
+    suspend fun deleteMerchant(merchantId: Int, context: Context): ApiResponse<Unit>? = withContext(Dispatchers.IO) {
+        val url = "http://158.220.113.254:8086/api/merchant/$merchantId"
+        val jwtToken = authService.getAuthToken(context)
+
+        val request = Request.Builder()
+            .url(url)
+            .header("Authorization", "Bearer $jwtToken")
+            .delete()
+            .build()
+
+        return@withContext try {
+            val response = client.newCall(request).execute()
+            val responseBody = response.body?.string()
+            val apiResponseType = object : TypeToken<ApiResponse<Unit>>() {}.type
+            gson.fromJson<ApiResponse<Unit>>(responseBody, apiResponseType).also {
+                if (!response.isSuccessful) {
+                    println("Error: ${it.errorMessage}")
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
 }
 

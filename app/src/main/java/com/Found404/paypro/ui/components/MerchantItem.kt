@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +30,9 @@ import com.found404.core.models.MerchantResponse
 @Composable
 fun MerchantItem(merchant: MerchantResponse, onDeleteTerminal: (String) -> Unit) {
     var showPopup by remember { mutableStateOf(false) }
+    var showMerchantPopup by remember { mutableStateOf(false) }
     var selectedTerminalId by remember { mutableStateOf("") }
+    var additionalInfo by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -48,7 +51,23 @@ fun MerchantItem(merchant: MerchantResponse, onDeleteTerminal: (String) -> Unit)
                 style = TextStyle(fontSize = 14.sp),
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-            Text(text = merchant.merchantName, color = Color.Black, style = TextStyle(fontSize = 30.sp))
+
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+                Text(text = merchant.merchantName, color = Color.Black, style = TextStyle(fontSize = 30.sp))
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Edit Merchant",
+                    modifier = Modifier
+                        .clickable {
+                            showMerchantPopup = true
+                        }
+                        .padding(8.dp)
+                )
+            }
+
             Text(text = "${merchant.address.streetName}, ${merchant.address.city}")
             Text(text = "Street No: ${merchant.address.streetNumber}, Postal Code: ${merchant.address.postalCode}")
 
@@ -80,6 +99,25 @@ fun MerchantItem(merchant: MerchantResponse, onDeleteTerminal: (String) -> Unit)
                 showPopup = false
             },
             onCancel = { showPopup = false }
+        )
+    }
+    if (showMerchantPopup) {
+        DeleteMerchantPopup(
+            merchantId = merchant.merchantId,
+            merchantName = merchant.merchantName,
+            onConfirm = {
+                // Handle confirmation actions
+                showMerchantPopup = false
+            },
+            onCancel = {
+                // Handle cancel actions
+                showMerchantPopup = false
+            },
+            additionalInfo = additionalInfo,
+            onAdditionalInfoChange = { newInfo ->
+                // Update additionalInfo whenever text changes in TextField
+                additionalInfo = newInfo
+            }
         )
     }
 }
