@@ -26,6 +26,7 @@ fun PayProTextInput(
         onValueChange = { newValue ->
             onValueChange(newValue)
         },
+        singleLine = true,
         modifier = modifier
             .fillMaxWidth(),
         placeholder = { Text(text = placeholder) },

@@ -29,6 +29,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.Found404.paypro.ui.components.PayProButton
+import com.Found404.paypro.ui.components.PayProTextInput
 import com.found404.ValidationLogic.MerchantDataValidator
 import com.found404.core.models.MerchantViewModel
 import com.found404.core.models.SharedPreferencesManager
@@ -67,38 +69,25 @@ fun MerchantAddress(
                 horizontal = 20.dp
             )
         )
-        TextField(
-            singleLine = true,
-            label = {Text("City name")},
+        PayProTextInput(
             value = merchantCity,
-            onValueChange = { newCityName ->
-                merchantCity =  newCityName
-            },
+            onValueChange = { merchantCity = it },
+            placeholder = "City name"
         )
-        TextField(
-            singleLine = true,
-            label = {Text("Street name")},
+        PayProTextInput(
             value = merchantStreetName,
-            onValueChange = { newStreetName ->
-                merchantStreetName = newStreetName
-            },
+            onValueChange = { merchantStreetName = it },
+            placeholder = "Street name"
         )
-        TextField(
-            singleLine = true,
-            label = { Text("Street number") },
+        PayProTextInput(
             value = if (merchantStreetNumber == 0) "" else merchantStreetNumber.toString(),
-            onValueChange = { newStreetNumber ->
-                merchantStreetNumber = newStreetNumber.toIntOrNull() ?: 0
-            }
+            onValueChange = { merchantStreetNumber = it.toIntOrNull() ?: 0 },
+            placeholder = "Street number"
         )
-
-        TextField(
-            singleLine = true,
-            label = { Text("Postal code") },
+        PayProTextInput(
             value = if (merchantPostalCode == 0) "" else merchantPostalCode.toString(),
-            onValueChange = { newPostCode ->
-                merchantPostalCode = newPostCode.toIntOrNull() ?: 0
-            }
+            onValueChange = { merchantPostalCode = it.toIntOrNull() ?: 0 },
+            placeholder = "Postal code"
         )
 
         if (showErrorMessage) {
@@ -108,17 +97,8 @@ fun MerchantAddress(
 
         Box(modifier = Modifier.fillMaxSize()){
             val context = LocalContext.current
-            Button(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(
-                        horizontal = 20.dp,
-                        vertical = 20.dp
-                    )
-                    .size(
-                        width = 130.dp,
-                        height = 60.dp
-                    ),
+            PayProButton(
+                text = "Next",
                 onClick = {
                     if (validate(merchantCity, merchantStreetName,
                             merchantStreetNumber.toInt(), merchantPostalCode.toInt())) {
@@ -141,39 +121,21 @@ fun MerchantAddress(
                         navController.navigate("cardPayments")
                     }
                 },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Blue
-                )
-            ) {
-                Text(text = "Next",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            Button(
+                buttonColor = Color.Blue,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(horizontal = 20.dp, vertical = 20.dp)
+                    .size(width = 150.dp, height = 70.dp)
+            )
+            PayProButton(
+                text = "Previous",
+                onClick = { navController.navigate("merchantName") },
+                buttonColor = Color.Gray,
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(
-                        horizontal = 20.dp,
-                        vertical = 20.dp)
-                    .size(
-                        width = 130.dp,
-                        height = 60.dp),
-
-                onClick = {
-                    navController.navigate("merchantName")
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Gray
-                )
-            ) {
-                Text(text = "Previous",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+                    .padding(horizontal = 20.dp, vertical = 20.dp)
+                    .size(width = 150.dp, height = 70.dp)
+            )
         }
     }
 }
