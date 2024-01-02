@@ -30,6 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.Found404.paypro.ui.components.PayProButton
+import com.Found404.paypro.ui.components.PayProTextInput
 import com.found404.ValidationLogic.MerchantDataValidator
 import com.found404.core.models.MerchantViewModel
 import com.found404.core.models.SharedPreferencesManager
@@ -66,12 +68,10 @@ fun MerchantName(
                 horizontal = 20.dp
             )
         )
-        TextField(
+        PayProTextInput(
             value = merchantName,
-            singleLine = true,
-            onValueChange = { newFullName ->
-                merchantName = newFullName
-            },
+            onValueChange = { newFullName -> merchantName = newFullName },
+            placeholder = "Merchant name"
         )
         if (showErrorMessage) {
             Text(
@@ -84,17 +84,8 @@ fun MerchantName(
 
         Box(modifier = Modifier.fillMaxSize()){
             val context = LocalContext.current
-            Button(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(
-                        horizontal = 20.dp,
-                        vertical = 20.dp
-                    )
-                    .size(
-                        width = 130.dp,
-                        height = 60.dp
-                    ),
+            PayProButton(
+                text = "Next",
                 onClick = {
                     if (validator.validateMerchantName(merchantName).success){
                         showErrorMessage = false
@@ -114,42 +105,21 @@ fun MerchantName(
                     }
 
                 },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Blue
-                )
-            ) {
-                Text(
-                    text = "Next",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            Button(
+                buttonColor = Color.Blue,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(horizontal = 20.dp, vertical = 20.dp)
+                    .size(width = 150.dp, height = 70.dp)
+            )
+            PayProButton(
+                text = "Previous",
+                onClick = { navController.navigate("addingMerchants") },
+                buttonColor = Color.Gray,
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(
-                        horizontal = 20.dp,
-                        vertical = 20.dp
-                    )
-                    .size(
-                        width = 130.dp,
-                        height = 60.dp
-                    ),
-                onClick = {
-                    navController.navigate("addingMerchants")
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Gray
-                )
-            ) {
-                Text(
-                    text = "Previous",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+                    .padding(horizontal = 20.dp, vertical = 20.dp)
+                    .size(width = 150.dp, height = 70.dp)
+            )
         }
     }
 }
