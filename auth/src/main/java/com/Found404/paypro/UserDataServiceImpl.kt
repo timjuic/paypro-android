@@ -1,8 +1,8 @@
 package com.Found404.paypro
 
 import android.content.Context
-import com.Found404.paypro.responses.LoginData
 import com.auth0.jwt.JWT
+import com.found404.core.models.LoginData
 
 
 class UserDataServiceImpl : UserDataService {

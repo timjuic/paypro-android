@@ -15,6 +15,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val dependencyProvider = AuthDependencyProvider.getInstance()
+
         val googleSignInClient = GoogleSignInClientProvider.getGoogleSignInClient(this)
 
         googleSignInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

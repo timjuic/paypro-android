@@ -1,5 +1,7 @@
 package com.Found404.paypro
 
+import com.found404.core.AuthConfig
+
 class AuthConfigManager {
 
     companion object {

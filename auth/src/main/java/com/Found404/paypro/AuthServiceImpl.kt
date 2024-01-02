@@ -2,15 +2,13 @@ package com.Found404.paypro
 
 
 import android.content.Context
-import com.Found404.paypro.responses.LoginData
-import com.Found404.paypro.responses.LoginResponse
 import com.Found404.paypro.responses.RegistrationResponse
+import com.found404.core.models.LoginData
 
 class AuthServiceImpl(
-    authConfig: AuthConfig
+    authConfig: com.found404.core.AuthConfig
 ) : AuthFacade {
-    private lateinit var authenticationService: AuthenticationService
-    private lateinit var registrationService: RegistrationService
+    private lateinit var jwtAuthStrategy: JWTAuthStrategy
     private lateinit var userDataService: UserDataService
 
     init {
@@ -19,26 +17,17 @@ class AuthServiceImpl(
     }
 
     private fun initializeServices() {
-        authenticationService = AuthenticationServiceImpl(userDataService)
-        registrationService = RegistrationServiceImpl()
+        jwtAuthStrategy = JWTAuthStrategyImpl(userDataService)
         userDataService = UserDataServiceImpl()
     }
 
-    override suspend fun loginUser(
-        endpointPath: String,
-        email: String,
-        password: String,
-        context: Context
-    ): LoginResponse {
-        return authenticationService.loginUser(endpointPath, email, password, context)
-    }
 
     override suspend fun isJwtValid(context: Context): Boolean {
-        return authenticationService.isJwtValid(context)
+        return jwtAuthStrategy.isJwtValid(context)
     }
 
     override suspend fun refreshAccessToken(endpointPath: String, refreshToken: String): String? {
-        return authenticationService.refreshAccessToken(endpointPath, refreshToken)
+        return jwtAuthStrategy.refreshAccessToken(endpointPath, refreshToken)
     }
 
     override suspend fun registerUser(
@@ -48,7 +37,7 @@ class AuthServiceImpl(
         email: String,
         password: String
     ): RegistrationResponse {
-        return registrationService.registerUser(endpointPath, firstName, lastName, email, password)
+        return jwtAuthStrategy.registerUser(endpointPath, firstName, lastName, email, password)
     }
 
     override fun saveLoggedInUser(loginData: LoginData?, context: Context) {

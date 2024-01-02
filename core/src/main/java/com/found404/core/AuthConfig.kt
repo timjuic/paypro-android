@@ -1,4 +1,4 @@
-package com.Found404.paypro
+package com.found404.core
 
 class AuthConfig private constructor(
     var baseUrl: String = "http://default_server_ip:8086",

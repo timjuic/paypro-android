@@ -26,7 +26,8 @@ fun AppNavigation(onGoogleSignIn: () -> Unit) {
     val navController = rememberNavController()
 
     NavHost(navController, startDestination = "welcome"){
-        val authServiceImpl = createAuthService("http://158.220.113.254:8086")
+//        val authServiceImpl = createAuthService("http://158.220.113.254:8086")
+        val authServiceImpl = AuthDependencyProvider.getInstance().getAuthService()
 
         composable("welcome") {
             val context = LocalContext.current
