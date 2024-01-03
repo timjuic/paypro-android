@@ -1,8 +1,6 @@
 package com.Found404.paypro.ui.pages
 
-import android.util.Log
 import android.view.LayoutInflater
-import android.widget.Button
 import android.widget.LinearLayout
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +13,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.Found404.paypro.AuthCallbackImpl
 import com.Found404.paypro.R
 import com.Found404.paypro.ui.components.PayProButton
 import com.Found404.paypro.ui.components.PayProHeadline
@@ -40,6 +40,7 @@ import com.Found404.paypro.viewmodel.LoginProvidersViewModel
 fun WelcomePage(navController: NavController) {
     val loginProvidersViewModel: LoginProvidersViewModel = viewModel()
     val authModules = loginProvidersViewModel.authModules
+    val authCallback = remember { AuthCallbackImpl(navController) }
 
     Column(
         modifier = Modifier
@@ -81,7 +82,8 @@ fun WelcomePage(navController: NavController) {
                 factory = { ctx ->
                     LayoutInflater.from(ctx).inflate(layoutId, null, false).apply {
                         findViewById<LinearLayout>(buttonId).setOnClickListener {
-                            authProvider.onButtonClick(ctx)
+                            authProvider.onButtonClick(ctx, authCallback)
+//                            navController.navigate("login")
                         }
                     }
                 }

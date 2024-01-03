@@ -1,8 +1,8 @@
 package com.found404.paypro.login_google
 
-import android.app.Activity
 import android.content.Context
 import android.widget.Toast
+import com.found404.core.AuthCallback
 import com.found404.core.AuthCallbacks
 import com.found404.core.AuthModule
 import com.found404.core.exceptions.ServerUnreachableException
@@ -48,8 +48,10 @@ class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, Login
         }
     }
 
-    override fun onButtonClick(context: Context) {
+    override fun onButtonClick(context: Context, authCallback: AuthCallback) {
         Toast.makeText(context, "aaas", Toast.LENGTH_SHORT).show()
+        // Navigate to some page if needed
+//        authCallback.navigateTo("somePage")
     }
 
     override fun getButtonLayout(context: Context): Int {
