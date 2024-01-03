@@ -21,7 +21,7 @@ import com.Found404.paypro.ui.pages.RegisterPage
 import com.Found404.paypro.ui.pages.WelcomePage
 
 @Composable
-fun AppNavigation(onGoogleSignIn: () -> Unit) {
+fun AppNavigation() {
 
     val navController = rememberNavController()
 
@@ -42,7 +42,7 @@ fun AppNavigation(onGoogleSignIn: () -> Unit) {
             if (isJwtValid == true) {
                 AddingMerchants(navController = navController)
             } else {
-                WelcomePage(navController = navController, onGoogleSignIn = onGoogleSignIn)
+                WelcomePage(navController = navController, onGoogleSignIn = null)
             }
         }
 

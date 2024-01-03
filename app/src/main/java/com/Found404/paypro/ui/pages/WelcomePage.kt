@@ -1,5 +1,6 @@
 package com.Found404.paypro.ui.pages
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,12 +30,10 @@ import com.Found404.paypro.R
 import com.Found404.paypro.ui.components.PayProButton
 import com.Found404.paypro.ui.components.PayProHeadline
 import com.Found404.paypro.viewmodel.LoginProvidersViewModel
-import com.found404.core.AuthDisplayable
-import com.found404.core.AuthProviderClickListener
 
 
 @Composable
-fun WelcomePage(navController: NavController, onGoogleSignIn: () -> Unit) {
+fun WelcomePage(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -65,13 +64,15 @@ fun WelcomePage(navController: NavController, onGoogleSignIn: () -> Unit) {
                 authProvider.DisplayButton()
         }
 
-        PayProButton(
-            text = "Google Sign Up",
-            onClick = onGoogleSignIn,
-            leadingIcon = ImageVector.vectorResource(id = R.drawable.ic_google),
-            buttonColor = Color.Transparent,
-            textColor = Color.Black
-        )
+
+//            PayProButton(
+//                text = "Google Sign Up",
+//                onClick = ,
+//                leadingIcon = ImageVector.vectorResource(id = R.drawable.ic_google),
+//                buttonColor = Color.Transparent,
+//                textColor = Color.Black
+//            )
+
 
 
         val customFontFamily = FontFamily(
