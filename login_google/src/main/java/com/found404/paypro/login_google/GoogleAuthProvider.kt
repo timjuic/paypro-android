@@ -1,5 +1,6 @@
 package com.found404.paypro.login_google
 
+import android.app.Activity
 import android.content.Context
 import android.widget.Toast
 import com.found404.core.AuthCallbacks
@@ -53,5 +54,9 @@ class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, Login
 
     override fun getButtonLayout(context: Context): Int {
         return R.layout.button_layout
+    }
+
+    override fun getButtonId(): Int {
+        return R.id.myButton
     }
 }

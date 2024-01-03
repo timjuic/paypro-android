@@ -68,11 +68,12 @@ fun WelcomePage(navController: NavController) {
         // Load the buttons here
         authModules.forEach { authProvider ->
             val layoutId = authProvider.getButtonLayout(LocalContext.current)
+            val buttonId = authProvider.getButtonId()
             AndroidView(
                 modifier = Modifier.fillMaxWidth(),
                 factory = { ctx ->
                     LayoutInflater.from(ctx).inflate(layoutId, null, false).apply {
-                        findViewById<LinearLayout>(com.found404.paypro.login_google.R.id.myButton).setOnClickListener {
+                        findViewById<LinearLayout>(buttonId).setOnClickListener {
                             authProvider.onButtonClick(ctx)
                         }
                     }

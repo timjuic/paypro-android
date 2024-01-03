@@ -118,4 +118,8 @@ class CredentialsAuthProvider(private val baseUrl: String) : AuthModule<LoginCre
     override fun getButtonLayout(context: Context): Int {
         TODO("Not yet implemented")
     }
+
+    override fun getButtonId(): Int {
+        TODO("Not yet implemented")
+    }
 }

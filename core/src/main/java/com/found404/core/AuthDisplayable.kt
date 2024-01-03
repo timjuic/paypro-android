@@ -6,4 +6,5 @@ import androidx.compose.runtime.Composable
 interface AuthDisplayable {
     fun onButtonClick(context: Context)
     fun getButtonLayout(context: Context): Int
+    fun getButtonId(): Int
 }
