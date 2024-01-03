@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.Found404.paypro.ui.components.PayProButton
+import com.Found404.paypro.ui.components.PayProHeadline
 import com.Found404.paypro.ui.components.PayProTextInput
 import com.found404.ValidationLogic.MerchantDataValidator
 import com.found404.core.models.MerchantViewModel
@@ -58,12 +59,8 @@ fun MerchantAddress(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround,
     ) {
-        Text(
+        PayProHeadline(
             text = "Enter your business address",
-            fontSize = 50.sp,
-            lineHeight = 50.sp,
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(
                 vertical = 50.dp,
                 horizontal = 20.dp
@@ -72,22 +69,26 @@ fun MerchantAddress(
         PayProTextInput(
             value = merchantCity,
             onValueChange = { merchantCity = it },
-            placeholder = "City name"
+            placeholder = "City name",
+            modifier = Modifier.padding(16.dp)
         )
         PayProTextInput(
             value = merchantStreetName,
             onValueChange = { merchantStreetName = it },
-            placeholder = "Street name"
+            placeholder = "Street name",
+            modifier = Modifier.padding(16.dp)
         )
         PayProTextInput(
             value = if (merchantStreetNumber == 0) "" else merchantStreetNumber.toString(),
             onValueChange = { merchantStreetNumber = it.toIntOrNull() ?: 0 },
-            placeholder = "Street number"
+            placeholder = "Street number",
+            modifier = Modifier.padding(16.dp)
         )
         PayProTextInput(
             value = if (merchantPostalCode == 0) "" else merchantPostalCode.toString(),
             onValueChange = { merchantPostalCode = it.toIntOrNull() ?: 0 },
-            placeholder = "Postal code"
+            placeholder = "Postal code",
+            modifier = Modifier.padding(16.dp)
         )
 
         if (showErrorMessage) {

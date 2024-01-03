@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.Found404.paypro.ui.components.PayProButton
+import com.Found404.paypro.ui.components.PayProHeadline
 import com.Found404.paypro.ui.components.PayProTextInput
 import com.found404.ValidationLogic.MerchantDataValidator
 import com.found404.core.models.MerchantViewModel
@@ -57,12 +58,8 @@ fun MerchantName(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround,
     ) {
-        Text(
+        PayProHeadline(
             text = "What's your merchant name?",
-            fontSize = 50.sp,
-            lineHeight = 50.sp,
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(
                 vertical = 100.dp,
                 horizontal = 20.dp
