@@ -1,6 +1,7 @@
 package com.found404.paypro.login_email_password
 
 
+import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -71,7 +72,7 @@ class CredentialsAuthProvider(private val baseUrl: String) : AuthModule<LoginCre
     }
 
     @Composable
-    override fun DisplayButton() {
+    override fun DisplayButton(context: Context) {
         val customFontFamily = FontFamily(
             Font(R.font.montserrat_bold, FontWeight.Bold),
         )
