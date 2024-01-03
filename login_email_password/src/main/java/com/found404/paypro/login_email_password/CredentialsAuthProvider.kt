@@ -2,6 +2,8 @@ package com.found404.paypro.login_email_password
 
 
 import android.content.Context
+import android.content.Intent
+import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -110,8 +112,7 @@ class CredentialsAuthProvider(private val baseUrl: String) : AuthModule<LoginCre
             Text("Credentials Auth")
         }
     }
-
-    override fun onButtonClick(context: Context) {
+    override fun onButtonClick(context: Context, signInLauncher: ActivityResultLauncher<Intent>) {
         TODO("Not yet implemented")
     }
 

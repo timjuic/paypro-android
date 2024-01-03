@@ -1,9 +1,13 @@
 package com.Found404.paypro.ui.pages
 
+import android.app.Activity
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.LinearLayout
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,12 +40,22 @@ import com.Found404.paypro.ui.components.PayProButton
 import com.Found404.paypro.ui.components.PayProHeadline
 import com.Found404.paypro.viewmodel.LoginProvidersViewModel
 import com.found404.core.AppConfig
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
 
 
 @Composable
 fun WelcomePage(navController: NavController) {
     val loginProvidersViewModel: LoginProvidersViewModel = viewModel()
     val authModules = loginProvidersViewModel.authModules
+
+    val signInLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            loginProvidersViewModel.onGoogleSignInResult(result.data)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -74,7 +88,7 @@ fun WelcomePage(navController: NavController) {
                 factory = { ctx ->
                     LayoutInflater.from(ctx).inflate(layoutId, null, false).apply {
                         findViewById<LinearLayout>(buttonId).setOnClickListener {
-                            authProvider.onButtonClick(ctx)
+                            authProvider.onButtonClick(ctx, signInLauncher)
                         }
                     }
                 }

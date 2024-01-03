@@ -1,21 +1,21 @@
 package com.Found404.paypro.viewmodel
 
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import com.found404.core.AppConfig
 import com.found404.core.AuthModule
-import com.found404.core.AuthProvider
-import com.found404.paypro.login_email_password.CredentialsAuthProvider
 import com.found404.paypro.login_google.GoogleAuthProvider
-import org.reflections.Reflections
-import org.reflections.scanners.Scanner
-import org.reflections.scanners.Scanners
-import org.reflections.scanners.SubTypesScanner
-import org.reflections.util.ClasspathHelper
-import org.reflections.util.ConfigurationBuilder
-import org.reflections.util.FilterBuilder
-import java.net.URL
+import com.found404.paypro.login_google.GoogleSignInResultHandler
+import com.found404.paypro.login_google.GoogleSignInResultListener
 
-class LoginProvidersViewModel : ViewModel() {
+
+class LoginProvidersViewModel : ViewModel(), GoogleSignInResultListener {
+    private val googleAuthProvider = GoogleAuthProvider(AppConfig.BASE_URL)
+
+    init {
+        googleAuthProvider.signInResultListener = this
+    }
+
     val authModules: List<AuthModule<*, *>> by lazy {
         getModules()
     }
@@ -24,9 +24,13 @@ class LoginProvidersViewModel : ViewModel() {
         val modules = mutableListOf<AuthModule<*, *>>()
 
         //modules.add(CredentialsAuthProvider(AppConfig.BASE_URL))
-        modules.add(GoogleAuthProvider(AppConfig.BASE_URL))
+        modules.add(googleAuthProvider)
         // ADD MORE MODULES AS NEEDED
 
         return modules
+    }
+
+    override fun onGoogleSignInResult(data: Intent?) {
+        GoogleSignInResultHandler.handleSignInResult(data, googleAuthProvider)
     }
 }

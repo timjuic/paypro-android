@@ -2,11 +2,16 @@ package com.found404.paypro.login_google
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import com.found404.core.AuthCallbacks
 import com.found404.core.AuthModule
 import com.found404.core.exceptions.ServerUnreachableException
 import com.found404.core.models.LoginResponse
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,9 +20,15 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
+interface GoogleSignInResultListener {
+    fun onGoogleSignInResult(data: Intent?)
+}
+
 class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, LoginResponse> {
     private val gson = Gson()
     private val client = OkHttpClient()
+    var signInResultListener: GoogleSignInResultListener? = null
+
     override suspend fun loginUser(
         endpointPath: String,
         loginCredentials: String,
@@ -48,8 +59,14 @@ class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, Login
         }
     }
 
-    override fun onButtonClick(context: Context) {
-        Toast.makeText(context, "aaas", Toast.LENGTH_SHORT).show()
+    fun handleSignInResult(data: Intent?) {
+        signInResultListener?.onGoogleSignInResult(data)
+    }
+
+    override fun onButtonClick(context: Context, signInLauncher: ActivityResultLauncher<Intent>) {
+        val googleSignInClient = GoogleSignInClientProvider.getGoogleSignInClient(context)
+        val signInIntent = googleSignInClient.signInIntent
+        signInLauncher.launch(signInIntent)
     }
 
     override fun getButtonLayout(context: Context): Int {
