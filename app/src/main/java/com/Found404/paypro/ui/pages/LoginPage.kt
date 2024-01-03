@@ -32,6 +32,7 @@ import com.found404.core.AuthCallbacks
 import com.found404.core.models.LoginCredentials
 import com.found404.core.models.LoginResponse
 import com.found404.paypro.login_email_password.CredentialsAuthProvider
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
@@ -80,10 +81,12 @@ fun LoginPage(navController: NavController) {
 
                         val authCallbacks = object : AuthCallbacks<LoginResponse> {
                             override fun onSuccessfulLogin(response: LoginResponse) {
-                                authService.saveLoggedInUser(response.data, context)
-                                navController.navigate("addingMerchants") {
-                                    popUpTo("welcome") {
-                                        inclusive = true
+                                launch(Dispatchers.Main) {
+                                    authService.saveLoggedInUser(response.data, context)
+                                    navController.navigate("addingMerchants") {
+                                        popUpTo("welcome") {
+                                            inclusive = true
+                                        }
                                     }
                                 }
                             }

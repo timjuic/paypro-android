@@ -3,6 +3,7 @@ package com.found404.paypro.login_email_password
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import com.found404.core.exceptions.ServerUnreachableException
 import com.found404.core.AuthCallbacks
 import com.found404.core.models.LoginCredentials
 import com.found404.core.models.LoginResponse
@@ -36,18 +37,19 @@ class CredentialsAuthProvider(private val baseUrl: String) : AuthProvider<LoginC
             .build()
 
         withContext(Dispatchers.IO) {
-
+            try {
                 val response = client.newCall(request).execute()
                 val responseBody = response.body?.string()
                 val loginResponse = gson.fromJson(responseBody, LoginResponse::class.java)
 
                 if (loginResponse.success) {
-//                    userDataService.saveLoggedInUser(loginResponse.data, context)
                     callbacks.onSuccessfulLogin(loginResponse)
                 } else {
                     callbacks.onFailedLogin(loginResponse)
                 }
-
+            } catch (e: Exception) {
+                callbacks.onServerUnreachable(ServerUnreachableException("Server couldn't be reached! Please try again later."))
+            }
         }
     }
 
