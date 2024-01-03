@@ -26,9 +26,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.found404.core.models.MerchantResponse
+import com.found404.network.service.MerchantService
 
 @Composable
-fun MerchantItem(merchant: MerchantResponse, onDeleteTerminal: (String) -> Unit) {
+fun MerchantItem(merchant: MerchantResponse, onDeleteMerchant: (Int) -> Unit, onDeleteTerminal: (String) -> Unit) {
     var showPopup by remember { mutableStateOf(false) }
     var showMerchantPopup by remember { mutableStateOf(false) }
     var selectedTerminalId by remember { mutableStateOf("") }
@@ -103,21 +104,20 @@ fun MerchantItem(merchant: MerchantResponse, onDeleteTerminal: (String) -> Unit)
     }
     if (showMerchantPopup) {
         DeleteMerchantPopup(
-            merchantId = merchant.merchantId,
+            merchantId = merchant.id,
             merchantName = merchant.merchantName,
             onConfirm = {
-                // Handle confirmation actions
+                onDeleteMerchant(merchant.id)
                 showMerchantPopup = false
             },
             onCancel = {
-                // Handle cancel actions
                 showMerchantPopup = false
             },
             additionalInfo = additionalInfo,
             onAdditionalInfoChange = { newInfo ->
-                // Update additionalInfo whenever text changes in TextField
                 additionalInfo = newInfo
-            }
+            },
+            merchantService = MerchantService()
         )
     }
 }
