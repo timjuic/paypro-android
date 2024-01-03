@@ -22,7 +22,6 @@ import androidx.compose.ui.text.font.FontWeight
 import com.found404.core.exceptions.ServerUnreachableException
 import com.found404.core.AuthCallbacks
 import com.found404.core.AuthModule
-import com.found404.core.AuthProviderClickListener
 import com.found404.core.models.LoginCredentials
 import com.found404.core.models.LoginResponse
 import com.google.gson.Gson
@@ -116,10 +115,10 @@ class CredentialsAuthProvider(private val baseUrl: String) : AuthModule<LoginCre
     }
 
     override fun getButtonLayout(context: Context): Int {
-        TODO("Not yet implemented")
+        return R.layout.button_email_layout
     }
 
     override fun getButtonId(): Int {
-        TODO("Not yet implemented")
+        return R.id.btn_email_login
     }
 }
