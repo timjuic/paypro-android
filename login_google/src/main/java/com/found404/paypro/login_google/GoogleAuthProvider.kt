@@ -74,7 +74,7 @@ class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, Login
     @Composable
     override fun DisplayButton(context: Context) {
         val customFontFamily = FontFamily(
-            Font(R.font.montserrat_bold, FontWeight.Bold)
+            Font(R.font.montserrat_bold, FontWeight.Bold),
         )
 
         val googleSignInClient = GoogleSignInClientProvider.getGoogleSignInClient(context)
@@ -100,10 +100,7 @@ class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, Login
             border = BorderStroke(2.dp, Color.Black),
             shape = RoundedCornerShape(15.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
+
                 Image(
                     painter = painterResource(id = R.drawable.ic_google),
                     contentDescription = null,
@@ -117,7 +114,7 @@ class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, Login
                     fontSize = 18.sp,
                     fontFamily = customFontFamily
                 )
-            }
+
         }
     }
 }

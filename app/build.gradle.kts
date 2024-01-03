@@ -51,6 +51,7 @@ dependencies {
     implementation(project(mapOf("path" to ":auth")))
     implementation(project(mapOf("path" to ":network")))
     implementation(project(mapOf("path" to ":login_email_password")))
+    implementation(project(mapOf("path" to ":login_google")))
 
 //    implementation(kotlin("reflect"))
     implementation("org.reflections:reflections:0.10.2")
