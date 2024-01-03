@@ -62,14 +62,7 @@ fun WelcomePage(navController: NavController, onGoogleSignIn: () -> Unit) {
         val authModules = loginProvidersViewModel.authModules
         authModules.forEach { authProvider ->
             println("LOADING " + authProvider.toString())
-            if (authProvider is AuthDisplayable) {
-                authProvider.DisplayButton(authProviderClickListener = object : AuthProviderClickListener {
-                    override fun onAuthProviderClick() {
-                        // Default behavior when the button is clicked
-                        // You can leave it empty or provide a default action here
-                    }
-                })
-            }
+                authProvider.DisplayButton()
         }
 
         PayProButton(

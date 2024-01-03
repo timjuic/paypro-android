@@ -4,5 +4,5 @@ import androidx.compose.runtime.Composable
 
 interface AuthDisplayable {
     @Composable
-    fun DisplayButton(authProviderClickListener: AuthProviderClickListener)
+    fun DisplayButton()
 }

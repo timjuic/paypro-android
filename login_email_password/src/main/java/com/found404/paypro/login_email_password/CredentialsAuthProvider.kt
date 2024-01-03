@@ -71,13 +71,13 @@ class CredentialsAuthProvider(private val baseUrl: String) : AuthModule<LoginCre
     }
 
     @Composable
-    override fun DisplayButton(authProviderClickListener: AuthProviderClickListener) {
+    override fun DisplayButton() {
         val customFontFamily = FontFamily(
             Font(R.font.montserrat_bold, FontWeight.Bold),
         )
 
         OutlinedButton(
-            onClick = { authProviderClickListener.onAuthProviderClick() },
+            onClick = {  },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 20.dp)
@@ -105,7 +105,7 @@ class CredentialsAuthProvider(private val baseUrl: String) : AuthModule<LoginCre
         }
 
         Button(onClick = {
-            authProviderClickListener.onAuthProviderClick()
+
         }) {
             Text("Credentials Auth")
         }
