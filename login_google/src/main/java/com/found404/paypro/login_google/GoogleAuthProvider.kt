@@ -1,5 +1,10 @@
 package com.found404.paypro.login_google
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -28,11 +33,9 @@ import com.found404.core.models.LoginResponse
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
 class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, LoginResponse> {
@@ -69,13 +72,26 @@ class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, Login
     }
 
     @Composable
-    override fun DisplayButton() {
+    override fun DisplayButton(context: Context) {
         val customFontFamily = FontFamily(
             Font(R.font.montserrat_bold, FontWeight.Bold)
         )
 
+        val googleSignInClient = GoogleSignInClientProvider.getGoogleSignInClient(context)
+        val signInLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if(result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                GoogleSignInResultHandler.handleSignInResult(data, this)
+            }
+        }
+
         OutlinedButton(
-            onClick = { },
+            onClick = {
+                val signInIntent = googleSignInClient.signInIntent
+                signInLauncher.launch(signInIntent)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 20.dp)

@@ -6,7 +6,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 
 object GoogleSignInResultHandler {
-    fun handleSignInResult(data: Intent?) {
+    fun handleSignInResult(data: Intent?, authProvider: GoogleAuthProvider) {
         try {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             val account = task.getResult(ApiException::class.java)
