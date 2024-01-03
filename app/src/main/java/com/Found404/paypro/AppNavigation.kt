@@ -42,7 +42,7 @@ fun AppNavigation() {
             if (isJwtValid == true) {
                 AddingMerchants(navController = navController)
             } else {
-                WelcomePage(navController = navController, onGoogleSignIn = null)
+                WelcomePage(navController = navController)
             }
         }
 
