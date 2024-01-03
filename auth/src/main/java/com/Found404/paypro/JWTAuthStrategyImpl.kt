@@ -7,7 +7,7 @@ import com.Found404.paypro.DependencyProvider.gson
 import com.Found404.paypro.responses.RegistrationResponse
 import com.auth0.jwt.JWT
 import com.auth0.jwt.exceptions.JWTDecodeException
-import com.found404.core.models.LoginData
+import com.found404.core.auth.LoginData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.FormBody

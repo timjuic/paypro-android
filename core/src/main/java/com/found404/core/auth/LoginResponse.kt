@@ -1,4 +1,4 @@
-package com.found404.core.models
+package com.found404.core.auth
 
 import com.google.gson.annotations.SerializedName
 

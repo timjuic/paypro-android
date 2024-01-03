@@ -1,6 +1,6 @@
 package com.Found404.paypro
 
-import com.found404.core.AuthConfig
+import com.found404.core.auth.AuthConfig
 
 class AuthConfigManager {
 

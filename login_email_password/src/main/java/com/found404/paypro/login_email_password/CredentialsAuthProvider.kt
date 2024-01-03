@@ -2,12 +2,12 @@ package com.found404.paypro.login_email_password
 
 
 import android.content.Context
-import com.found404.core.AuthCallback
+import com.found404.core.auth.AuthCallback
 import com.found404.core.exceptions.ServerUnreachableException
-import com.found404.core.AuthCallbacks
-import com.found404.core.AuthModule
-import com.found404.core.models.LoginCredentials
-import com.found404.core.models.LoginResponse
+import com.found404.core.auth.AuthCallbacks
+import com.found404.core.auth.AuthModule
+import com.found404.core.auth.LoginCredentials
+import com.found404.core.auth.LoginResponse
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -16,7 +16,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class CredentialsAuthProvider(private val baseUrl: String) : AuthModule<LoginCredentials, LoginResponse> {
+class CredentialsAuthProvider(private val baseUrl: String) :
+    AuthModule<LoginCredentials, LoginResponse> {
     private val gson = Gson()
     private val client = OkHttpClient()
 

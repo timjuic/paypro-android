@@ -2,11 +2,11 @@ package com.found404.paypro.login_google
 
 import android.content.Context
 import android.widget.Toast
-import com.found404.core.AuthCallback
-import com.found404.core.AuthCallbacks
-import com.found404.core.AuthModule
+import com.found404.core.auth.AuthCallback
+import com.found404.core.auth.AuthCallbacks
+import com.found404.core.auth.AuthModule
 import com.found404.core.exceptions.ServerUnreachableException
-import com.found404.core.models.LoginResponse
+import com.found404.core.auth.LoginResponse
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

@@ -2,7 +2,7 @@ package com.Found404.paypro.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.found404.core.AppConfig
-import com.found404.core.AuthModule
+import com.found404.core.auth.AuthModule
 import com.found404.paypro.login_email_password.CredentialsAuthProvider
 import com.found404.paypro.login_google.GoogleAuthProvider
 

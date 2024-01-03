@@ -1,7 +1,7 @@
 package com.Found404.paypro
 
 import android.content.Context
-import com.found404.core.models.LoginData
+import com.found404.core.auth.LoginData
 
 interface UserDataService {
     fun saveLoggedInUser(loginData: LoginData?, context: Context)

@@ -28,9 +28,9 @@ import com.Found404.paypro.ui.components.PayProHeadline
 import com.Found404.paypro.ui.components.PayProLabeledTextInput
 import com.Found404.paypro.ui.components.PayProTitle
 import com.found404.core.AppConfig
-import com.found404.core.AuthCallbacks
-import com.found404.core.models.LoginCredentials
-import com.found404.core.models.LoginResponse
+import com.found404.core.auth.AuthCallbacks
+import com.found404.core.auth.LoginCredentials
+import com.found404.core.auth.LoginResponse
 import com.found404.paypro.login_email_password.CredentialsAuthProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

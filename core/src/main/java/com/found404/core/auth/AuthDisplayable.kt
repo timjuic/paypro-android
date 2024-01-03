@@ -1,4 +1,4 @@
-package com.found404.core
+package com.found404.core.auth
 
 import android.content.Context
 
