@@ -1,10 +1,27 @@
 package com.found404.paypro.login_email_password
 
-import androidx.compose.material3.Button
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import com.found404.core.exceptions.ServerUnreachableException
 import com.found404.core.AuthCallbacks
+import com.found404.core.AuthModule
+import com.found404.core.AuthProviderClickListener
 import com.found404.core.models.LoginCredentials
 import com.found404.core.models.LoginResponse
 import com.google.gson.Gson
@@ -15,7 +32,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class CredentialsAuthProvider(private val baseUrl: String) : AuthProvider<LoginCredentials, LoginResponse>, AuthDisplayable {
+class CredentialsAuthProvider(private val baseUrl: String) : AuthModule<LoginCredentials, LoginResponse> {
     private val gson = Gson()
     private val client = OkHttpClient()
 
@@ -53,9 +70,40 @@ class CredentialsAuthProvider(private val baseUrl: String) : AuthProvider<LoginC
         }
     }
 
-
     @Composable
     override fun DisplayButton(authProviderClickListener: AuthProviderClickListener) {
+        val customFontFamily = FontFamily(
+            Font(R.font.montserrat_bold, FontWeight.Bold),
+        )
+
+        OutlinedButton(
+            onClick = { authProviderClickListener.onAuthProviderClick() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp)
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+            border = BorderStroke(2.dp, Color.Black),
+            shape = RoundedCornerShape(15.dp)
+        ) {
+
+//                leadingIcon?.let {
+//                    Image(
+//                        painter = painterResource(id = R.drawable.ic_google),
+//                        contentDescription = null,
+//                        modifier = Modifier.padding(end = 12.dp),
+//                    )
+//                }
+
+            Text(
+                text = "Login with email",
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                fontFamily = customFontFamily
+            )
+        }
+
         Button(onClick = {
             authProviderClickListener.onAuthProviderClick()
         }) {

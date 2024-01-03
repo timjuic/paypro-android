@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -21,10 +23,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.Found404.paypro.R
 import com.Found404.paypro.ui.components.PayProButton
 import com.Found404.paypro.ui.components.PayProHeadline
+import com.Found404.paypro.viewmodel.LoginProvidersViewModel
+import com.found404.core.AuthDisplayable
+import com.found404.core.AuthProviderClickListener
 
 
 @Composable
@@ -42,6 +48,29 @@ fun WelcomePage(navController: NavController, onGoogleSignIn: () -> Unit) {
             text = "Sign Up",
             onClick = { navController.navigate("registration") }
         )
+
+        Divider(
+            color = Color.Gray,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .padding(10.dp)
+        )
+
+        // Load the buttons here
+        val loginProvidersViewModel: LoginProvidersViewModel = viewModel()
+        val authModules = loginProvidersViewModel.authModules
+        authModules.forEach { authProvider ->
+            println("LOADING " + authProvider.toString())
+            if (authProvider is AuthDisplayable) {
+                authProvider.DisplayButton(authProviderClickListener = object : AuthProviderClickListener {
+                    override fun onAuthProviderClick() {
+                        // Default behavior when the button is clicked
+                        // You can leave it empty or provide a default action here
+                    }
+                })
+            }
+        }
 
         PayProButton(
             text = "Google Sign Up",
