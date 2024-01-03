@@ -1,31 +1,7 @@
 package com.found404.paypro.login_google
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import android.widget.Toast
 import com.found404.core.AuthCallbacks
 import com.found404.core.AuthModule
 import com.found404.core.exceptions.ServerUnreachableException
@@ -71,50 +47,11 @@ class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, Login
         }
     }
 
-    @Composable
-    override fun DisplayButton(context: Context) {
-        val customFontFamily = FontFamily(
-            Font(R.font.montserrat_bold, FontWeight.Bold),
-        )
+    override fun onButtonClick(context: Context) {
+        Toast.makeText(context, "aaas", Toast.LENGTH_SHORT).show()
+    }
 
-        val googleSignInClient = GoogleSignInClientProvider.getGoogleSignInClient(context)
-        val signInLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            if(result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                GoogleSignInResultHandler.handleSignInResult(data, this)
-            }
-        }
-
-        OutlinedButton(
-            onClick = {
-                val signInIntent = googleSignInClient.signInIntent
-                signInLauncher.launch(signInIntent)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp)
-                .height(50.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-            border = BorderStroke(2.dp, Color.Black),
-            shape = RoundedCornerShape(15.dp)
-        ) {
-
-                Image(
-                    painter = painterResource(id = R.drawable.ic_google),
-                    contentDescription = null,
-                    modifier = Modifier.padding(end = 12.dp)
-                )
-
-                Text(
-                    text = "Google Sign Up",
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    fontFamily = customFontFamily
-                )
-
-        }
+    override fun getButtonLayout(context: Context): Int {
+        return R.layout.button_layout
     }
 }

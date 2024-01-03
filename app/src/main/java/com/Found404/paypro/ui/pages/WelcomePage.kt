@@ -1,6 +1,9 @@
 package com.Found404.paypro.ui.pages
 
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.Button
+import android.widget.LinearLayout
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,16 +28,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.Found404.paypro.R
 import com.Found404.paypro.ui.components.PayProButton
 import com.Found404.paypro.ui.components.PayProHeadline
 import com.Found404.paypro.viewmodel.LoginProvidersViewModel
+import com.found404.core.AppConfig
 
 
 @Composable
 fun WelcomePage(navController: NavController) {
+    val loginProvidersViewModel: LoginProvidersViewModel = viewModel()
+    val authModules = loginProvidersViewModel.authModules
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,23 +66,19 @@ fun WelcomePage(navController: NavController) {
         )
 
         // Load the buttons here
-        val loginProvidersViewModel: LoginProvidersViewModel = viewModel()
-        val authModules = loginProvidersViewModel.authModules
         authModules.forEach { authProvider ->
-            println("LOADING " + authProvider.toString())
-                authProvider.DisplayButton(LocalContext.current)
+            val layoutId = authProvider.getButtonLayout(LocalContext.current)
+            AndroidView(
+                modifier = Modifier.fillMaxWidth(),
+                factory = { ctx ->
+                    LayoutInflater.from(ctx).inflate(layoutId, null, false).apply {
+                        findViewById<LinearLayout>(com.found404.paypro.login_google.R.id.myButton).setOnClickListener {
+                            authProvider.onButtonClick(ctx)
+                        }
+                    }
+                }
+            )
         }
-
-
-//            PayProButton(
-//                text = "Google Sign Up",
-//                onClick = ,
-//                leadingIcon = ImageVector.vectorResource(id = R.drawable.ic_google),
-//                buttonColor = Color.Transparent,
-//                textColor = Color.Black
-//            )
-
-
 
         val customFontFamily = FontFamily(
             Font(R.font.montserrat_bold, FontWeight.Bold),

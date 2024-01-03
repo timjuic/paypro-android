@@ -71,8 +71,7 @@ class CredentialsAuthProvider(private val baseUrl: String) : AuthModule<LoginCre
         }
     }
 
-    @Composable
-    override fun DisplayButton(context: Context) {
+    fun DisplayButton(context: Context): @Composable () -> Unit = {
         val customFontFamily = FontFamily(
             Font(R.font.montserrat_bold, FontWeight.Bold),
         )
@@ -110,5 +109,13 @@ class CredentialsAuthProvider(private val baseUrl: String) : AuthModule<LoginCre
         }) {
             Text("Credentials Auth")
         }
+    }
+
+    override fun onButtonClick(context: Context) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getButtonLayout(context: Context): Int {
+        TODO("Not yet implemented")
     }
 }

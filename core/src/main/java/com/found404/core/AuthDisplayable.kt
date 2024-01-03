@@ -4,6 +4,6 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 
 interface AuthDisplayable {
-    @Composable
-    fun DisplayButton(context: Context)
+    fun onButtonClick(context: Context)
+    fun getButtonLayout(context: Context): Int
 }
