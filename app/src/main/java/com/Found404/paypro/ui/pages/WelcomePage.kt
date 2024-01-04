@@ -120,7 +120,7 @@ fun WelcomePage(navController: NavController) {
                 factory = { ctx ->
                     LayoutInflater.from(ctx).inflate(layoutId, null, false).apply {
                         findViewById<LinearLayout>(buttonId).setOnClickListener {
-                            authProvider.onButtonClick(ctx, authCallback)
+                            authProvider.onButtonClick(ctx, authCallback, signInLauncher)
                         }
                     }
                 }
