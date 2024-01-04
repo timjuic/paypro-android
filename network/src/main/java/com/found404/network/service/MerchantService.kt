@@ -1,11 +1,11 @@
 package com.found404.network.service
 
 import android.content.Context
+import com.Found404.paypro.AuthDependencyProvider
 import com.Found404.paypro.AuthServiceImpl
 import com.Found404.paypro.responses.RegistrationResponse
 import com.found404.core.models.MerchantResponse
 import com.found404.core.models.Terminal
-import com.found404.createAuthService
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -17,12 +17,11 @@ import responses.ApiResponse
 class MerchantService {
     private val gson = Gson()
     private val client = OkHttpClient()
-    private val authService = createAuthService("http://158.220.113.254:8086")
+    private val authService = AuthDependencyProvider.getInstance().getAuthService()
 
     suspend fun getMerchantsForUser(context: Context): List<MerchantResponse>? = withContext(Dispatchers.IO) {
-        val user = AuthServiceImpl.getLoggedInUser(context)
+        val user = authService.getLoggedInUser(context)
         val userID = user.userId
-        println("userid  " + userID)
         val url = "http://158.220.113.254:8086/api/merchant/$userID"
         val jwtToken = authService.getAuthToken(context)
 
@@ -72,7 +71,6 @@ class MerchantService {
             val response = client.newCall(request).execute()
             if (!response.isSuccessful) return null
             val responseBody = response.body?.string()
-            println("responseBody  TerminalsForMerchant  " + responseBody)
             val type = object : TypeToken<List<Terminal>>() {}.type
             gson.fromJson(responseBody, type)
         } catch (e: Exception) {
