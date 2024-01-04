@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,10 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -87,120 +86,126 @@ fun CardPayments(
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = Color.White)
             .padding(16.dp)
-            .background(color = Color.White),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
     ) {
-        PayProHeadline(
-            text = "Select card payments that you accept",
-            modifier = Modifier.padding(
-                vertical = 32.dp,
-                horizontal = 16.dp
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()) // Added vertical scroll to the Column
+        ) {
+            PayProHeadline(
+                text = "Select card payments that you accept",
+                modifier = Modifier.padding(
+                    vertical = 32.dp,
+                    horizontal = 16.dp
+                )
             )
-        )
-        println("Card Types: $cardTypes")
+            println("Card Types: $cardTypes")
 
-        Column(modifier = Modifier.fillMaxWidth()) {
-            cardTypes.forEach { cardType ->
-                var isChecked by remember { mutableStateOf(false) }
-                CreateRow(
-                    cardName = cardType.name,
-                    cardId = cardType.cardBrandId,
-                    isChecked = isChecked
-                ) { checked ->
-                    isChecked = checked
-                    if (isChecked) {
-                        merchantModel.cardTypes = merchantModel.cardTypes + cardType
-                    } else {
-                        merchantModel.cardTypes = merchantModel.cardTypes - cardType
+            Column(modifier = Modifier.fillMaxWidth()) {
+                cardTypes.forEach { cardType ->
+                    var isChecked by remember { mutableStateOf(false) }
+                    CreateRow(
+                        cardName = cardType.name,
+                        cardId = cardType.cardBrandId,
+                        isChecked = isChecked
+                    ) { checked ->
+                        isChecked = checked
+                        if (isChecked) {
+                            merchantModel.cardTypes = merchantModel.cardTypes + cardType
+                        } else {
+                            merchantModel.cardTypes = merchantModel.cardTypes - cardType
+                        }
+                        atLeastOneChecked = merchantModel.cardTypes.isNotEmpty()
                     }
-                    atLeastOneChecked = merchantModel.cardTypes.isNotEmpty()
                 }
             }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            PayProButton(
-                text = "Previous",
-                onClick = {
-                    navController.navigate("merchantAddress")
-                },
-                buttonColor = Color.Gray,
-                modifier = Modifier.size(150.dp, 70.dp)
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                PayProButton(
+                    text = "Previous",
+                    onClick = {
+                        navController.navigate("merchantAddress")
+                    },
+                    buttonColor = Color.Gray,
+                    modifier = Modifier.size(150.dp, 70.dp)
+                )
 
-            Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(16.dp))
 
-            PayProButton(
-                text = "Finish",
-                onClick = {
-                    coroutineScope.launch {
-                        val selectedCards = merchantModel.cardTypes.map { cardType ->
-                            mapOf("cardBrandId" to cardType.cardBrandId, "name" to cardType.name)
-                        }
+                PayProButton(
+                    text = "Finish",
+                    onClick = {
+                        coroutineScope.launch {
+                            val selectedCards = merchantModel.cardTypes.map { cardType ->
+                                mapOf("cardBrandId" to cardType.cardBrandId, "name" to cardType.name)
+                            }
 
-                        if (selectedCards.isNotEmpty()) {
-                            addingMerchantsResult = addingMerchantsService.addMerchant(
-                                context,
-                                sharedPreferencesManager.merchantData.fullName,
-                                sharedPreferencesManager.merchantData.streetName,
-                                sharedPreferencesManager.merchantData.cityName,
-                                sharedPreferencesManager.merchantData.postCode,
-                                sharedPreferencesManager.merchantData.streetNumber,
-                                selectedCards,
-                                defaultStatus
-                            )
-                            println(
-                                "adding merchants result " + addingMerchantsResult!!.success + " " + addingMerchantsResult!!.errorMessage + " " + addingMerchantsResult!!.message + " "
-
-                            )
-                        } else {
-                            withContext(Dispatchers.Main) {
-                                showErrorMessage = true
-                                Toast.makeText(
+                            if (selectedCards.isNotEmpty()) {
+                                addingMerchantsResult = addingMerchantsService.addMerchant(
                                     context,
-                                    "Please select at least one option!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                    sharedPreferencesManager.merchantData.fullName,
+                                    sharedPreferencesManager.merchantData.streetName,
+                                    sharedPreferencesManager.merchantData.cityName,
+                                    sharedPreferencesManager.merchantData.postCode,
+                                    sharedPreferencesManager.merchantData.streetNumber,
+                                    selectedCards,
+                                    defaultStatus
+                                )
+                                println(
+                                    "adding merchants result " + addingMerchantsResult!!.success + " " + addingMerchantsResult!!.errorMessage + " " + addingMerchantsResult!!.message + " "
+
+                                )
+                            } else {
+                                withContext(Dispatchers.Main) {
+                                    showErrorMessage = true
+                                    Toast.makeText(
+                                        context,
+                                        "Please select at least one option!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                            if (atLeastOneChecked) {
+                                navController.navigate("merchantCreated")
+                                showErrorMessage = false
                             }
                         }
-                        if (atLeastOneChecked) {
-                            navController.navigate("merchantCreated")
-                            showErrorMessage = false
-                        }
-                    }
-                },
-                buttonColor = Color.Blue,
-                modifier = Modifier.size(120.dp, 70.dp)
+                    },
+                    buttonColor = Color.Blue,
+                    modifier = Modifier.size(120.dp, 70.dp)
                 )
-        }
+            }
 
-        if (showErrorMessage) {
-            Text(
-                text = "Please select at least one option!",
-                color = Color.Red,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(top = 8.dp)
-            )
+            if (showErrorMessage) {
+                Text(
+                    text = "Please select at least one option!",
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
         }
     }
 }
+
+
 
 @Composable
 fun CreateRow(cardName: String, cardId: Int, isChecked: Boolean, onCheckedChange: (Boolean) -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = 8.dp)
+        modifier = Modifier.padding(vertical = 2.dp)
     ) {
         Checkbox(
             checked = isChecked,
