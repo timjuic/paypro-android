@@ -52,7 +52,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.Found404.paypro.AuthServiceImpl
+import com.Found404.paypro.AuthDependencyProvider
 import com.Found404.paypro.R
 import kotlinx.coroutines.launch
 
@@ -64,6 +64,7 @@ fun PayProNavigationDrawer(
     navController: NavController
 ) {
     val context = LocalContext.current
+    val authService = AuthDependencyProvider.getInstance().getAuthService()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -80,7 +81,7 @@ fun PayProNavigationDrawer(
                 selectedIcon = ImageVector.vectorResource(R.drawable.ic_logout),
                 unselectedIcon = ImageVector.vectorResource(R.drawable.ic_logout),
                 onClick = {
-                    AuthServiceImpl.logoutUser(context)
+                    authService.logoutUser(context)
 
                     navController.navigate("welcome") {
                         popUpTo("addingMerchants") {
@@ -191,7 +192,8 @@ fun PayProNavigationDrawer(
 
 @Composable
 fun DrawerHeader(context: Context) {
-    val user = AuthServiceImpl.getLoggedInUser(context)
+    val authService = AuthDependencyProvider.getInstance().getAuthService()
+    val user = authService.getLoggedInUser(context)
 
     val customFontFamily = FontFamily(
         Font(R.font.montserrat_bold, FontWeight.Bold),

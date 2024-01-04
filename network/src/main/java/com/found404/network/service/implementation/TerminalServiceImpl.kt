@@ -1,8 +1,8 @@
 package com.found404.network.service.implementation
 
 import android.content.Context
+import com.Found404.paypro.AuthDependencyProvider
 import com.found404.core.models.Terminal
-import com.found404.createAuthService
 import com.found404.network.result.AddingTerminalResult
 import com.found404.network.service.TerminalService
 import com.google.gson.Gson
@@ -16,7 +16,9 @@ import okhttp3.RequestBody.Companion.toRequestBody
 
 class TerminalServiceImpl(context: Context): TerminalService {
     private val client = OkHttpClient()
-    private val authClient = createAuthService("http://158.220.113.254:8086")
+    private val dependencyProvider = AuthDependencyProvider.getInstance()
+    private val authClient = dependencyProvider.getAuthService()
+//    private val authClient = createAuthService("http://158.220.113.254:8086")
     private val tempJwt = authClient.getAuthToken(context)
 
     override suspend fun addTerminal(terminal: Terminal, mid: Int): AddingTerminalResult = withContext(Dispatchers.IO) {

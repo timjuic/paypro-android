@@ -18,6 +18,7 @@ import com.Found404.paypro.ui.components.PayProTitle
 import com.found404.network.service.MerchantService
 import androidx.compose.ui.platform.LocalContext
 import com.Found404.paypro.ui.components.MerchantItem
+import com.Found404.paypro.ui.components.PayProNavigationDrawer
 import com.found404.core.models.MerchantResponse
 import kotlinx.coroutines.launch
 
@@ -76,6 +77,8 @@ fun AddingMerchants(navController: NavController) {
                 })
             }
         }
+
+        PayProNavigationDrawer(navController)
 
         FloatingActionButton(
             modifier = Modifier

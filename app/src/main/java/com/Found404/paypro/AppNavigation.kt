@@ -22,12 +22,13 @@ import com.Found404.paypro.ui.pages.WelcomePage
 import com.found404.network.service.MerchantService
 
 @Composable
-fun AppNavigation(onGoogleSignIn: () -> Unit) {
+fun AppNavigation() {
 
     val navController = rememberNavController()
 
     NavHost(navController, startDestination = "welcome"){
-        val authServiceImpl = createAuthService("http://158.220.113.254:8086")
+//        val authServiceImpl = createAuthService("http://158.220.113.254:8086")
+        val authServiceImpl = AuthDependencyProvider.getInstance().getAuthService()
 
         composable("welcome") {
             val context = LocalContext.current
@@ -42,7 +43,7 @@ fun AppNavigation(onGoogleSignIn: () -> Unit) {
             if (isJwtValid == true) {
                 AddingMerchants(navController = navController)
             } else {
-                WelcomePage(navController = navController, onGoogleSignIn = onGoogleSignIn)
+                WelcomePage(navController = navController)
             }
         }
 
