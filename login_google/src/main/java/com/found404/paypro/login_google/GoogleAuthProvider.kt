@@ -1,12 +1,13 @@
 package com.found404.paypro.login_google
 
 import android.content.Context
-import android.widget.Toast
+import android.content.Intent
+import androidx.activity.result.ActivityResultLauncher
 import com.found404.core.auth.AuthCallback
 import com.found404.core.auth.AuthCallbacks
 import com.found404.core.auth.AuthModule
-import com.found404.core.exceptions.ServerUnreachableException
 import com.found404.core.auth.LoginResponse
+import com.found404.core.exceptions.ServerUnreachableException
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,9 +16,15 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
+interface GoogleSignInResultListener {
+    fun onGoogleSignInResult(data: Intent?, authCallback: AuthCallbacks<LoginResponse>)
+}
+
 class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, LoginResponse> {
     private val gson = Gson()
     private val client = OkHttpClient()
+    var signInResultListener: GoogleSignInResultListener? = null
+
     override suspend fun loginUser(
         endpointPath: String,
         loginCredentials: String,
@@ -48,8 +55,10 @@ class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, Login
         }
     }
 
-    override fun onButtonClick(context: Context, authCallback: AuthCallback) {
-        Toast.makeText(context, "aaas", Toast.LENGTH_SHORT).show()
+    override fun onButtonClick(context: Context, authCallback: AuthCallback, signInLauncher: ActivityResultLauncher<Intent>) {
+        val googleSignInClient = GoogleSignInClientProvider.getGoogleSignInClient(context)
+        val signInIntent = googleSignInClient.signInIntent
+        signInLauncher.launch(signInIntent)
         // Navigate to some page if needed
 //        authCallback.navigateTo("somePage")
     }

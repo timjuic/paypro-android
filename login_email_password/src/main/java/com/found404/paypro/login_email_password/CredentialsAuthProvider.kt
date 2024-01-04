@@ -2,12 +2,14 @@ package com.found404.paypro.login_email_password
 
 
 import android.content.Context
+import android.content.Intent
+import androidx.activity.result.ActivityResultLauncher
 import com.found404.core.auth.AuthCallback
-import com.found404.core.exceptions.ServerUnreachableException
 import com.found404.core.auth.AuthCallbacks
 import com.found404.core.auth.AuthModule
 import com.found404.core.auth.LoginCredentials
 import com.found404.core.auth.LoginResponse
+import com.found404.core.exceptions.ServerUnreachableException
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -55,7 +57,7 @@ class CredentialsAuthProvider(private val baseUrl: String) :
         }
     }
 
-    override fun onButtonClick(context: Context, authCallback: AuthCallback) {
+    override fun onButtonClick(context: Context, authCallback: AuthCallback, signInLauncher: ActivityResultLauncher<Intent>) {
         // Invoke the callback
         authCallback.navigateTo("login")
 //        callback(context)
