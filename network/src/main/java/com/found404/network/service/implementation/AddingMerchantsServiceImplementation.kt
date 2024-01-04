@@ -1,7 +1,7 @@
 package com.found404.network.service.implementation
 
 import android.content.Context
-import com.found404.createAuthService
+import com.Found404.paypro.AuthDependencyProvider
 import com.found404.network.result.AddingMerchantsResult
 import com.found404.network.service.AddingMerchantService
 import com.google.gson.Gson
@@ -16,7 +16,8 @@ class AddingMerchantsServiceImplementation : AddingMerchantService {
     private val gson = Gson()
     private val client = OkHttpClient()
 
-    private val authService = createAuthService("http://158.220.113.254:8086")
+    private val dependencyProvider = AuthDependencyProvider.getInstance()
+    private val authService = dependencyProvider.getAuthService()
 
     override suspend fun addMerchant(
         context: Context,

@@ -15,7 +15,7 @@ data class Merchant (
 )
 
 data class MerchantResponse(
-    val merchantId: Int,
+    val id: Int,
     val merchantName: String,
     val address: Address,
     val acceptedCards: List<CreditCardType>,
