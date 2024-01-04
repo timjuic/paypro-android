@@ -2,19 +2,12 @@ package com.found404.paypro.login_google
 
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import com.found404.core.AuthCallbacks
-import com.found404.core.AuthModule
 import com.found404.core.auth.AuthCallback
 import com.found404.core.auth.AuthCallbacks
 import com.found404.core.auth.AuthModule
-import com.found404.core.exceptions.ServerUnreachableException
-import com.found404.core.models.LoginResponse
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.found404.core.auth.LoginResponse
+import com.found404.core.exceptions.ServerUnreachableException
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -24,7 +17,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
 interface GoogleSignInResultListener {
-    fun onGoogleSignInResult(data: Intent?)
+    fun onGoogleSignInResult(data: Intent?, authCallback: AuthCallbacks<LoginResponse>)
 }
 
 class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, LoginResponse> {
@@ -60,10 +53,6 @@ class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, Login
                 callbacks.onServerUnreachable(ServerUnreachableException("Server couldn't be reached! Please try again later."))
             }
         }
-    }
-
-    fun handleSignInResult(data: Intent?) {
-        signInResultListener?.onGoogleSignInResult(data)
     }
 
     override fun onButtonClick(context: Context, authCallback: AuthCallback, signInLauncher: ActivityResultLauncher<Intent>) {

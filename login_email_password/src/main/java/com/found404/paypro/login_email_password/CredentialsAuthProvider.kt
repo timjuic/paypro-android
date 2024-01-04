@@ -2,31 +2,14 @@ package com.found404.paypro.login_email_password
 
 
 import android.content.Context
-import com.found404.core.auth.AuthCallback
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import com.found404.core.exceptions.ServerUnreachableException
+import com.found404.core.auth.AuthCallback
 import com.found404.core.auth.AuthCallbacks
 import com.found404.core.auth.AuthModule
 import com.found404.core.auth.LoginCredentials
 import com.found404.core.auth.LoginResponse
+import com.found404.core.exceptions.ServerUnreachableException
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -74,7 +57,7 @@ class CredentialsAuthProvider(private val baseUrl: String) :
         }
     }
 
-    override fun onButtonClick(context: Context, authCallback: AuthCallback) {
+    override fun onButtonClick(context: Context, authCallback: AuthCallback, signInLauncher: ActivityResultLauncher<Intent>) {
         // Invoke the callback
         authCallback.navigateTo("login")
 //        callback(context)
