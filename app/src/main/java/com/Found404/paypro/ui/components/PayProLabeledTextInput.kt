@@ -38,7 +38,8 @@ fun PayProLabeledTextInput(
     validation: ((String) -> Boolean)? = null,
     validationErrorMessage: String? = "Please provide a valid",
     imeAction: ImeAction = ImeAction.Next,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    modifier: Modifier = Modifier // Make the modifier optional with default value
 ) {
     var isFocused by remember { mutableStateOf(false) }
     var showError by remember { mutableStateOf(false) }
@@ -49,7 +50,7 @@ fun PayProLabeledTextInput(
     )
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
     ) {
         Text(

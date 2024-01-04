@@ -11,12 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -53,22 +48,23 @@ fun MerchantName(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding(16.dp)
+//            .padding(16.dp)
             .background(color = Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround,
     ) {
         PayProHeadline(
             text = "What's your merchant name?",
-            modifier = Modifier.padding(
-                vertical = 100.dp,
-                horizontal = 20.dp
-            )
+            textAlignment = TextAlign.Start,
+            modifier = Modifier
+                .padding(vertical = 50.dp, horizontal = 8.dp)
+                .align(Alignment.Start)
         )
         PayProTextInput(
             value = merchantName,
             onValueChange = { newFullName -> merchantName = newFullName },
-            placeholder = "Merchant name"
+            placeholder = "Merchant name",
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         if (showErrorMessage) {
             Text(

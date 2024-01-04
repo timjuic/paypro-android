@@ -17,6 +17,7 @@ import com.Found404.paypro.R
 @Composable
 fun PayProHeadline(
     text: String,
+    textAlignment: TextAlign = TextAlign.Center,
     modifier: Modifier = Modifier,
 ) {
     val customFontFamily = FontFamily(
@@ -28,7 +29,7 @@ fun PayProHeadline(
         fontSize = 50.sp,
         fontWeight = FontWeight.Black,
         style = MaterialTheme.typography.headlineLarge,
-        textAlign = TextAlign.Center,
+        textAlign = textAlignment,
         fontFamily = customFontFamily,
         modifier = modifier
             .padding(all = 10.dp)
