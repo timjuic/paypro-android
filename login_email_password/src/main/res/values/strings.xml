@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PayPro</string>
+    <string name="err_server_unreachable">Server couldn\'t be reached. Try again later</string>
+    <string name="btn_email_login_text">Email login</string>
+</resources>

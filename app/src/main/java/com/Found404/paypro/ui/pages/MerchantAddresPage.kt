@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.found404.ValidationLogic.MerchantDataValidator
+import com.found404.core.models.ValidationLogic.MerchantDataValidator
 import com.found404.core.models.MerchantViewModel
 import com.found404.core.models.SharedPreferencesManager
 

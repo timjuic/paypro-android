@@ -28,7 +28,7 @@ fun PayProTextInput(
         },
         modifier = modifier
             .fillMaxWidth(),
-        placeholder = { Text(text = placeholder) },
+        placeholder = { Text(text = placeholder ) },
         textStyle = LocalTextStyle.current.copy(fontSize = 16.sp),
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Text

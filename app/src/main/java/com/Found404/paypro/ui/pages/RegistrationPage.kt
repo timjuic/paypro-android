@@ -29,9 +29,10 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.Found404.paypro.AuthDependencyProvider
+import com.Found404.paypro.AuthValidator
 import com.Found404.paypro.R
 import com.Found404.paypro.responses.RegistrationResponse
-import com.Found404.paypro.createAuthService
 import com.Found404.paypro.ui.components.PayProLabeledTextInput
 import com.Found404.paypro.ui.components.PayProButton
 import com.Found404.paypro.ui.components.PayProHeadline
@@ -50,8 +51,7 @@ fun RegisterPage(navController: NavController) {
     var firstName by remember { mutableStateOf("")}
     var lastName by remember { mutableStateOf("")}
 
-    val authService = createAuthService("http://158.220.113.254:8086")
-    val authValidator = authService.validator
+    val authService = AuthDependencyProvider.getInstance().getAuthService()
 
     var registrationResponse by remember { mutableStateOf<RegistrationResponse?>(null) }
 
@@ -73,7 +73,7 @@ fun RegisterPage(navController: NavController) {
             value = firstName,
             onValueChange = { newFirstName   -> firstName = newFirstName },
             placeholder = "John",
-            validation = { firstName -> authValidator.validateFirstName(firstName).success }
+            validation = { firstName -> AuthValidator.validateFirstName(firstName).success }
         )
 
         PayProLabeledTextInput(
@@ -81,7 +81,7 @@ fun RegisterPage(navController: NavController) {
             value = lastName,
             onValueChange = { newLastName   -> lastName = newLastName },
             placeholder = "Smith",
-            validation = { lastName -> authValidator.validateFirstName(lastName).success }
+            validation = { lastName -> AuthValidator.validateFirstName(lastName).success }
         )
 
         PayProLabeledTextInput(
@@ -89,14 +89,14 @@ fun RegisterPage(navController: NavController) {
             value = email,
             onValueChange = { newEmail -> email = newEmail },
             placeholder = "John.Smith@gmail.com",
-            validation = { email -> authValidator.validateEmail(email).success }
+            validation = { email -> AuthValidator.validateEmail(email).success }
         )
 
         PayProLabeledTextInput(
             label = "Password",
             value = password,
             onValueChange = { newPassword -> password = newPassword},
-            validation = { email -> authValidator.validateWeakPassword(email).success },
+            validation = { email -> AuthValidator.validateWeakPassword(email).success },
             visualTransformation = PasswordVisualTransformation()
         )
 
@@ -104,7 +104,7 @@ fun RegisterPage(navController: NavController) {
             label = "Repeat Password",
             value = passwordRepeat,
             onValueChange = { newPassword -> passwordRepeat = newPassword},
-            validation = { email -> authValidator.validateWeakPassword(email).success },
+            validation = { email -> AuthValidator.validateWeakPassword(email).success },
             imeAction = ImeAction.Done,
             visualTransformation = PasswordVisualTransformation()
         )
