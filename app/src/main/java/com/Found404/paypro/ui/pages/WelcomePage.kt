@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,14 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -129,51 +120,10 @@ fun WelcomePage(navController: NavController) {
                 factory = { ctx ->
                     LayoutInflater.from(ctx).inflate(layoutId, null, false).apply {
                         findViewById<LinearLayout>(buttonId).setOnClickListener {
-                            authProvider.onButtonClick(ctx, authCallback, signInLauncher)
-//                            navController.navigate("login")
+                            authProvider.onButtonClick(ctx, authCallback)
                         }
                     }
                 }
-            )
-        }
-
-        val customFontFamily = FontFamily(
-            Font(R.font.montserrat_bold, FontWeight.Bold),
-        )
-
-        val annotatedText = buildAnnotatedString {
-            withStyle(style = SpanStyle(color = Color.Black)) {
-                append("Already have an account? ")
-            }
-            withStyle(style = SpanStyle(color = Color.Blue)) {
-                append("Login")
-            }
-        }
-
-        TextButton(
-            onClick = {
-                navController.navigate("login")
-            },
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .fillMaxWidth()
-                .padding(bottom = 20.dp, top = 10.dp)
-        ) {
-            Text(
-                text = annotatedText,
-                fontWeight = FontWeight.Bold,
-                fontFamily = customFontFamily,
-                fontSize = 18.sp,
-            )
-        }
-
-        loginErrorMessage?.let { errorMessage ->
-            Text(
-                text = errorMessage,
-                color = Color.Red,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 4.dp)
             )
         }
     }
