@@ -31,14 +31,11 @@ import com.Found404.paypro.ui.components.PayProLabeledDropdown
 import com.Found404.paypro.ui.components.PayProLabeledTextInput
 import com.Found404.paypro.ui.components.PayProTitle
 import com.Found404.paypro.ui.theme.PurpleGrey40
-import com.found404.ValidationLogic.TerminalDataValidator
+import com.found404.core.models.ValidationLogic.TerminalDataValidator
 import com.found404.core.models.enums.TerminalType
 import com.found404.network.service.implementation.TerminalServiceImpl
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -49,7 +46,7 @@ fun AddingTerminal(navController: NavController, mid: Int = 2) {
     var selectedPosType by remember { mutableStateOf( "") }
     val coroutineScope = CoroutineScope(Dispatchers.Default)
 
-    val validator = TerminalDataValidator();
+    val validator = TerminalDataValidator()
     val context = LocalContext.current
     val terminalService = TerminalServiceImpl(context)
 

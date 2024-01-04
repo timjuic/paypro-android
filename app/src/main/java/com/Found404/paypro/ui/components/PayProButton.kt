@@ -49,7 +49,7 @@ fun PayProButton(
             leadingIcon?.let {
                 Image(
                     painter = painterResource(id = R.drawable.ic_google),
-                    contentDescription = null, // Provide a meaningful description if needed
+                    contentDescription = null,
                     modifier = Modifier.padding(end = 12.dp),
                 )
             }

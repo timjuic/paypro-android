@@ -21,11 +21,18 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.Found404.paypro.createAuthService
+import com.Found404.paypro.AuthDependencyProvider
+import com.Found404.paypro.R
 import com.Found404.paypro.ui.components.PayProButton
 import com.Found404.paypro.ui.components.PayProHeadline
 import com.Found404.paypro.ui.components.PayProLabeledTextInput
 import com.Found404.paypro.ui.components.PayProTitle
+import com.found404.core.AppConfig
+import com.found404.core.auth.AuthCallbacks
+import com.found404.core.auth.LoginCredentials
+import com.found404.core.auth.LoginResponse
+import com.found404.paypro.login_email_password.CredentialsAuthProvider
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
@@ -33,11 +40,14 @@ fun LoginPage(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    val authService = createAuthService("http://158.220.113.254:8086")
+    val authService = AuthDependencyProvider.getInstance().getAuthService()
+    val credentialsAuthProvider = CredentialsAuthProvider(AppConfig.BASE_URL)
 
     val coroutineScope = rememberCoroutineScope()
     var loginErrorMessage by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
+
+
 
     Column(
         modifier = Modifier
@@ -67,17 +77,34 @@ fun LoginPage(navController: NavController) {
             text = "Login",
             onClick = {
                 coroutineScope.launch {
-                    val loginResult = authService.loginUser("/api/auth/login", email, password, context)
+                    try {
+                        val endpointPath = "/api/auth/login"
+                        val loginCredentials = LoginCredentials(email, password)
 
-                    if (loginResult.success) {
+                        val authCallbacks = object : AuthCallbacks<LoginResponse> {
+                            override fun onSuccessfulLogin(response: LoginResponse) {
+                                launch(Dispatchers.Main) {
+                                    authService.saveLoggedInUser(response.data, context)
+                                    navController.navigate("addingMerchants") {
+                                        popUpTo("welcome") {
+                                            inclusive = true
+                                        }
+                                    }
+                                }
+                            }
 
-                        navController.navigate("addingMerchants") {
-                            popUpTo("welcome") {
-                                inclusive = true
+                            override fun onFailedLogin(response: LoginResponse) {
+                                loginErrorMessage = response.message ?: "Invalid Credentials!"
+                            }
+
+                            override fun onServerUnreachable(error: Throwable) {
+                                loginErrorMessage = context.getString(R.string.err_server_unreachable)
                             }
                         }
-                    } else {
-                        loginErrorMessage = loginResult.message ?: "Invalid Credentials!"
+
+                        credentialsAuthProvider.loginUser(endpointPath, loginCredentials, authCallbacks)
+                    } catch (e: Exception) {
+                        println("An error occurred: ${e.message}")
                     }
                 }
             },
