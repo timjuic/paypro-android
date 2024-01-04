@@ -1,6 +1,5 @@
 package com.Found404.paypro.ui.pages
 
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -52,9 +51,22 @@ fun AddingMerchants(navController: NavController) {
                 PayProTitle(text = "PayPro")
             }
             items(merchants) { merchant ->
-                MerchantItem(merchant, onDeleteTerminal = { terminalId ->
+                MerchantItem(merchant,
+                    onDeleteMerchant = { merchantId ->
+                        coroutineScope.launch {
+                            val response = merchantService.deleteMerchant(merchantId, context)
+
+                            if (response?.success == true) {
+                                val updatedMerchants = merchantService.getMerchantsForUser(context)
+                                merchants = updatedMerchants ?: emptyList()
+                            } else {
+                                println("Error deleting merchant: ${response?.errorMessage}")
+                            }
+                        }
+                    },
+                      onDeleteTerminal = { terminalId ->
                     coroutineScope.launch {
-                        val response = merchantService.deleteTerminal(merchant.merchantId, terminalId, context)
+                        val response = merchantService.deleteTerminal(merchant.id, terminalId, context)
                         if (response?.success == true) {
                             val updatedMerchants = merchantService.getMerchantsForUser(context)
                             merchants = updatedMerchants ?: emptyList()

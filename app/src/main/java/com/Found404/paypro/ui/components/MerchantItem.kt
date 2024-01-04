@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,11 +26,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.found404.core.models.MerchantResponse
+import com.found404.network.service.MerchantService
 
 @Composable
-fun MerchantItem(merchant: MerchantResponse, onDeleteTerminal: (String) -> Unit) {
+fun MerchantItem(merchant: MerchantResponse, onDeleteMerchant: (Int) -> Unit, onDeleteTerminal: (String) -> Unit) {
     var showPopup by remember { mutableStateOf(false) }
+    var showMerchantPopup by remember { mutableStateOf(false) }
     var selectedTerminalId by remember { mutableStateOf("") }
+    var additionalInfo by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -48,7 +52,23 @@ fun MerchantItem(merchant: MerchantResponse, onDeleteTerminal: (String) -> Unit)
                 style = TextStyle(fontSize = 14.sp),
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-            Text(text = merchant.merchantName, color = Color.Black, style = TextStyle(fontSize = 30.sp))
+
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+                Text(text = merchant.merchantName, color = Color.Black, style = TextStyle(fontSize = 30.sp))
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Edit Merchant",
+                    modifier = Modifier
+                        .clickable {
+                            showMerchantPopup = true
+                        }
+                        .padding(8.dp)
+                )
+            }
+
             Text(text = "${merchant.address.streetName}, ${merchant.address.city}")
             Text(text = "Street No: ${merchant.address.streetNumber}, Postal Code: ${merchant.address.postalCode}")
 
@@ -80,6 +100,24 @@ fun MerchantItem(merchant: MerchantResponse, onDeleteTerminal: (String) -> Unit)
                 showPopup = false
             },
             onCancel = { showPopup = false }
+        )
+    }
+    if (showMerchantPopup) {
+        DeleteMerchantPopup(
+            merchantId = merchant.id,
+            merchantName = merchant.merchantName,
+            onConfirm = {
+                onDeleteMerchant(merchant.id)
+                showMerchantPopup = false
+            },
+            onCancel = {
+                showMerchantPopup = false
+            },
+            additionalInfo = additionalInfo,
+            onAdditionalInfoChange = { newInfo ->
+                additionalInfo = newInfo
+            },
+            merchantService = MerchantService()
         )
     }
 }
