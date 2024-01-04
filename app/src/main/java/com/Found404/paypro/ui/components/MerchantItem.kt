@@ -34,6 +34,7 @@ fun MerchantItem(merchant: MerchantResponse, onDeleteMerchant: (Int) -> Unit, on
     var showMerchantPopup by remember { mutableStateOf(false) }
     var selectedTerminalId by remember { mutableStateOf("") }
     var additionalInfo by remember { mutableStateOf("") }
+    var resetPressState by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -58,15 +59,18 @@ fun MerchantItem(merchant: MerchantResponse, onDeleteMerchant: (Int) -> Unit, on
                 horizontalArrangement = Arrangement.SpaceBetween
             ){
                 Text(text = merchant.merchantName, color = Color.Black, style = TextStyle(fontSize = 30.sp))
-                Icon(
+
+                PressForDurationIcon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = "Edit Merchant",
-                    modifier = Modifier
-                        .clickable {
-                            showMerchantPopup = true
-                        }
-                        .padding(8.dp)
+                    onLongPress = {
+                        showMerchantPopup = true
+                    },
+                    resetPressState = resetPressState,
+                    onResetPress = { resetPressState = !resetPressState }
                 )
+                println("Reres: " + resetPressState)
+                println("onReset je: ")
             }
 
             Text(text = "${merchant.address.streetName}, ${merchant.address.city}")
@@ -109,9 +113,11 @@ fun MerchantItem(merchant: MerchantResponse, onDeleteMerchant: (Int) -> Unit, on
             onConfirm = {
                 onDeleteMerchant(merchant.id)
                 showMerchantPopup = false
+                resetPressState = !resetPressState
             },
             onCancel = {
                 showMerchantPopup = false
+                resetPressState = !resetPressState
             },
             additionalInfo = additionalInfo,
             onAdditionalInfoChange = { newInfo ->

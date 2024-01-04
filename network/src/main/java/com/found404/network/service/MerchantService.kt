@@ -23,7 +23,7 @@ class MerchantService {
         val user = AuthServiceImpl.getLoggedInUser(context)
         val userID = user.userId
         println("userid  " + userID)
-        val url = "http://158.220.113.254:8086/api/merchant/$userID"
+        val url = "http://158.220.113.254:8086/api/merchant/2"
         val jwtToken = authService.getAuthToken(context)
 
         val request = Request.Builder()
