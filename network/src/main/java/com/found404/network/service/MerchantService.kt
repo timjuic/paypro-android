@@ -2,6 +2,8 @@ package com.found404.network.service
 
 import android.content.Context
 import com.Found404.paypro.AuthDependencyProvider
+import com.Found404.paypro.AuthServiceImpl
+import com.Found404.paypro.responses.RegistrationResponse
 import com.found404.core.models.MerchantResponse
 import com.found404.core.models.Terminal
 import com.google.gson.Gson
@@ -32,6 +34,7 @@ class MerchantService {
         return@withContext try {
             val response = client.newCall(request).execute()
             val responseBody = response.body?.string()
+
             val apiResponseType = object : TypeToken<ApiResponse<List<MerchantResponse>>>() {}.type
             val apiResponse = gson.fromJson<ApiResponse<List<MerchantResponse>>>(responseBody, apiResponseType)
             if (apiResponse.success) {
@@ -50,7 +53,7 @@ class MerchantService {
     suspend fun getTerminalsForAllMerchants(context: Context): List<Terminal>? = withContext(Dispatchers.IO) {
         val merchants = getMerchantsForUser(context) ?: return@withContext emptyList()
         merchants.mapNotNull { merchant ->
-            getTerminalsForMerchant(merchant.merchantId.toString(), context)
+            getTerminalsForMerchant(merchant.id.toString(), context)
         }.flatten()
     }
 
@@ -99,5 +102,31 @@ class MerchantService {
             null
         }
     }
+
+    suspend fun deleteMerchant(merchantId: Int, context: Context): RegistrationResponse? = withContext(Dispatchers.IO) {
+        val url = "http://158.220.113.254:8086/api/merchant/$merchantId"
+        val jwtToken = authService.getAuthToken(context)
+
+        val request = Request.Builder()
+            .url(url)
+            .header("Authorization", "Bearer $jwtToken")
+            .delete()
+            .build()
+
+        return@withContext try {
+            val response = client.newCall(request).execute()
+
+            val responseBody = response.body?.string()
+            gson.fromJson(responseBody, RegistrationResponse::class.java).also {
+                if (!response.isSuccessful) {
+                    println("Error: ${it.errorMessage}")
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
 }
 
