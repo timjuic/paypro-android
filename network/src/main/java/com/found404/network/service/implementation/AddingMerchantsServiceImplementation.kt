@@ -16,8 +16,7 @@ class AddingMerchantsServiceImplementation : AddingMerchantService {
     private val gson = Gson()
     private val client = OkHttpClient()
 
-    private val dependencyProvider = AuthDependencyProvider.getInstance()
-    private val authService = dependencyProvider.getAuthService()
+    private val authService = AuthDependencyProvider.getInstance().getAuthService()
 
     override suspend fun addMerchant(
         context: Context,
@@ -30,7 +29,7 @@ class AddingMerchantsServiceImplementation : AddingMerchantService {
         status: String
     ): AddingMerchantsResult = withContext(Dispatchers.IO) {
 
-
+        val currentUser = authService.getLoggedInUser(context)
 
         val requestBody = gson.toJson(
             mapOf(
@@ -61,7 +60,7 @@ class AddingMerchantsServiceImplementation : AddingMerchantService {
 
         val jwtToken = authService.getAuthToken(context)
         val request = Request.Builder()
-            .url("http://158.220.113.254:8086/api/merchant")
+            .url("http://158.220.113.254:8086/api/merchant/${currentUser.userId}")
             .header("Authorization", "Bearer $jwtToken")
             .post(requestBody)
             .build()
