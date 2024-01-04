@@ -2,7 +2,7 @@ package com.Found404.paypro
 
 import android.content.Context
 import com.auth0.jwt.JWT
-import com.found404.core.models.LoginData
+import com.found404.core.auth.LoginData
 
 
 class UserDataServiceImpl : UserDataService {

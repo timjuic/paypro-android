@@ -1,7 +1,7 @@
 package com.Found404.paypro
 
 import com.found404.core.AppConfig
-import com.found404.core.AuthConfig
+import com.found404.core.auth.AuthConfig
 
 class AuthDependencyProvider private constructor() {
 

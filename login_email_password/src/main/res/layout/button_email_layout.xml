@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/btn_email_login"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="horizontal"
+    android:background="@drawable/button_outline"
+    android:padding="10dp"
+    android:layout_marginBottom="320dp"
+    android:gravity="center">
+
+
+    <TextView
+        android:id="@+id/googleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_email_login_text"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:layout_marginStart="12dp"
+        android:fontFamily="@font/montserrat_bold"/>
+</LinearLayout>

@@ -1,17 +1,20 @@
 package com.found404.paypro.login_google
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import com.found404.core.AuthCallbacks
 import com.found404.core.AuthModule
+import com.found404.core.auth.AuthCallback
+import com.found404.core.auth.AuthCallbacks
+import com.found404.core.auth.AuthModule
 import com.found404.core.exceptions.ServerUnreachableException
 import com.found404.core.models.LoginResponse
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.found404.core.auth.LoginResponse
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -63,10 +66,12 @@ class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, Login
         signInResultListener?.onGoogleSignInResult(data)
     }
 
-    override fun onButtonClick(context: Context, signInLauncher: ActivityResultLauncher<Intent>) {
+    override fun onButtonClick(context: Context, authCallback: AuthCallback, signInLauncher: ActivityResultLauncher<Intent>) {
         val googleSignInClient = GoogleSignInClientProvider.getGoogleSignInClient(context)
         val signInIntent = googleSignInClient.signInIntent
         signInLauncher.launch(signInIntent)
+        // Navigate to some page if needed
+//        authCallback.navigateTo("somePage")
     }
 
     override fun getButtonLayout(context: Context): Int {

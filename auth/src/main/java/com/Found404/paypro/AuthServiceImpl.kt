@@ -3,10 +3,11 @@ package com.Found404.paypro
 
 import android.content.Context
 import com.Found404.paypro.responses.RegistrationResponse
-import com.found404.core.models.LoginData
+import com.found404.core.auth.AuthConfig
+import com.found404.core.auth.LoginData
 
 class AuthServiceImpl(
-    authConfig: com.found404.core.AuthConfig
+    authConfig: AuthConfig
 ) : AuthFacade {
     private lateinit var jwtAuthStrategy: JWTAuthStrategy
     private lateinit var userDataService: UserDataServiceImpl

@@ -2,6 +2,7 @@ package com.found404.paypro.login_email_password
 
 
 import android.content.Context
+import com.found404.core.auth.AuthCallback
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.foundation.BorderStroke
@@ -22,11 +23,10 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import com.found404.core.exceptions.ServerUnreachableException
-import com.found404.core.AuthCallbacks
-import com.found404.core.AuthModule
-import com.found404.core.AuthProviderClickListener
-import com.found404.core.models.LoginCredentials
-import com.found404.core.models.LoginResponse
+import com.found404.core.auth.AuthCallbacks
+import com.found404.core.auth.AuthModule
+import com.found404.core.auth.LoginCredentials
+import com.found404.core.auth.LoginResponse
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -35,7 +35,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class CredentialsAuthProvider(private val baseUrl: String) : AuthModule<LoginCredentials, LoginResponse> {
+class CredentialsAuthProvider(private val baseUrl: String) :
+    AuthModule<LoginCredentials, LoginResponse> {
     private val gson = Gson()
     private val client = OkHttpClient()
 
@@ -73,54 +74,17 @@ class CredentialsAuthProvider(private val baseUrl: String) : AuthModule<LoginCre
         }
     }
 
-    fun DisplayButton(context: Context): @Composable () -> Unit = {
-        val customFontFamily = FontFamily(
-            Font(R.font.montserrat_bold, FontWeight.Bold),
-        )
-
-        OutlinedButton(
-            onClick = {  },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp)
-                .height(50.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-            border = BorderStroke(2.dp, Color.Black),
-            shape = RoundedCornerShape(15.dp)
-        ) {
-
-//                leadingIcon?.let {
-//                    Image(
-//                        painter = painterResource(id = R.drawable.ic_google),
-//                        contentDescription = null,
-//                        modifier = Modifier.padding(end = 12.dp),
-//                    )
-//                }
-
-            Text(
-                text = "Login with email",
-                color = Color.Black,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                fontFamily = customFontFamily
-            )
-        }
-
-        Button(onClick = {
-
-        }) {
-            Text("Credentials Auth")
-        }
-    }
-    override fun onButtonClick(context: Context, signInLauncher: ActivityResultLauncher<Intent>) {
-        TODO("Not yet implemented")
+    override fun onButtonClick(context: Context, authCallback: AuthCallback) {
+        // Invoke the callback
+        authCallback.navigateTo("login")
+//        callback(context)
     }
 
     override fun getButtonLayout(context: Context): Int {
-        TODO("Not yet implemented")
+        return R.layout.button_email_layout
     }
 
     override fun getButtonId(): Int {
-        TODO("Not yet implemented")
+        return R.id.btn_email_login
     }
 }
