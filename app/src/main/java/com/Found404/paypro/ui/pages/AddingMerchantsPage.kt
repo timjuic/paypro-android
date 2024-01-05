@@ -1,5 +1,6 @@
 package com.Found404.paypro.ui.pages
 
+import MerchantItem
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,7 +20,6 @@ import androidx.navigation.NavController
 import com.Found404.paypro.ui.components.PayProTitle
 import com.found404.network.service.MerchantService
 import androidx.compose.ui.platform.LocalContext
-import com.Found404.paypro.ui.components.MerchantItem
 import com.Found404.paypro.ui.components.PayProNavigationDrawer
 import com.found404.core.models.MerchantResponse
 import kotlinx.coroutines.launch
@@ -93,6 +93,20 @@ fun AddingMerchants(navController: NavController) {
                                         println("Error deleting terminal: ${response?.errorMessage}")
                                     }
                                 }
+                            },
+                            onEditMerchant = {merchantId ->
+                                coroutineScope.launch {
+                                    val response = merchantService.editMerchant(context, merchantId.id,
+                                        merchantId.merchantName, merchantId.address.streetName,
+                                        merchantId.address.city, merchantId.address.postalCode,
+                                        merchantId.address.streetNumber.toInt() )
+                                    if (response?.success == true) {
+                                        updateMerchantsList()
+                                    } else {
+                                        println("Error deleting merchant: ${response?.errorMessage}")
+                                    }
+                                }
+
                             }
                         )
                     }
