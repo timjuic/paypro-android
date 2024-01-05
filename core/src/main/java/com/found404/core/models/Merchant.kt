@@ -20,7 +20,7 @@ data class MerchantResponse(
     val address: Address,
     val acceptedCards: List<CreditCardType>,
     val terminals: List<Terminal>,
-    val merchantCreatedAt: String,
+    val createdAt: String,
     val status: Status
 )
 

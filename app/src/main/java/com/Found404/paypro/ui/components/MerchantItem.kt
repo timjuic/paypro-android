@@ -27,9 +27,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.found404.core.models.MerchantResponse
 import com.found404.network.service.MerchantService
-
 @Composable
-fun MerchantItem(merchant: MerchantResponse, onDeleteMerchant: (Int) -> Unit, onDeleteTerminal: (String) -> Unit) {
+fun MerchantItem(
+    merchant: MerchantResponse,
+    onDeleteMerchant: (Int) -> Unit,
+    onDeleteTerminal: (String) -> Unit
+) {
     var showPopup by remember { mutableStateOf(false) }
     var showMerchantPopup by remember { mutableStateOf(false) }
     var selectedTerminalId by remember { mutableStateOf("") }
@@ -53,40 +56,48 @@ fun MerchantItem(merchant: MerchantResponse, onDeleteMerchant: (Int) -> Unit, on
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            Row (
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
-                Text(text = merchant.merchantName, color = Color.Black, style = TextStyle(fontSize = 30.sp))
+            ) {
+                Text(
+                    text = merchant.merchantName,
+                    color = Color.Black,
+                    style = TextStyle(fontSize = 30.sp)
+                )
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = "Edit Merchant",
                     modifier = Modifier
-                        .clickable {
-                            showMerchantPopup = true
-                        }
+                        .clickable { showMerchantPopup = true }
                         .padding(8.dp)
                 )
             }
 
-            Text(text = "${merchant.address.streetName}, ${merchant.address.city}")
-            Text(text = "Street No: ${merchant.address.streetNumber}, Postal Code: ${merchant.address.postalCode}")
+            Text(text = "City: ${merchant.address.city}")
+            Text(text = "Address: ${merchant.address.streetName}")
+            Text(text = "Street No: ${merchant.address.streetNumber}")
+            Text(text = "Postal Code: ${merchant.address.postalCode}")
 
-            merchant.terminals.forEach { terminal ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "Terminal: ${terminal.terminalKey}")
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete Terminal",
-                        modifier = Modifier
-                            .clickable {
-                                selectedTerminalId = terminal.terminalKey
-                                showPopup = true
-                            }
-                    )
+            if (merchant.terminals.isEmpty()) {
+                Text("This merchant has no terminals.", style = TextStyle(fontSize = 16.sp))
+            } else {
+                merchant.terminals.forEach { terminal ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "Terminal: ${terminal.terminalKey}")
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Terminal",
+                            modifier = Modifier
+                                .clickable {
+                                    selectedTerminalId = terminal.terminalKey
+                                    showPopup = true
+                                }
+                        )
+                    }
                 }
             }
         }
@@ -102,6 +113,7 @@ fun MerchantItem(merchant: MerchantResponse, onDeleteMerchant: (Int) -> Unit, on
             onCancel = { showPopup = false }
         )
     }
+
     if (showMerchantPopup) {
         DeleteMerchantPopup(
             merchantId = merchant.id,
@@ -110,13 +122,9 @@ fun MerchantItem(merchant: MerchantResponse, onDeleteMerchant: (Int) -> Unit, on
                 onDeleteMerchant(merchant.id)
                 showMerchantPopup = false
             },
-            onCancel = {
-                showMerchantPopup = false
-            },
+            onCancel = { showMerchantPopup = false },
             additionalInfo = additionalInfo,
-            onAdditionalInfoChange = { newInfo ->
-                additionalInfo = newInfo
-            },
+            onAdditionalInfoChange = { newInfo -> additionalInfo = newInfo },
             merchantService = MerchantService()
         )
     }
