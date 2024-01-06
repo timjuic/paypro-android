@@ -75,12 +75,6 @@ fun MerchantItem(
                     )
                 }
             }
-
-            Text(text = "City: ${merchant.address.city}")
-            Text(text = "Address: ${merchant.address.streetName}")
-            Text(text = "Street No: ${merchant.address.streetNumber}")
-            Text(text = "Postal Code: ${merchant.address.postalCode}")
-
             if (merchant.terminals.isEmpty()) {
                 Text("This merchant has no terminals.", style = TextStyle(fontSize = 16.sp))
             } else {

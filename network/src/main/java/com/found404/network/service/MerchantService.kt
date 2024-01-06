@@ -150,8 +150,6 @@ class MerchantService {
         merchantStreetNumber: Int,
     ): AddingMerchantsResult = withContext(Dispatchers.IO) {
 
-        val currentUser = authService.getLoggedInUser(context)
-
         val requestBody = gson.toJson(
             mapOf(
                 "merchantId" to merchantId,
@@ -179,7 +177,7 @@ class MerchantService {
 
         val jwtToken = authService.getAuthToken(context)
         val request = Request.Builder()
-            .url("http://158.220.113.254:8086/api/merchant/${currentUser.userId}")//TODO CHANGE TO EDIT API
+            .url("http://158.220.113.254:8086/api/merchant/${merchantId}")
             .header("Authorization", "Bearer $jwtToken")
             .post(requestBody)
             .build()
