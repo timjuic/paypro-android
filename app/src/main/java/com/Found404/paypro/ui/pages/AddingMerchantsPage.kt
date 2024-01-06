@@ -55,8 +55,6 @@ fun AddingMerchants(navController: NavController) {
         updateMerchantsList()
     }
 
-    println("merchants " + merchants)
-    println("2")
 
     Box(modifier = Modifier.fillMaxSize()) {
         when (loadingState) {
@@ -70,8 +68,9 @@ fun AddingMerchants(navController: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top
                 ) {
+
                     item { PayProTitle(text = "PayPro") }
-                    println("aaaaa")
+
                     items(merchants) { merchant ->
                         MerchantItem(merchant,
                             onDeleteMerchant = { merchantId ->
@@ -94,19 +93,23 @@ fun AddingMerchants(navController: NavController) {
                                     }
                                 }
                             },
-                            onEditMerchant = {merchantId ->
+                            onEditMerchant = { updatedMerchant ->
                                 coroutineScope.launch {
-                                    val response = merchantService.editMerchant(context, merchantId.id,
-                                        merchantId.merchantName, merchantId.address.streetName,
-                                        merchantId.address.city, merchantId.address.postalCode,
-                                        merchantId.address.streetNumber.toInt() )
+                                    val response = merchantService.editMerchant(
+                                        context,
+                                        updatedMerchant.id,
+                                        updatedMerchant.merchantName,
+                                        updatedMerchant.address.streetName,
+                                        updatedMerchant.address.city,
+                                        updatedMerchant.address.postalCode,
+                                        updatedMerchant.address.streetNumber.toInt()
+                                    )
                                     if (response?.success == true) {
                                         updateMerchantsList()
                                     } else {
-                                        println("Error deleting merchant: ${response?.errorMessage}")
+                                        println("Error updating merchant: ${response?.errorMessage}")
                                     }
                                 }
-
                             }
                         )
                     }

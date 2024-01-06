@@ -24,6 +24,12 @@ data class MerchantResponse(
     val status: Status
 )
 
+data class EditMerchant(
+    val id: Int,
+    val merchantName: String,
+    val address: Address
+)
+
 data class Address(
     val streetName: String,
     val city: String,

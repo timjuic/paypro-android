@@ -15,6 +15,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.Found404.paypro.ui.components.DeleteMerchantPopup
+import com.found404.core.models.EditMerchant
 import com.found404.core.models.MerchantResponse
 import com.found404.network.service.MerchantService
 
@@ -23,7 +24,7 @@ fun MerchantItem(
     merchant: MerchantResponse,
     onDeleteMerchant: (Int) -> Unit,
     onDeleteTerminal: (String) -> Unit,
-    onEditMerchant: (MerchantResponse) -> Unit
+    onEditMerchant: (EditMerchant) -> Unit
 ) {
     var showPopup by remember { mutableStateOf(false) }
     var showMerchantPopup by remember { mutableStateOf(false) }
@@ -115,9 +116,15 @@ fun MerchantItem(
     }
 
     if (showEditMerchantPopup) {
+        val editMerchant = EditMerchant(
+            id = merchant.id,
+            merchantName = merchant.merchantName,
+            address = merchant.address
+        )
+
         EditMerchantPopup(
-            merchant = merchant,
-            onSave = { updatedMerchant ->
+            editMerchant = editMerchant,
+            onConfirm = { updatedMerchant ->
                 onEditMerchant(updatedMerchant)
                 showEditMerchantPopup = false
             },

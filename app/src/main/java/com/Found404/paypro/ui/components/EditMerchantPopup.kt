@@ -9,18 +9,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.found404.core.models.EditMerchant
 import com.found404.core.models.MerchantResponse
 
 @Composable
 fun EditMerchantPopup(
-    merchant: MerchantResponse,
-    onSave: (MerchantResponse) -> Unit,
+    editMerchant: EditMerchant,
+    onConfirm: (EditMerchant) -> Unit,
     onCancel: () -> Unit
 ) {
-    var merchantName by remember { mutableStateOf(merchant.merchantName) }
-    var city by remember { mutableStateOf(merchant.address.city) }
-    var streetName by remember { mutableStateOf(merchant.address.streetName) }
-    var postalCode by remember { mutableStateOf(merchant.address.postalCode.toString()) }
+    var merchantName by remember { mutableStateOf(editMerchant.merchantName) }
+    var city by remember { mutableStateOf(editMerchant.address.city) }
+    var streetName by remember { mutableStateOf(editMerchant.address.streetName) }
+    var postalCode by remember { mutableStateOf(editMerchant.address.postalCode.toString()) }
+    var streetNumber by remember { mutableStateOf(editMerchant.address.streetNumber.toString()) }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -63,7 +65,6 @@ fun EditMerchantPopup(
             OutlinedTextField(
                 value = postalCode,
                 onValueChange = { postalCode = it },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 label = { Text("Postal Code") }
             )
 
@@ -71,15 +72,16 @@ fun EditMerchantPopup(
 
             Row {
                 Button(onClick = {
-                    val updatedMerchant = merchant.copy(
+                    val updatedMerchant = editMerchant.copy(
                         merchantName = merchantName,
-                        address = merchant.address.copy(
+                        address = editMerchant.address.copy(
                             city = city,
                             streetName = streetName,
-                            postalCode = postalCode.toInt()
+                            postalCode = postalCode.toInt(),
+                            streetNumber = streetNumber
                         )
                     )
-                    onSave(updatedMerchant)
+                    onConfirm(updatedMerchant)
                 }) {
                     Text("Save")
                 }
