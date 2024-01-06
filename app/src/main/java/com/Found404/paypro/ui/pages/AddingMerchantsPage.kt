@@ -78,7 +78,7 @@ fun AddingMerchants(navController: NavController) {
             }
         }
 
-        PayProNavigationDrawer(navController)
+       // PayProNavigationDrawer(navController)
 
         FloatingActionButton(
             modifier = Modifier
