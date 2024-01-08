@@ -148,7 +148,14 @@ class MerchantService {
         merchantPostCode: Int,
         merchantStreetNumber: Int,
         acceptedCards: List<Map<String, Any>>,
+        statusFlag: Int
     ): MerchantEditResponse = withContext(Dispatchers.IO) {
+        val (statusId, statusName) = when (statusFlag) {
+            1 -> "1" to "Active"
+            2 -> "2" to "Disabled"
+            else -> "1" to "Active"
+        }
+
         val url = "http://158.220.113.254:8086/api/merchant/${merchantId}"
         val requestBody = gson.toJson(
             mapOf(
@@ -161,8 +168,8 @@ class MerchantService {
                 ),
                 "acceptedCards" to acceptedCards,
                 "status" to mapOf(
-                    "statusId" to "",
-                    "statusName" to ""
+                    "statusId" to statusId,
+                    "statusName" to statusName
                 )
             )
         ).toRequestBody("application/json".toMediaType())

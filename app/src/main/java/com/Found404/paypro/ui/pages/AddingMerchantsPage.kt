@@ -108,7 +108,8 @@ fun AddingMerchants(navController: NavController) {
                                                 "cardBrandId" to card.cardBrandId.toString(),
                                                 "name" to card.name
                                             )
-                                        }
+                                        },
+                                        updatedMerchant.status
                                     )
                                     if (response?.success == true) {
                                         updateMerchantsList()

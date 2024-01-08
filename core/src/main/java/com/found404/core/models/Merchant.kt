@@ -29,6 +29,7 @@ data class EditMerchant(
     val merchantName: String,
     val address: Address,
     val acceptedCards: List<CreditCardType>,
+    val status: Int
 )
 
 data class Address(

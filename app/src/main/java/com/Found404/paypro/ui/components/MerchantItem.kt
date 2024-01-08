@@ -26,6 +26,7 @@ fun MerchantItem(
     onDeleteTerminal: (String) -> Unit,
     onEditMerchant: (EditMerchant) -> Unit
 ) {
+    val merchantEdit: EditMerchant
     var showPopup by remember { mutableStateOf(false) }
     var showMerchantPopup by remember { mutableStateOf(false) }
     var showEditMerchantPopup by remember { mutableStateOf(false) }
@@ -120,7 +121,8 @@ fun MerchantItem(
             id = merchant.id,
             merchantName = merchant.merchantName,
             address = merchant.address,
-            acceptedCards = merchant.acceptedCards
+            acceptedCards = merchant.acceptedCards,
+            status = 1
         )
 
         EditMerchantPopup(

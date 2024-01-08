@@ -2,11 +2,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -15,6 +17,7 @@ import com.found404.core.models.CreditCardType
 import com.found404.core.models.EditMerchant
 import com.found404.core.models.Merchant
 import com.found404.core.models.MerchantResponse
+import com.found404.core.models.StatusType
 import com.found404.network.service.CreditCardsService
 import kotlinx.coroutines.launch
 
@@ -31,6 +34,7 @@ fun EditMerchantPopup(
     var streetNumber by remember { mutableStateOf(editMerchant.address.streetNumber.toString()) }
     var cardTypes: List<CreditCardType> by remember { mutableStateOf(emptyList()) }
     var selectedCardTypes by remember { mutableStateOf(editMerchant.acceptedCards) }
+    var selectedStatus by remember { mutableStateOf(editMerchant.status) }
 
     val coroutineScope = rememberCoroutineScope()
     val creditCardsService = CreditCardsService()
@@ -116,6 +120,23 @@ fun EditMerchantPopup(
                 }
             }
 
+            Text("Status:", style = TextStyle(fontSize = 18.sp))
+            Row {
+                RadioButton(
+                    selected = selectedStatus == 1,
+                    onClick = { selectedStatus = 1 }
+                )
+                Text("Active")
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                RadioButton(
+                    selected = selectedStatus == 2,
+                    onClick = { selectedStatus = 2 }
+                )
+                Text("Disabled")
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             Row {
@@ -128,7 +149,8 @@ fun EditMerchantPopup(
                             postalCode = postalCode.toInt(),
                             streetNumber = streetNumber,
                         ),
-                        acceptedCards = selectedCardTypes
+                        acceptedCards = selectedCardTypes,
+                        status = selectedStatus
                     )
                     onConfirm(updatedMerchant)
                 }) {
