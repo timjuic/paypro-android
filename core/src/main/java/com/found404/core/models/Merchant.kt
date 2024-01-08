@@ -27,7 +27,8 @@ data class MerchantResponse(
 data class EditMerchant(
     val id: Int,
     val merchantName: String,
-    val address: Address
+    val address: Address,
+    val acceptedCards: List<CreditCardType>,
 )
 
 data class Address(
@@ -35,6 +36,15 @@ data class Address(
     val city: String,
     val streetNumber: String,
     val postalCode: Int
+)
+
+data class MerchantEditResponse(
+    val success: Boolean,
+    val message: String,
+    val errorCode: Int? = null,
+    val errorMessage: String? = null,
+    val error: String? = null,
+    val data: EditMerchant? = null
 )
 
 

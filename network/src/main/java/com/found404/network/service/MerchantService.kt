@@ -5,10 +5,9 @@ import com.Found404.paypro.AuthDependencyProvider
 import com.Found404.paypro.AuthServiceImpl
 import com.Found404.paypro.responses.RegistrationResponse
 import com.found404.core.models.Merchant
+import com.found404.core.models.MerchantEditResponse
 import com.found404.core.models.MerchantResponse
 import com.found404.core.models.Terminal
-import com.found404.network.result.AddingMerchantsResult
-import com.found404.network.service.implementation.AddingMerchantsResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
@@ -148,51 +147,67 @@ class MerchantService {
         merchantCityName: String,
         merchantPostCode: Int,
         merchantStreetNumber: Int,
-    ): AddingMerchantsResult = withContext(Dispatchers.IO) {
-
+        acceptedCards: List<Map<String, Any>>,
+    ): MerchantEditResponse = withContext(Dispatchers.IO) {
+        val url = "http://158.220.113.254:8086/api/merchant/${merchantId}"
         val requestBody = gson.toJson(
             mapOf(
-                "merchantId" to merchantId,
                 "merchantName" to merchantName,
                 "address" to mapOf(
                     "city" to merchantCityName,
                     "streetName" to merchantStreetName,
                     "streetNumber" to merchantStreetNumber.toString(),
                     "postalCode" to merchantPostCode.toString()
+                ),
+                "acceptedCards" to acceptedCards,
+                "status" to mapOf(
+                    "statusId" to "",
+                    "statusName" to ""
                 )
             )
         ).toRequestBody("application/json".toMediaType())
-        println("requestbody " + gson.toJson(
+
+        println("requestbody edit" + gson.toJson(
             mapOf(
-                "merchantId" to merchantId,
+                "id" to merchantId,
                 "merchantName" to merchantName,
                 "address" to mapOf(
                     "city" to merchantCityName,
                     "streetName" to merchantStreetName,
                     "streetNumber" to merchantStreetNumber.toString(),
                     "postalCode" to merchantPostCode.toString()
+                ),
+                "acceptedCards" to mapOf(
+                    "cardBrandId" to "1",
+                    "name" to "Diners"
+                ),
+                "status" to mapOf(
+                    "statusId" to "1",
+                    "statusName" to "Active"
                 )
             )
         ).toString())
 
         val jwtToken = authService.getAuthToken(context)
+        print("jwt " + jwtToken)
         val request = Request.Builder()
-            .url("http://158.220.113.254:8086/api/merchant/${merchantId}")
+            .url(url)
             .header("Authorization", "Bearer $jwtToken")
-            .post(requestBody)
+            .put(requestBody)
             .build()
-
+        println("request  " + request)
         return@withContext try {
             val response = client.newCall(request).execute()
             val responseBody = response.body?.string()
-            val result = gson.fromJson(responseBody, AddingMerchantsResponse::class.java)
-            println("success " + result.success)
-            println("message " + result.message)
-            println("errorCode " + result.errorCode)
-            println("errorMessage " + result.errorMessage)
-            AddingMerchantsResult(result.success, result.message, result.errorCode, result.errorMessage)
+            val result = gson.fromJson(responseBody, MerchantEditResponse::class.java)
+            println("success edit " + result.success)
+            println("message edit " + result.message)
+            println("errorCode edit " + result.errorCode)
+            println("errorMessage edit " + result.errorMessage)
+            println("data " + result.data)
+            MerchantEditResponse(result.success, result.message, result.errorCode, result.errorMessage)
         } catch (e: Exception) {
-            AddingMerchantsResult(false, "Editing merchant failed", error = e.message)
+            MerchantEditResponse(false, "Editing merchant failed", error = e.message)
         }
     }
 

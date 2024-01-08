@@ -119,7 +119,8 @@ fun MerchantItem(
         val editMerchant = EditMerchant(
             id = merchant.id,
             merchantName = merchant.merchantName,
-            address = merchant.address
+            address = merchant.address,
+            acceptedCards = merchant.acceptedCards
         )
 
         EditMerchantPopup(
