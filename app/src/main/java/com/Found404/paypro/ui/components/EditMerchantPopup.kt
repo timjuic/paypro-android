@@ -45,15 +45,14 @@
             coroutineScope.launch {
                 try {
                     val retrievedCardTypes = creditCardsService.getCreditCardTypes(context)
-                    print("retrievedCardTypes " + retrievedCardTypes)
                     if (retrievedCardTypes != null && retrievedCardTypes.isNotEmpty()) {
                         cardTypes = retrievedCardTypes
                     } else {
-                        println("Dohvaćanje tipova kartica nije uspjelo.")
+                        println("Unable to retrieve credit cards.")
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    println("Greška prilikom dohvaćanja tipova kartica.")
+                    println("Error while retrieving credit card types.")
                 }
             }
         }
@@ -113,7 +112,6 @@
                             isChecked = checked
                             if (isChecked) {
                                 selectedCardTypes = selectedCardTypes + cardType
-                                println("edit selected card types " + selectedCardTypes)
                             } else {
                                 selectedCardTypes = selectedCardTypes - cardType
                             }

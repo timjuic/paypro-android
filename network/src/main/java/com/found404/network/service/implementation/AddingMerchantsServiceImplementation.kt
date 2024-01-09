@@ -44,19 +44,6 @@ class AddingMerchantsServiceImplementation : AddingMerchantService {
                 "status" to mapOf("statusId" to 1, "statusName" to "Active")
             )
         ).toRequestBody("application/json".toMediaType())
-        println("requestbody " + gson.toJson(
-            mapOf(
-                "merchantName" to merchantName,
-                "address" to mapOf(
-                    "city" to merchantCityName,
-                    "streetName" to merchantStreetName,
-                    "streetNumber" to merchantStreetNumber.toString(),
-                    "postalCode" to merchantPostCode.toString()
-                ),
-                "acceptedCards" to acceptedCards,
-                "status" to mapOf("statusId" to 1, "statusName" to "Active")
-            )
-        ).toString())
 
         val jwtToken = authService.getAuthToken(context)
         val request = Request.Builder()
@@ -69,10 +56,6 @@ class AddingMerchantsServiceImplementation : AddingMerchantService {
             val response = client.newCall(request).execute()
             val responseBody = response.body?.string()
             val result = gson.fromJson(responseBody, AddingMerchantsResponse::class.java)
-            println("success " + result.success)
-            println("message " + result.message)
-            println("errorCode " + result.errorCode)
-            println("errorMessage " + result.errorMessage)
             AddingMerchantsResult(result.success, result.message, result.errorCode, result.errorMessage)
         } catch (e: Exception) {
             AddingMerchantsResult(false, "Adding new merchant failed", error = e.message)

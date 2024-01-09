@@ -174,26 +174,8 @@ class MerchantService {
             )
         ).toRequestBody("application/json".toMediaType())
 
-        println("requestbody edit" + gson.toJson(
-            mapOf(
-                "id" to merchantId,
-                "merchantName" to merchantName,
-                "address" to mapOf(
-                    "city" to merchantCityName,
-                    "streetName" to merchantStreetName,
-                    "streetNumber" to merchantStreetNumber.toString(),
-                    "postalCode" to merchantPostCode.toString()
-                ),
-                "acceptedCards" to acceptedCards,
-                "status" to mapOf(
-                    "statusId" to "1",
-                    "statusName" to "Active"
-                )
-            )
-        ).toString())
-
         val jwtToken = authService.getAuthToken(context)
-        print("jwt " + jwtToken)
+
         val request = Request.Builder()
             .url(url)
             .header("Authorization", "Bearer $jwtToken")
@@ -204,11 +186,6 @@ class MerchantService {
             val response = client.newCall(request).execute()
             val responseBody = response.body?.string()
             val result = gson.fromJson(responseBody, MerchantEditResponse::class.java)
-            println("success edit " + result.success)
-            println("message edit " + result.message)
-            println("errorCode edit " + result.errorCode)
-            println("errorMessage edit " + result.errorMessage)
-            println("data " + result.data)
             MerchantEditResponse(result.success, result.message, result.errorCode, result.errorMessage)
         } catch (e: Exception) {
             MerchantEditResponse(false, "Editing merchant failed", error = e.message)
