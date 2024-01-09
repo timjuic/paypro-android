@@ -103,10 +103,10 @@ fun AddingMerchants(navController: NavController) {
                                         updatedMerchant.address.city,
                                         updatedMerchant.address.postalCode,
                                         updatedMerchant.address.streetNumber.toInt(),
-                                        updatedMerchant.acceptedCards.map { card ->
+                                        updatedMerchant.acceptedCards.map { cardType ->
                                             mapOf(
-                                                "cardBrandId" to card.cardBrandId.toString(),
-                                                "name" to card.name
+                                                "cardBrandId" to cardType.cardBrandId,
+                                                "name" to cardType.name
                                             )
                                         },
                                         updatedMerchant.status

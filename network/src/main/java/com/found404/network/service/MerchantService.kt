@@ -184,10 +184,7 @@ class MerchantService {
                     "streetNumber" to merchantStreetNumber.toString(),
                     "postalCode" to merchantPostCode.toString()
                 ),
-                "acceptedCards" to mapOf(
-                    "cardBrandId" to "1",
-                    "name" to "Diners"
-                ),
+                "acceptedCards" to acceptedCards,
                 "status" to mapOf(
                     "statusId" to "1",
                     "statusName" to "Active"
