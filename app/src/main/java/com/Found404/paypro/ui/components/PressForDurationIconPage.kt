@@ -27,32 +27,30 @@ fun PressForDurationIcon(
 
     DisposableEffect(Unit) {
         if (resetPressState) {
-            isPressed = false // Reset isPressed state when resetPressState changes
-            onResetPress() // Callback to reset press state
+            isPressed = false
+            onResetPress()
         }
         onDispose { }
     }
 
     LaunchedEffect(resetPressState) {
-        // This effect will trigger when resetPressState changes
         var pressedDuration = 0L
         println("Launched efekt je: " + resetPressState)
         while (true) {
             if (pressState.value) {
-                pressedDuration += 100 // Increase by 100 milliseconds
-                if (pressedDuration >= 1000) { // Check if pressed for 2 seconds
+                pressedDuration += 100
+                if (pressedDuration >= 1000) {
                     onLongPress()
-                    isPressed = false // Reset isPressed state after 2 seconds
+                    isPressed = false
                     break
                 }
             } else {
-                pressedDuration = 0 // Reset duration if not pressed
+                pressedDuration = 0
             }
             delay(100)
         }
     }
 
-    // Return the Icon with updated states
     Icon(
         imageVector = imageVector,
         contentDescription = contentDescription,
@@ -63,7 +61,7 @@ fun PressForDurationIcon(
                 onClick = { /* Handle regular click here if needed */ }
             )
             .padding(8.dp),
-        tint = if (isPressed) // Optionally change the tint when pressed
+        tint = if (isPressed)
             Color.Red
         else
             Color.Unspecified
