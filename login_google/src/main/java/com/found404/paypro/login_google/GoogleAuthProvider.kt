@@ -17,6 +17,12 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
+object AuthProviderHolder {
+    var authCallbacks: AuthCallbacks<LoginResponse>? = null
+    var googleAuthProvider: GoogleAuthProvider? = null
+}
+
+
 class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, LoginResponse> {
     private val gson = Gson()
     private val client = OkHttpClient()
@@ -51,7 +57,9 @@ class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, Login
         }
     }
 
-    override fun onButtonClick(context: Context, authCallback: AuthCallback) {
+    override fun onButtonClick(context: Context, authCallback: AuthCallback, callbacks: AuthCallbacks<LoginResponse>) {
+        AuthProviderHolder.authCallbacks = callbacks
+        AuthProviderHolder.googleAuthProvider = this
         val intent = Intent(context, GoogleLoginActivity::class.java)
         context.startActivity(intent)
     }
