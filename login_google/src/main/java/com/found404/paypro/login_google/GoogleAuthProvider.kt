@@ -17,14 +17,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
-interface GoogleSignInResultListener {
-    fun onGoogleSignInResult(data: Intent?, authCallback: AuthCallbacks<LoginResponse>)
-}
-
 class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, LoginResponse> {
     private val gson = Gson()
     private val client = OkHttpClient()
-    var signInResultListener: GoogleSignInResultListener? = null
 
     override suspend fun loginUser(
         endpointPath: String,
@@ -59,9 +54,6 @@ class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, Login
     override fun onButtonClick(context: Context, authCallback: AuthCallback) {
         val intent = Intent(context, GoogleLoginActivity::class.java)
         context.startActivity(intent)
-//        signInLauncher.launch(intent)
-        // Navigate to some page if needed
-//        authCallback.navigateTo("somePage")
     }
 
     override fun getButtonLayout(context: Context): Int {
