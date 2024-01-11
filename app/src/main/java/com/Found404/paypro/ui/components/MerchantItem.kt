@@ -36,7 +36,7 @@ fun MerchantItem(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .padding(vertical = 8.dp)
             .background(color = Color.LightGray, shape = RoundedCornerShape(16.dp))
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {

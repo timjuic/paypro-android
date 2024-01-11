@@ -1,6 +1,5 @@
 package com.Found404.paypro.ui.pages
 
-import MerchantItem
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,6 +19,7 @@ import androidx.navigation.NavController
 import com.Found404.paypro.ui.components.PayProTitle
 import com.found404.network.service.MerchantService
 import androidx.compose.ui.platform.LocalContext
+import com.Found404.paypro.ui.components.MerchantItem
 import com.Found404.paypro.ui.components.PayProNavigationDrawer
 import com.found404.core.models.MerchantResponse
 import kotlinx.coroutines.launch
@@ -55,90 +55,148 @@ fun AddingMerchants(navController: NavController) {
         updateMerchantsList()
     }
 
+    PayProNavigationDrawer(navController = navController) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            when (loadingState) {
+                LoadingState.Loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                LoadingState.Loaded -> {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .padding(bottom = 76.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top
+                    ) {
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        when (loadingState) {
-            LoadingState.Loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            LoadingState.Loaded -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(bottom = 76.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top
-                ) {
+                        item { PayProTitle(text = "PayPro") }
 
-                    item { PayProTitle(text = "PayPro") }
-
-                    items(merchants) { merchant ->
-                        MerchantItem(merchant,
-                            onDeleteMerchant = { merchantId ->
-                                coroutineScope.launch {
-                                    val response = merchantService.deleteMerchant(merchantId, context)
-                                    if (response?.success == true) {
-                                        updateMerchantsList()
-                                    } else {
-                                        println("Error deleting merchant: ${response?.errorMessage}")
+                        items(merchants) { merchant ->
+                            MerchantItem(merchant,
+                                onDeleteMerchant = { merchantId ->
+                                    coroutineScope.launch {
+                                        val response = merchantService.deleteMerchant(merchantId, context)
+                                        if (response?.success == true) {
+                                            updateMerchantsList()
+                                        } else {
+                                            println("Error deleting merchant: ${response?.errorMessage}")
+                                        }
+                                    }
+                                },
+                                onDeleteTerminal = { terminalId ->
+                                    coroutineScope.launch {
+                                        val response = merchantService.deleteTerminal(merchant.id, terminalId, context)
+                                        if (response?.success == true) {
+                                            updateMerchantsList()
+                                        } else {
+                                            println("Error deleting terminal: ${response?.errorMessage}")
+                                        }
+                                    }
+                                },
+                                onEditMerchant = { updatedMerchant ->
+                                    coroutineScope.launch {
+                                        val response = merchantService.editMerchant(
+                                            context,
+                                            updatedMerchant.id,
+                                            updatedMerchant.merchantName,
+                                            updatedMerchant.address.streetName,
+                                            updatedMerchant.address.city,
+                                            updatedMerchant.address.postalCode,
+                                            updatedMerchant.address.streetNumber.toInt(),
+                                            updatedMerchant.acceptedCards.map { cardType ->
+                                                mapOf(
+                                                    "cardBrandId" to cardType.cardBrandId,
+                                                    "name" to cardType.name
+                                                )
+                                            },
+                                            updatedMerchant.status
+                                        )
+                                        if (response?.success == true) {
+                                            updateMerchantsList()
+                                        } else {
+                                            println("Error updating merchant: ${response?.errorMessage}")
+                                        }
                                     }
                                 }
-                            },
-                            onDeleteTerminal = { terminalId ->
-                                coroutineScope.launch {
-                                    val response = merchantService.deleteTerminal(merchant.id, terminalId, context)
-                                    if (response?.success == true) {
-                                        updateMerchantsList()
-                                    } else {
-                                        println("Error deleting terminal: ${response?.errorMessage}")
-                                    }
-                                }
-                            },
-                            onEditMerchant = { updatedMerchant ->
-                                coroutineScope.launch {
-                                    val response = merchantService.editMerchant(
-                                        context,
-                                        updatedMerchant.id,
-                                        updatedMerchant.merchantName,
-                                        updatedMerchant.address.streetName,
-                                        updatedMerchant.address.city,
-                                        updatedMerchant.address.postalCode,
-                                        updatedMerchant.address.streetNumber.toInt(),
-                                        updatedMerchant.acceptedCards.map { cardType ->
-                                            mapOf(
-                                                "cardBrandId" to cardType.cardBrandId,
-                                                "name" to cardType.name
-                                            )
-                                        },
-                                        updatedMerchant.status
-                                    )
-                                    if (response?.success == true) {
-                                        updateMerchantsList()
-                                    } else {
-                                        println("Error updating merchant: ${response?.errorMessage}")
-                                    }
-                                }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
+                LoadingState.Error -> {
+                    Text("Error loading merchants", modifier = Modifier.align(Alignment.Center))
+                }
             }
-            LoadingState.Error -> {
-                Text("Error loading merchants", modifier = Modifier.align(Alignment.Center))
+
+            //PayProNavigationDrawer(navController)
+
+            FloatingActionButton(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
+                onClick = { navController.navigate("merchantName") },
+                shape = CircleShape,
+                containerColor = Color.Blue,
+                contentColor = Color.White
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
             }
-        }
-
-        //PayProNavigationDrawer(navController)
-
-        FloatingActionButton(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
-            onClick = { navController.navigate("merchantName") },
-            shape = CircleShape,
-            containerColor = Color.Blue,
-            contentColor = Color.White
-        ) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
         }
     }
+
+//    Box(modifier = Modifier.fillMaxSize()) {
+//        LazyColumn(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .fillMaxHeight()
+//                .padding(bottom = 76.dp),
+//            horizontalAlignment = Alignment.CenterHorizontally,
+//            verticalArrangement = Arrangement.Top
+//        ) {
+//            item {
+//                PayProTitle(text = "PayPro")
+//            }
+//            items(merchants) { merchant ->
+//                MerchantItem(merchant,
+//                    onDeleteMerchant = { merchantId ->
+//                        coroutineScope.launch {
+//                            val response = merchantService.deleteMerchant(merchantId, context)
+//
+//                            if (response?.success == true) {
+//                                val updatedMerchants = merchantService.getMerchantsForUser(context)
+//                                merchants = updatedMerchants ?: emptyList()
+//                            } else {
+//                                println("Error deleting merchant: ${response?.errorMessage}")
+//                            }
+//                        }
+//                    },
+//                      onDeleteTerminal = { terminalId ->
+//                    coroutineScope.launch {
+//                        val response = merchantService.deleteTerminal(merchant.id, terminalId, context)
+//                        if (response?.success == true) {
+//                            val updatedMerchants = merchantService.getMerchantsForUser(context)
+//                            merchants = updatedMerchants ?: emptyList()
+//                        } else {
+//                            println("Error deleting terminal: ${response?.errorMessage}")
+//                        }
+//                    }
+//                })
+//            }
+//        }
+//
+//        PayProNavigationDrawer(navController)
+//
+//        FloatingActionButton(
+//            modifier = Modifier
+//                .align(Alignment.BottomEnd)
+//                .padding(16.dp),
+//            onClick = {
+//                navController.navigate("merchantName")
+//            },
+//            shape = CircleShape,
+//            containerColor = Color.Blue,
+//            contentColor = Color.White
+//        ) {
+//            Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+//        }
+//    }
 }
