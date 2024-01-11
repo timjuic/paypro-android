@@ -6,8 +6,8 @@ import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,13 +22,11 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
@@ -61,134 +59,133 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PayProNavigationDrawer(
-    navController: NavController
+    navController: NavController,
+    content: @Composable (PaddingValues) -> Unit
 ) {
     val context = LocalContext.current
     val authService = AuthDependencyProvider.getInstance().getAuthService()
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        val navigationItems = listOf(
-            NavigationItem(
-                title = "Home",
-                selectedIcon = Icons.Filled.Home,
-                unselectedIcon = Icons.Outlined.Home
-            ),
-            NavigationItem(
-                title = "Logout",
-                selectedIcon = ImageVector.vectorResource(R.drawable.ic_logout),
-                unselectedIcon = ImageVector.vectorResource(R.drawable.ic_logout),
-                onClick = {
-                    authService.logoutUser(context)
+    val navigationItems = listOf(
+        NavigationItem(
+            title = "Home",
+            selectedIcon = Icons.Filled.Home,
+            unselectedIcon = Icons.Outlined.Home
+        ),
+        NavigationItem(
+            title = "Logout",
+            selectedIcon = ImageVector.vectorResource(R.drawable.ic_logout),
+            unselectedIcon = ImageVector.vectorResource(R.drawable.ic_logout),
+            onClick = {
+                authService.logoutUser(context)
 
-                    navController.navigate("welcome") {
-                        popUpTo("addingMerchants") {
-                            inclusive = true
-                        }
+                navController.navigate("welcome") {
+                    popUpTo("addingMerchants") {
+                        inclusive = true
                     }
                 }
-            )
-        )
-
-        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-        val scope = rememberCoroutineScope()
-        var selectedItemIndex by rememberSaveable {
-            mutableStateOf(0)
-        }
-
-        val customFontFamily = FontFamily(
-            Font(R.font.montserrat_bold, FontWeight.Bold),
-        )
-
-        ModalNavigationDrawer(
-            drawerContent = {
-                ModalDrawerSheet {
-                    DrawerHeader(context)
-
-                    // Divider
-                    Divider(
-                        color = Color.Gray,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                    navigationItems.forEachIndexed { index, item ->
-                        NavigationDrawerItem(
-                            label = {
-                                Text(
-                                    text = item.title,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = customFontFamily,
-                                    modifier = Modifier.padding(start = 20.dp)
-                                )
-                            },
-                            selected = index == selectedItemIndex,
-                            onClick = {
-                                selectedItemIndex = index
-                                scope.launch {
-                                    drawerState.close()
-
-                                    item.onClick?.invoke() ?: item.route?.let {
-                                        navController.navigate(
-                                            it
-                                        )
-                                    }
-                                }
-                            },
-                            icon = {
-                                Icon(
-                                    imageVector = if (index == selectedItemIndex) {
-                                        item.selectedIcon
-                                    } else item.unselectedIcon,
-                                    contentDescription = item.title
-                                )
-                            },
-                            badge = {
-                                item.badgeCount?.let {
-                                    Text(text = item.badgeCount.toString())
-                                }
-                            },
-                            modifier = Modifier
-                                .padding(NavigationDrawerItemDefaults.ItemPadding)
-                        )
-                    }
-                }
-            },
-            drawerState = drawerState
-        ) {
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = {
-                            PayProTitle(text = stringResource(id = R.string.app_name),
-                                modifier = Modifier.padding(10.dp))
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = {
-                                scope.launch {
-                                    drawerState.open()
-                                }
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Default.Menu,
-                                    contentDescription = "Navigation menu",
-                                    modifier = Modifier.size(35.dp)
-                                )
-                            }
-                        }
-                    )
-                }
-            ) {
-
             }
-        }
+        )
+    )
+
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+    var selectedItemIndex by rememberSaveable {
+        mutableStateOf(0)
+    }
+
+    val customFontFamily = FontFamily(
+        Font(R.font.montserrat_bold, FontWeight.Bold),
+    )
+
+    ModalNavigationDrawer(
+        drawerContent = {
+            ModalDrawerSheet {
+                DrawerHeader(context)
+
+                Divider(
+                    color = Color.Gray,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+                navigationItems.forEachIndexed { index, item ->
+                    NavigationDrawerItem(
+                        label = {
+                            Text(
+                                text = item.title,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = customFontFamily,
+                                modifier = Modifier.padding(start = 20.dp)
+                            )
+                        },
+                        selected = index == selectedItemIndex,
+                        onClick = {
+                            selectedItemIndex = index
+                            scope.launch {
+                                drawerState.close()
+
+                                item.onClick?.invoke() ?: item.route?.let {
+                                    navController.navigate(it)
+                                }
+                            }
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = if (index == selectedItemIndex) {
+                                    item.selectedIcon
+                                } else item.unselectedIcon,
+                                contentDescription = item.title
+                            )
+                        },
+                        badge = {
+                            item.badgeCount?.let {
+                                Text(text = item.badgeCount.toString())
+                            }
+                        },
+                        modifier = Modifier
+                            .padding(NavigationDrawerItemDefaults.ItemPadding)
+                    )
+                }
+            }
+        },
+        drawerState = drawerState
+    ) {
+        // Content outside the drawer
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        PayProTitle(
+                            text = stringResource(id = R.string.app_name),
+                            modifier = Modifier.padding(10.dp)
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            scope.launch {
+                                drawerState.open()
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = "Navigation menu",
+                                modifier = Modifier.size(35.dp)
+                            )
+                        }
+                    }
+                )
+            },
+            content = { innerPadding ->
+                // Invoke the lambda to provide the main content
+                content(innerPadding)
+            }
+        )
     }
 }
+
 
 @Composable
 fun DrawerHeader(context: Context) {
@@ -199,34 +196,34 @@ fun DrawerHeader(context: Context) {
         Font(R.font.montserrat_bold, FontWeight.Bold),
     )
 
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Image(
-                painter = painterResource(R.drawable.ic_user),
-                contentDescription = "User Image",
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(CircleShape)
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Image(
+            painter = painterResource(R.drawable.ic_user),
+            contentDescription = "User Image",
+            modifier = Modifier
+                .size(64.dp)
+                .clip(CircleShape)
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        PayProTitle(
+            text = "${user.firstName} ${user.lastName}",
+            fontSize = 20.sp,
+        )
+
+        user.email?.let {
+            Text(
+                text = it,
+                fontSize = 14.sp,
+                color = Color.Gray,
+                fontFamily = customFontFamily
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            PayProTitle(
-                text = "${user.firstName} ${user.lastName}",
-                fontSize = 20.sp,
-            )
-
-            user.email?.let {
-                Text(
-                    text = it,
-                    fontSize = 14.sp,
-                    color = Color.Gray,
-                    fontFamily = customFontFamily
-                )
-            }
         }
+    }
 }
 
 
