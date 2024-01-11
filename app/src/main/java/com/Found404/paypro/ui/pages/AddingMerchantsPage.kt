@@ -1,5 +1,6 @@
 package com.Found404.paypro.ui.pages
 
+import MerchantItem
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,7 +20,6 @@ import androidx.navigation.NavController
 import com.Found404.paypro.ui.components.PayProTitle
 import com.found404.network.service.MerchantService
 import androidx.compose.ui.platform.LocalContext
-import com.Found404.paypro.ui.components.MerchantItem
 import com.Found404.paypro.ui.components.PayProNavigationDrawer
 import com.found404.core.models.MerchantResponse
 import kotlinx.coroutines.launch
@@ -64,12 +64,12 @@ fun AddingMerchants(navController: NavController) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .fillMaxHeight()
-                            .padding(bottom = 76.dp),
+                            .padding(horizontal = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Top
                     ) {
 
-                        item { PayProTitle(text = "PayPro") }
+                        item { PayProTitle(text = "Your Merchants", modifier = Modifier.padding(top = 70.dp)) }
 
                         items(merchants) { merchant ->
                             MerchantItem(merchant,
