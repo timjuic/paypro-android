@@ -1,44 +1,50 @@
-package com.Found404.paypro.ui.components
-
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.Found404.paypro.ui.components.DeleteMerchantPopup
+import com.Found404.paypro.ui.theme.PayProBlack
+import com.Found404.paypro.ui.theme.PayProForeground2
+import com.found404.core.models.EditMerchant
 import com.found404.core.models.MerchantResponse
 import com.found404.network.service.MerchantService
 
 @Composable
-fun MerchantItem(merchant: MerchantResponse, onDeleteMerchant: (Int) -> Unit, onDeleteTerminal: (String) -> Unit) {
+fun MerchantItem(
+    navController: NavController,
+    merchant: MerchantResponse,
+    onDeleteMerchant: (Int) -> Unit,
+    onDeleteTerminal: (String) -> Unit,
+    onEditMerchant: (EditMerchant) -> Unit
+) {
+    val merchantEdit: EditMerchant
     var showPopup by remember { mutableStateOf(false) }
     var showMerchantPopup by remember { mutableStateOf(false) }
+    var showEditMerchantPopup by remember { mutableStateOf(false) }
     var selectedTerminalId by remember { mutableStateOf("") }
     var additionalInfo by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .padding(vertical = 8.dp)
             .background(color = Color.LightGray, shape = RoundedCornerShape(16.dp))
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
@@ -53,55 +59,80 @@ fun MerchantItem(merchant: MerchantResponse, onDeleteMerchant: (Int) -> Unit, on
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            Row (
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
-                Text(text = merchant.merchantName, color = Color.Black, style = TextStyle(fontSize = 30.sp))
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit Merchant",
-                    modifier = Modifier
-                        .clickable {
-                            showMerchantPopup = true
-                        }
-                        .padding(8.dp)
+            ) {
+                Text(
+                    text = merchant.merchantName,
+                    color = Color.Black,
+                    style = TextStyle(fontSize = 30.sp)
                 )
-            }
-
-            Text(text = "${merchant.address.streetName}, ${merchant.address.city}")
-            Text(text = "Street No: ${merchant.address.streetNumber}, Postal Code: ${merchant.address.postalCode}")
-
-            merchant.terminals.forEach { terminal ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "Terminal: ${terminal.terminalKey}")
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit Merchant",
+                        modifier = Modifier
+                            .clickable { showEditMerchantPopup = true }
+                            .padding(8.dp)
+                    )
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete Terminal",
+                        contentDescription = "Delete Merchant",
                         modifier = Modifier
-                            .clickable {
-                                selectedTerminalId = terminal.terminalKey
-                                showPopup = true
-                            }
+                            .clickable { showMerchantPopup = true }
+                            .padding(8.dp)
                     )
                 }
             }
+
+            if (merchant.terminals.isEmpty()) {
+                Text("This merchant has no terminals.", style = TextStyle(fontSize = 16.sp))
+            } else {
+                merchant.terminals.forEach { terminal ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "Terminal: ${terminal.terminalKey}")
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Terminal",
+                            modifier = Modifier
+                                .clickable {
+                                    selectedTerminalId = terminal.terminalKey
+                                    showPopup = true
+                                }
+                        )
+                    }
+                }
+            }
+
+            IconButton(
+                onClick = {
+                    val mid = merchant.id
+                    navController.navigate("addingMerchants?mid=$mid")
+                },
+                modifier = Modifier
+                    .size(35.dp) // Adjust the size as needed
+                    .padding(top = 8.dp) // Add 8dp padding to all sides (acts as margin)
+                    .background(PayProForeground2, CircleShape) // Use PayProForeground2 for light gray
+                    .border(1.dp, PayProBlack, CircleShape) // Add a black border with 1dp width
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add",
+                    tint = PayProBlack // Use PayProBlack for black icon color
+                )
+            }
+
+
+
+
         }
     }
 
-    if (showPopup) {
-        DeleteTerminalPopup(
-            terminalId = selectedTerminalId,
-            onConfirm = {
-                onDeleteTerminal(selectedTerminalId)
-                showPopup = false
-            },
-            onCancel = { showPopup = false }
-        )
-    }
     if (showMerchantPopup) {
         DeleteMerchantPopup(
             merchantId = merchant.id,
@@ -110,14 +141,29 @@ fun MerchantItem(merchant: MerchantResponse, onDeleteMerchant: (Int) -> Unit, on
                 onDeleteMerchant(merchant.id)
                 showMerchantPopup = false
             },
-            onCancel = {
-                showMerchantPopup = false
-            },
+            onCancel = { showMerchantPopup = false },
             additionalInfo = additionalInfo,
-            onAdditionalInfoChange = { newInfo ->
-                additionalInfo = newInfo
-            },
+            onAdditionalInfoChange = { newInfo -> additionalInfo = newInfo },
             merchantService = MerchantService()
+        )
+    }
+
+    if (showEditMerchantPopup) {
+        val editMerchant = EditMerchant(
+            id = merchant.id,
+            merchantName = merchant.merchantName,
+            address = merchant.address,
+            acceptedCards = merchant.acceptedCards,
+            status = 1
+        )
+
+        EditMerchantPopup(
+            editMerchant = editMerchant,
+            onConfirm = { updatedMerchant ->
+                onEditMerchant(updatedMerchant)
+                showEditMerchantPopup = false
+            },
+            onCancel = { showEditMerchantPopup = false }
         )
     }
 }

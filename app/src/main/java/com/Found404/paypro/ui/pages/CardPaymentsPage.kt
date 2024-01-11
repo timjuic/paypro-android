@@ -73,15 +73,14 @@ fun CardPayments(
         coroutineScope.launch {
             try {
                 val retrievedCardTypes = creditCardsService.getCreditCardTypes(context)
-                print("retrievedCardTypes " + retrievedCardTypes)
                 if (retrievedCardTypes != null && retrievedCardTypes.isNotEmpty()) {
                     cardTypes = retrievedCardTypes
                 } else {
-                    println("Dohvaćanje tipova kartica nije uspjelo.")
+                    println("Unable to retrieve credit cards.")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                println("Greška prilikom dohvaćanja tipova kartica.")
+                println("Error while retrieving credit card types.")
             }
         }
     }
@@ -95,7 +94,7 @@ fun CardPayments(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState()) // Added vertical scroll to the Column
+                .verticalScroll(rememberScrollState())
         ) {
             PayProHeadline(
                 text = "Select card payments that you accept",
@@ -161,10 +160,6 @@ fun CardPayments(
                                     sharedPreferencesManager.merchantData.streetNumber,
                                     selectedCards,
                                     defaultStatus
-                                )
-                                println(
-                                    "adding merchants result " + addingMerchantsResult!!.success + " " + addingMerchantsResult!!.errorMessage + " " + addingMerchantsResult!!.message + " "
-
                                 )
                             } else {
                                 withContext(Dispatchers.Main) {
