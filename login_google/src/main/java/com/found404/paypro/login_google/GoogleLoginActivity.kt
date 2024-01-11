@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class GoogleLoginActivity : ComponentActivity() {
+    val context = this
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +35,7 @@ class GoogleLoginActivity : ComponentActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN) {
             CoroutineScope(Dispatchers.Main).launch {
-                GoogleSignInResultHandler.handleSignInResult(data)
+                GoogleSignInResultHandler.handleSignInResult(context, data)
                 finish()
             }
         }
