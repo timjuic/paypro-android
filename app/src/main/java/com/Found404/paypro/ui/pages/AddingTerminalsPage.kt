@@ -100,7 +100,7 @@ fun AddingTerminal(navController: NavController, mid: Int = 2) {
             ) {
                 PayProButton(
                     text = "Cancel",
-                    onClick = { /*TODO*/ },
+                    onClick = { navController.navigate("addingMerchants") },
                     buttonColor = Color.DarkGray,
                     modifier = Modifier.width(150.dp)
                 )
@@ -117,6 +117,7 @@ fun AddingTerminal(navController: NavController, mid: Int = 2) {
                                     withContext(Dispatchers.Main) {
                                         if(response.success) {
                                             Toast.makeText(context, response.message, Toast.LENGTH_SHORT).show()
+                                            navController.navigate("addingMerchants")
                                         }
                                         else {
                                             Toast.makeText(context, response.errorMessage, Toast.LENGTH_SHORT).show()
