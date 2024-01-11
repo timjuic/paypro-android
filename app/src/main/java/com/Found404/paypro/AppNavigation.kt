@@ -19,7 +19,6 @@ import com.Found404.paypro.ui.pages.MerchantCreated
 import com.Found404.paypro.ui.pages.MerchantName
 import com.Found404.paypro.ui.pages.RegisterPage
 import com.Found404.paypro.ui.pages.WelcomePage
-import com.found404.network.service.MerchantService
 
 @Composable
 fun AppNavigation() {
@@ -27,7 +26,6 @@ fun AppNavigation() {
     val navController = rememberNavController()
 
     NavHost(navController, startDestination = "welcome"){
-//        val authServiceImpl = createAuthService("http://158.220.113.254:8086")
         val authServiceImpl = AuthDependencyProvider.getInstance().getAuthService()
 
         composable("welcome") {
@@ -68,8 +66,13 @@ fun AppNavigation() {
         composable("merchantCreated") {
             MerchantCreated(navController = navController)
         }
-        composable("addingTerminals") {
-            AddingTerminal(navController = navController)
+        composable("addingMerchants?mid={mid}") { backStackEntry ->
+            val mid = backStackEntry.arguments?.getString("mid")?.toIntOrNull() ?: 0
+
+            AddingTerminal(navController = navController, mid = mid)
         }
+
+
+
     }
 }

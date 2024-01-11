@@ -1,11 +1,15 @@
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,13 +18,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.Found404.paypro.ui.components.DeleteMerchantPopup
+import com.Found404.paypro.ui.theme.PayProBlack
+import com.Found404.paypro.ui.theme.PayProForeground2
 import com.found404.core.models.EditMerchant
 import com.found404.core.models.MerchantResponse
 import com.found404.network.service.MerchantService
 
 @Composable
 fun MerchantItem(
+    navController: NavController,
     merchant: MerchantResponse,
     onDeleteMerchant: (Int) -> Unit,
     onDeleteTerminal: (String) -> Unit,
@@ -77,6 +85,7 @@ fun MerchantItem(
                     )
                 }
             }
+
             if (merchant.terminals.isEmpty()) {
                 Text("This merchant has no terminals.", style = TextStyle(fontSize = 16.sp))
             } else {
@@ -98,6 +107,29 @@ fun MerchantItem(
                     }
                 }
             }
+
+            IconButton(
+                onClick = {
+                    val mid = merchant.id
+                    navController.navigate("addingMerchants?mid=$mid")
+                },
+                modifier = Modifier
+                    .size(35.dp) // Adjust the size as needed
+                    .padding(top = 8.dp) // Add 8dp padding to all sides (acts as margin)
+                    .background(PayProForeground2, CircleShape) // Use PayProForeground2 for light gray
+                    .border(1.dp, PayProBlack, CircleShape) // Add a black border with 1dp width
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add",
+                    tint = PayProBlack // Use PayProBlack for black icon color
+                )
+            }
+
+
+
+
         }
     }
 
