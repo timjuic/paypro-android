@@ -2,6 +2,7 @@ package com.found404.paypro.login_google
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import com.found404.core.auth.AuthCallback
 import com.found404.core.auth.AuthCallbacks
@@ -56,9 +57,8 @@ class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, Login
     }
 
     override fun onButtonClick(context: Context, authCallback: AuthCallback, signInLauncher: ActivityResultLauncher<Intent>) {
-        val googleSignInClient = GoogleSignInClientProvider.getGoogleSignInClient(context)
-        val signInIntent = googleSignInClient.signInIntent
-        signInLauncher.launch(signInIntent)
+        val intent = Intent(context, GoogleLoginActivity::class.java)
+        signInLauncher.launch(intent)
         // Navigate to some page if needed
 //        authCallback.navigateTo("somePage")
     }
