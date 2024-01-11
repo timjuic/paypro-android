@@ -56,9 +56,10 @@ class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, Login
         }
     }
 
-    override fun onButtonClick(context: Context, authCallback: AuthCallback, signInLauncher: ActivityResultLauncher<Intent>) {
+    override fun onButtonClick(context: Context, authCallback: AuthCallback) {
         val intent = Intent(context, GoogleLoginActivity::class.java)
-        signInLauncher.launch(intent)
+        context.startActivity(intent)
+//        signInLauncher.launch(intent)
         // Navigate to some page if needed
 //        authCallback.navigateTo("somePage")
     }

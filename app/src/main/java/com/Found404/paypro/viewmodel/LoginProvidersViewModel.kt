@@ -14,12 +14,12 @@ import com.found404.paypro.login_google.GoogleSignInResultListener
 import kotlinx.coroutines.launch
 
 
-class LoginProvidersViewModel : ViewModel(), GoogleSignInResultListener {
-    private val googleAuthProvider = GoogleAuthProvider(AppConfig.BASE_URL)
+class LoginProvidersViewModel : ViewModel()/*, GoogleSignInResultListener*/ {
+//    private val googleAuthProvider = GoogleAuthProvider(AppConfig.BASE_URL)
 
-    init {
-        googleAuthProvider.signInResultListener = this
-    }
+//    init {
+//        googleAuthProvider.signInResultListener = this
+//    }
 
     val authModules: List<AuthModule<*, *>> by lazy {
         getModules()
@@ -35,9 +35,9 @@ class LoginProvidersViewModel : ViewModel(), GoogleSignInResultListener {
         return modules
     }
 
-    override fun onGoogleSignInResult(data: Intent?, authCallback: AuthCallbacks<LoginResponse>) {
-        viewModelScope.launch{
-            GoogleSignInResultHandler.handleSignInResult(data, googleAuthProvider, authCallback)
-        }
-    }
+//    override fun onGoogleSignInResult(data: Intent?, authCallback: AuthCallbacks<LoginResponse>) {
+//        viewModelScope.launch{
+//            GoogleSignInResultHandler.handleSignInResult(data, googleAuthProvider, authCallback)
+//        }
+//    }
 }
