@@ -1,10 +1,7 @@
 package com.Found404.paypro.ui.pages
 
-import android.app.Activity
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +16,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -72,14 +68,6 @@ fun WelcomePage(navController: NavController) {
         }
     }
 
-    val signInLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            loginProvidersViewModel.onGoogleSignInResult(result.data, authCallbacks)
-        }
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -115,12 +103,12 @@ fun WelcomePage(navController: NavController) {
             AndroidView(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 10.dp), // Adjust
+                    .padding(bottom = 10.dp),
 
                 factory = { ctx ->
                     LayoutInflater.from(ctx).inflate(layoutId, null, false).apply {
                         findViewById<LinearLayout>(buttonId).setOnClickListener {
-                            authProvider.onButtonClick(ctx, authCallback, signInLauncher)
+                            authProvider.onButtonClick(ctx, authCallback, authCallbacks)
                         }
                     }
                 }
