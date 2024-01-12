@@ -2,12 +2,9 @@ package com.found404.network.service
 
 import android.content.Context
 import com.Found404.paypro.AuthDependencyProvider
-import com.Found404.paypro.AuthServiceImpl
 import com.Found404.paypro.responses.RegistrationResponse
-import com.found404.core.models.Merchant
 import com.found404.core.models.MerchantEditResponse
 import com.found404.core.models.MerchantResponse
-import com.found404.core.models.Terminal
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
@@ -60,34 +57,6 @@ class MerchantService {
         }
     }
 
-
-//    suspend fun getTerminalsForAllMerchants(context: Context): List<Terminal>? = withContext(Dispatchers.IO) {
-//        val merchants = getMerchantsForUser(context) ?: return@withContext emptyList()
-//        merchants.mapNotNull { merchant ->
-//            getTerminalsForMerchant(merchant.id.toString(), context)
-//        }.flatten()
-//    }
-//
-//    private suspend fun getTerminalsForMerchant(merchantId: String, context: Context): List<Terminal>? {
-//        val url = "http://158.220.113.254:8086/api/merchant/${merchantId}/terminal"
-//        val jwtToken = authService.getAuthToken(context)
-//
-//        val request = Request.Builder()
-//            .url(url)
-//            .header("Authorization", "Bearer $jwtToken")
-//            .get()
-//            .build()
-//
-//        return try {
-//            val response = client.newCall(request).execute()
-//            if (!response.isSuccessful) return null
-//            val responseBody = response.body?.string()
-//            val type = object : TypeToken<List<Terminal>>() {}.type
-//            gson.fromJson(responseBody, type)
-//        } catch (e: Exception) {
-//            null
-//        }
-//    }
 
     suspend fun deleteTerminal(merchantId: Int, terminalId: String, context: Context): ApiResponse<Unit>? = withContext(Dispatchers.IO) {
         val url = "http://158.220.113.254:8086/api/merchant/${merchantId}/terminal/${terminalId}"

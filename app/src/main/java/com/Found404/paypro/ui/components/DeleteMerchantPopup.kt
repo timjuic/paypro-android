@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,14 +51,14 @@ fun DeleteMerchantPopup(
             Text("Please confirm that you want to delete $merchantName.")
             Spacer(modifier = Modifier.height(8.dp))
 
-            // TextInput field for additional information
-            TextField(
+
+            PayProTextInput(
                 value = userInput,
                 onValueChange = { newValue ->
                     userInput = newValue
                     onAdditionalInfoChange(newValue)
                 },
-                label = { Text("Enter your full merchant name to delete") },
+                placeholder = "Enter your full merchant name to delete",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
