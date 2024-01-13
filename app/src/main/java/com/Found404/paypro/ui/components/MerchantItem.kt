@@ -31,7 +31,6 @@ import com.found404.network.service.MerchantService
 fun MerchantItem(
     navController: NavController,
     merchant: MerchantResponse,
-    onDeleteMerchant: (Int) -> Unit,
     onDeleteTerminal: (String) -> Unit,
     onEditMerchant: (EditMerchant) -> Unit
 ) {
@@ -138,8 +137,6 @@ fun MerchantItem(
             merchantId = merchant.id,
             merchantName = merchant.merchantName,
             onConfirm = {
-                onDeleteMerchant(merchant.id)
-                showDeleteMerchantPopup = false
                 resetPressState = !resetPressState
             },
             onCancel = {
@@ -150,7 +147,11 @@ fun MerchantItem(
             onAdditionalInfoChange = { newInfo ->
                 additionalInfo = newInfo
             },
-            merchantService = MerchantService()
+            merchantService = MerchantService(),
+            onClose = {
+                showDeleteMerchantPopup = false
+                resetPressState = !resetPressState
+            }
         )
     }
 

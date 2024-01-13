@@ -5,10 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +32,7 @@ fun DeleteMerchantPopup(
     merchantName: String,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
+    onClose: () -> Unit,
     additionalInfo: String,
     onAdditionalInfoChange: (String) -> Unit,
     merchantService: MerchantService
@@ -37,64 +40,79 @@ fun DeleteMerchantPopup(
     val context = LocalContext.current
     var showToast by remember { mutableStateOf(false) }
     var userInput by remember { mutableStateOf("") }
+    var showMessage by remember { mutableStateOf(false) }
 
-    Box(
+    Surface(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .background(color = Color.LightGray, shape = RoundedCornerShape(16.dp))
+            .fillMaxSize()
+            .background(Color.Transparent),
+        shape = RoundedCornerShape(16.dp),
+        color = Color.Transparent
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .background(color = Color.LightGray, shape = RoundedCornerShape(16.dp))
         ) {
-            Text("Please confirm that you want to delete $merchantName.")
-            Spacer(modifier = Modifier.height(8.dp))
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("Please confirm that you want to delete $merchantName.")
+                Spacer(modifier = Modifier.height(8.dp))
 
+                PayProTextInput(
+                    value = userInput,
+                    onValueChange = { newValue ->
+                        userInput = newValue
+                        onAdditionalInfoChange(newValue)
+                    },
+                    placeholder = "Enter your full merchant name to delete",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                )
 
-            PayProTextInput(
-                value = userInput,
-                onValueChange = { newValue ->
-                    userInput = newValue
-                    onAdditionalInfoChange(newValue)
-                },
-                placeholder = "Enter your full merchant name to delete",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            )
-
-            PayProButton(text = "Confirm", onClick = {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val response = merchantService.deleteMerchant(merchantId, context)
-                    withContext(Dispatchers.Main) {
-                        if (response?.success == true && userInput == merchantName) {
-
-                            showToast = true
-                            onConfirm()
-                        } else {
-                            showToast = false
-                            onCancel()
+                PayProButton(
+                    text = "Confirm",
+                    onClick = {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val response = merchantService.deleteMerchant(merchantId, context)
+                            withContext(Dispatchers.Main) {
+                                if (response?.success == true) {
+                                    showToast = true
+                                    showMessage = true
+                                    onConfirm()
+                                } else {
+                                    showToast = false
+                                    onCancel()
+                                }
+                            }
                         }
+                    },
+                    enabled = userInput == merchantName
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                PayProButton(
+                    text = "Cancel",
+                    onClick = {
+                        showToast = false
+                        onCancel()
                     }
-                }
-            })
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            PayProButton(
-                text = "Cancel",
-                onClick = {
-                    showToast = false // Dismiss popup on Cancel button click
-                    onCancel()
-                })
-        }
-    }
-
-    LaunchedEffect(showToast) {
-        if (showToast) {
-            val message = if (showToast) "Merchant deleted successfully" else "Failed to delete merchant or input mismatch"
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                )
+            }
+            if (showToast && showMessage) {
+                MessagePopup(
+                    message = "Merchant $merchantName was successfully deleted",
+                    onDismiss = {
+                        showToast = false
+                        showMessage = false
+                        onClose()
+                    }
+                )
+            }
         }
     }
 }

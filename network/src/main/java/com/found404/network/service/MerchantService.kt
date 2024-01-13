@@ -85,6 +85,7 @@ class MerchantService {
 
     suspend fun deleteMerchant(merchantId: Int, context: Context): RegistrationResponse? = withContext(Dispatchers.IO) {
         val url = "http://158.220.113.254:8086/api/merchant/$merchantId"
+        println("Postoji merchant sa ID" + merchantId)
         val jwtToken = authService.getAuthToken(context)
 
         val request = Request.Builder()
@@ -95,17 +96,14 @@ class MerchantService {
 
         return@withContext try {
             val response = client.newCall(request).execute()
-
             val responseBody = response.body?.string()
-            gson.fromJson(responseBody, RegistrationResponse::class.java).also {
-                if (!response.isSuccessful) {
-                    println("Error: ${it.errorMessage}")
-                }
-            }
+
+            gson.fromJson(responseBody, RegistrationResponse::class.java)
         } catch (e: Exception) {
             e.printStackTrace()
             null
         }
+
     }
 
     suspend fun editMerchant(
