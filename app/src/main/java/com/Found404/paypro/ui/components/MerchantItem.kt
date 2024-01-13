@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.Found404.paypro.ui.components.DeleteMerchantPopup
+import com.Found404.paypro.ui.components.PressForDurationIcon
 import com.Found404.paypro.ui.theme.PayProBlack
 import com.Found404.paypro.ui.theme.PayProForeground2
 import com.found404.core.models.EditMerchant
@@ -36,7 +37,7 @@ fun MerchantItem(
 ) {
     val merchantEdit: EditMerchant
     var showPopup by remember { mutableStateOf(false) }
-    var showMerchantPopup by remember { mutableStateOf(false) }
+    var showDeleteMerchantPopup by remember { mutableStateOf(false) }
     var showEditMerchantPopup by remember { mutableStateOf(false) }
     var selectedTerminalId by remember { mutableStateOf("") }
     var additionalInfo by remember { mutableStateOf("") }
@@ -74,17 +75,13 @@ fun MerchantItem(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "Edit Merchant",
                         onLongPress = {
-                            showMerchantPopup = true
+                            showDeleteMerchantPopup = true
                         },
                         resetPressState = resetPressState,
+                        onClick = {
+                            if (!showDeleteMerchantPopup) showEditMerchantPopup = true
+                        },
                         onResetPress = { resetPressState = !resetPressState }
-                    )
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete Merchant",
-                        modifier = Modifier
-                            .clickable { showMerchantPopup = true }
-                            .padding(8.dp)
                     )
                 }
             }
@@ -136,17 +133,17 @@ fun MerchantItem(
         }
     }
 
-    if (showMerchantPopup) {
+    if (showDeleteMerchantPopup) {
         DeleteMerchantPopup(
             merchantId = merchant.id,
             merchantName = merchant.merchantName,
             onConfirm = {
                 onDeleteMerchant(merchant.id)
-                showMerchantPopup = false
+                showDeleteMerchantPopup = false
                 resetPressState = !resetPressState
             },
             onCancel = {
-                showMerchantPopup = false
+                showDeleteMerchantPopup = false
                 resetPressState = !resetPressState
             },
             additionalInfo = additionalInfo,

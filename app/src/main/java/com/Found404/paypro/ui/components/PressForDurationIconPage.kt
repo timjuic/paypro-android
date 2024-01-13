@@ -18,7 +18,8 @@ fun PressForDurationIcon(
     contentDescription: String,
     onLongPress: () -> Unit,
     resetPressState: Boolean,
-    onResetPress: () -> Unit
+    onResetPress: () -> Unit,
+    onClick: () -> Unit,
 ) {
     var isPressed by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
@@ -58,7 +59,7 @@ fun PressForDurationIcon(
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
-                onClick = { /* Handle regular click here if needed */ }
+                onClick = { onClick() }
             )
             .padding(8.dp),
         tint = if (isPressed)
