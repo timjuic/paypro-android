@@ -10,7 +10,7 @@ interface AddingMerchantService {
         merchantStreetName: String,
         merchantCityName: String,
         merchantPostCode: Int,
-        merchantStreetNumber: Int,
+        merchantStreetNumber: String,
         acceptedCards: List<Map<String, Any>>,
         status: String
     ) : AddingMerchantsResult

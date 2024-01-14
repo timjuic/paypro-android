@@ -27,13 +27,13 @@ object SharedPreferencesManager {
         return sharedPreferences.getString(KEY_MERCHANT_NAME, null)
     }
 
-    fun saveMerchantAddress(context: Context, merchantCity: String, streetName: String, streetNumber: Int, postalCode: Int) {
+    fun saveMerchantAddress(context: Context, merchantCity: String, streetName: String, streetNumber: String, postalCode: Int) {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
         val editor: SharedPreferences.Editor = sharedPreferences.edit()
         editor.putString(KEY_MERCHANT_CITY, merchantCity)
         editor.putString(KEY_STREET_NAME, streetName)
-        editor.putInt(KEY_STREET_NUMBER, streetNumber)
+        editor.putString(KEY_STREET_NUMBER, streetNumber)
         editor.putInt(KEY_POSTAL_CODE, postalCode)
         editor.apply()
     }
@@ -50,10 +50,10 @@ object SharedPreferencesManager {
         return sharedPreferences.getString(KEY_STREET_NAME, null)
     }
 
-    fun getMerchantStreetNumber(context: Context): Int {
+    fun getMerchantStreetNumber(context: Context): String? {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
-        return sharedPreferences.getInt(KEY_STREET_NUMBER, 0)
+        return sharedPreferences.getString(KEY_STREET_NUMBER, null)
     }
 
     fun getMerchantPostCode(context: Context): Int {

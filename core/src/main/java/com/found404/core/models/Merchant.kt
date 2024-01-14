@@ -9,7 +9,7 @@ data class Merchant (
     var cityName: String = "",
     var streetName: String = "",
     var postCode: Int = 0,
-    var streetNumber: Int = 0,
+    var streetNumber: String = "",
     var cardTypes: List<CreditCardType> = emptyList(),
     var status: StatusType = StatusType.ACTIVE
 )

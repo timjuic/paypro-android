@@ -39,7 +39,7 @@ fun MerchantAddress(
     var merchantCity by remember { mutableStateOf("") }
     var merchantPostalCode by remember { mutableStateOf(0) }
     var merchantStreetName by remember { mutableStateOf("") }
-    var merchantStreetNumber by remember { mutableStateOf(0) }
+    var merchantStreetNumber by remember { mutableStateOf("") }
     var showErrorMessage by remember { mutableStateOf(false) }
 
     val validator = MerchantDataValidator()
@@ -81,9 +81,9 @@ fun MerchantAddress(
 
         PayProLabeledTextInput(
             label = "Street Number",
-            value = if (merchantStreetNumber == 0) "" else merchantStreetNumber.toString(),
-            onValueChange = { merchantStreetNumber = it.toIntOrNull() ?: 0 },
-            validation = { merchantStreetNumber -> validator.validateStreetNumber(merchantStreetNumber.toInt()).success },
+            value = merchantStreetNumber,
+            onValueChange = { merchantStreetNumber = it },
+            validation = { merchantStreetNumber -> validator.validateStreetNumber(merchantStreetNumber).success },
             modifier = Modifier.padding(horizontal = 16.dp)
         )
 
@@ -96,34 +96,8 @@ fun MerchantAddress(
         )
 
 
-//        PayProTextInput(
-//            value = merchantCity,
-//            onValueChange = { merchantCity = it },
-//            placeholder = "City name",
-//            modifier = Modifier.padding(16.dp)
-//        )
-//        PayProTextInput(
-//            value = merchantStreetName,
-//            onValueChange = { merchantStreetName = it },
-//            placeholder = "Street name",
-//            modifier = Modifier.padding(16.dp)
-//        )
-//        PayProTextInput(
-//            value = if (merchantStreetNumber == 0) "" else merchantStreetNumber.toString(),
-//            onValueChange = { merchantStreetNumber = it.toIntOrNull() ?: 0 },
-//            placeholder = "Street number",
-//            modifier = Modifier.padding(16.dp)
-//        )
-//        PayProTextInput(
-//            value = if (merchantPostalCode == 0) "" else merchantPostalCode.toString(),
-//            onValueChange = { merchantPostalCode = it.toIntOrNull() ?: 0 },
-//            placeholder = "Postal code",
-//            modifier = Modifier.padding(16.dp)
-//        )
-
         if (showErrorMessage) {
             showErrorMessages(validator, merchantCity, merchantStreetNumber, merchantPostalCode, merchantStreetName)
-//            showTextField(validator, merchantCity, merchantStreetNumber, merchantPostalCode, merchantStreetName)
         }
 
         Box(modifier = Modifier.fillMaxSize()){
@@ -139,7 +113,7 @@ fun MerchantAddress(
                     } else {
                         showErrorMessage = false
                         merchantViewModel.merchantData.cityName = merchantCity
-                        merchantViewModel.merchantData.streetNumber = merchantStreetNumber.toInt()
+                        merchantViewModel.merchantData.streetNumber = merchantStreetNumber
                         merchantViewModel.merchantData.streetName = merchantStreetName
                         merchantViewModel.merchantData.postCode = merchantPostalCode.toInt()
 
@@ -147,7 +121,7 @@ fun MerchantAddress(
                             context,
                             merchantCity,
                             merchantStreetName,
-                            merchantStreetNumber.toInt(),
+                            merchantStreetNumber,
                             merchantPostalCode.toInt()
                         )
 
@@ -180,7 +154,7 @@ fun validate(cityName: String, streetName: String, streetNumber: Int, postCode: 
 fun showErrorMessages(
     validator: MerchantDataValidator,
     merchantCity: String,
-    merchantStreetNumber: Int,
+    merchantStreetNumber: String,
     merchantPostalCode: Int,
     merchantStreetName: String
 ) {
@@ -196,47 +170,13 @@ fun showErrorMessages(
             modifier = Modifier.padding(top = 8.dp)
         )
     }
-
-//    val context = LocalContext.current
-//    if (!validator.validateCityName(merchantCity).success) {
-//        Toast.makeText(
-//            context,
-//            validator.validateCityName(merchantCity).errorMessage,
-//            Toast.LENGTH_SHORT
-//        ).show()
-//    }
-//
-//    if (!validator.validateStreetName(merchantStreetName).success) {
-//        Toast.makeText(
-//            context,
-//            validator.validateStreetName(merchantStreetName).errorMessage,
-//            Toast.LENGTH_SHORT
-//        ).show()
-//    }
-//
-//    if (!validator.validateStreetNumber(merchantStreetNumber).success) {
-//        Toast.makeText(
-//            context,
-//            validator.validateStreetNumber(merchantStreetNumber).errorMessage,
-//            Toast.LENGTH_SHORT
-//        ).show()
-//    }
-//
-//    if (!validator.validatePostCode(merchantPostalCode).success) {
-//        Toast.makeText(
-//            context,
-//            validator.validatePostCode(merchantPostalCode).errorMessage,
-//            Toast.LENGTH_SHORT
-//        ).show()
-//    }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun showTextField(
     validator: MerchantDataValidator,
     merchantCity: String,
-    merchantStreetNumber: Int,
+    merchantStreetNumber: String,
     merchantPostalCode: Int,
     merchantStreetName: String
 ) {
