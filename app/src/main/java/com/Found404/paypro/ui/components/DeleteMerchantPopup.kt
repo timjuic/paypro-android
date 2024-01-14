@@ -26,16 +26,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.compose.runtime.*
+import androidx.navigation.NavController
+
 @Composable
 fun DeleteMerchantPopup(
     merchantId: Int,
     merchantName: String,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
-    onClose: () -> Unit,
+    onClose: (NavController) -> Unit,
     additionalInfo: String,
     onAdditionalInfoChange: (String) -> Unit,
-    merchantService: MerchantService
+    merchantService: MerchantService,
+    navController: NavController
 )  {
     val context = LocalContext.current
     var showToast by remember { mutableStateOf(false) }
@@ -109,7 +112,7 @@ fun DeleteMerchantPopup(
                     onDismiss = {
                         showToast = false
                         showMessage = false
-                        onClose()
+                        onClose(navController)
                     }
                 )
             }
