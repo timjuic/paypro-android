@@ -223,7 +223,7 @@ fun getAllSavedData(context: Context): MerchantViewModel {
     merchantViewModel.merchantData.streetName = SharedPreferencesManager.getMerchantStreetName(context).toString()
     merchantViewModel.merchantData.cityName = SharedPreferencesManager.getMerchantCity(context).toString()
     merchantViewModel.merchantData.postCode = SharedPreferencesManager.getMerchantPostCode(context)
-    merchantViewModel.merchantData.streetNumber = SharedPreferencesManager.getMerchantStreetNumber(context)
+    merchantViewModel.merchantData.streetNumber = SharedPreferencesManager.getMerchantStreetNumber(context).toString()
 
     return merchantViewModel
 }
