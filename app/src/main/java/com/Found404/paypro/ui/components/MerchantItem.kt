@@ -15,26 +15,34 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.Found404.paypro.ui.components.DeleteMerchantPopup
+import com.Found404.paypro.ui.components.MessagePopup
 import com.Found404.paypro.ui.components.PressForDurationIcon
 import com.Found404.paypro.ui.theme.PayProBlack
 import com.Found404.paypro.ui.theme.PayProForeground2
 import com.found404.core.models.EditMerchant
 import com.found404.core.models.MerchantResponse
 import com.found404.network.service.MerchantService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun MerchantItem(
     navController: NavController,
     merchant: MerchantResponse,
-    onDeleteTerminal: (String) -> Unit,
-    onEditMerchant: (EditMerchant) -> Unit
+    onEditMerchant: (EditMerchant) -> Unit,
 ) {
-    val merchantEdit: EditMerchant
+    val context = LocalContext.current
+    var showToast by remember { mutableStateOf(false) }
+    var showMessage by remember { mutableStateOf(false) }
+    val merchantService = MerchantService()
     var showPopup by remember { mutableStateOf(false) }
     var showDeleteMerchantPopup by remember { mutableStateOf(false) }
     var showEditMerchantPopup by remember { mutableStateOf(false) }
@@ -101,6 +109,19 @@ fun MerchantItem(
                                 .clickable {
                                     selectedTerminalId = terminal.terminalKey
                                     showPopup = true
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        println("mid tid " + merchant.id + " " +  terminal.terminalKey,)
+                                        val response = merchantService.deleteTerminal(merchant.id, terminal.terminalId!!, context)
+                                        println("response brisanje " + response)
+                                        withContext(Dispatchers.Main) {
+                                            if (response?.success == true) {
+                                                showToast = true
+                                                showMessage = true
+                                            } else {
+                                                showToast = false
+                                            }
+                                        }
+                                    }
                                 }
                         )
                     }
@@ -171,6 +192,17 @@ fun MerchantItem(
                 showEditMerchantPopup = false
             },
             onCancel = { showEditMerchantPopup = false }
+        )
+    }
+
+    if (showToast && showMessage) {
+        MessagePopup(
+            message = "Terminal successfully deleted",
+            onDismiss = {
+                showToast = false
+                showMessage = false
+                navController.navigate("AddingMerchants")
+            }
         )
     }
 }

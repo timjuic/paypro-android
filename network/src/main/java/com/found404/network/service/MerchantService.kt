@@ -58,7 +58,7 @@ class MerchantService {
     }
 
 
-    suspend fun deleteTerminal(merchantId: Int, terminalId: String, context: Context): ApiResponse<Unit>? = withContext(Dispatchers.IO) {
+    suspend fun deleteTerminal(merchantId: Int, terminalId: Int, context: Context): ApiResponse<Unit>? = withContext(Dispatchers.IO) {
         val url = "http://158.220.113.254:8086/api/merchant/${merchantId}/terminal/${terminalId}"
         val jwtToken = authService.getAuthToken(context)
 

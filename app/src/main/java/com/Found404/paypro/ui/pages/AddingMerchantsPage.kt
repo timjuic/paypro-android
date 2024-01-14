@@ -73,16 +73,6 @@ fun AddingMerchants(navController: NavController) {
 
                         items(merchants) { merchant ->
                             MerchantItem(navController, merchant,
-                                onDeleteTerminal = { terminalId ->
-                                    coroutineScope.launch {
-                                        val response = merchantService.deleteTerminal(merchant.id, terminalId, context)
-                                        if (response?.success == true) {
-                                            updateMerchantsList()
-                                        } else {
-                                            println("Error deleting terminal: ${response?.errorMessage}")
-                                        }
-                                    }
-                                },
                                 onEditMerchant = { updatedMerchant ->
                                     coroutineScope.launch {
                                         val response = merchantService.editMerchant(
@@ -102,7 +92,7 @@ fun AddingMerchants(navController: NavController) {
                                             updatedMerchant.status
                                         )
                                         if (response?.success == true) {
-                                            updateMerchantsList()
+                                            navController.navigate("AddingMerchants")
                                         } else {
                                             println("Error updating merchant: ${response?.errorMessage}")
                                         }
