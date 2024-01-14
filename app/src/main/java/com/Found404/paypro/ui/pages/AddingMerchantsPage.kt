@@ -82,7 +82,7 @@ fun AddingMerchants(navController: NavController) {
                                             updatedMerchant.address.streetName,
                                             updatedMerchant.address.city,
                                             updatedMerchant.address.postalCode,
-                                            updatedMerchant.address.streetNumber.toInt(),
+                                            updatedMerchant.address.streetNumber,
                                             updatedMerchant.acceptedCards.map { cardType ->
                                                 mapOf(
                                                     "cardBrandId" to cardType.cardBrandId,
