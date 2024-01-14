@@ -26,6 +26,7 @@ class TerminalDataValidator {
 
         return Terminal(
             terminalKey = terminalKey,
+            terminalId = null,
             type = TerminalType.valueOf(terminalType).ordinal,
             status = status
         )
