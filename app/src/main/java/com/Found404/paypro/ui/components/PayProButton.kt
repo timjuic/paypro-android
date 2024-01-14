@@ -26,7 +26,8 @@ fun PayProButton(
     modifier: Modifier = Modifier,
     buttonColor: Color = PayProPurple,
     textColor: Color = Color.White,
-    leadingIcon: ImageVector? = null
+    leadingIcon: ImageVector? = null,
+    enabled: Boolean = true
 ) {
     val customFontFamily = FontFamily(
         Font(R.font.montserrat_bold, FontWeight.Bold),
@@ -40,7 +41,8 @@ fun PayProButton(
             .height(50.dp),
         colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
         border = BorderStroke(2.dp, Color.Black),
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(15.dp),
+        enabled = enabled
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
