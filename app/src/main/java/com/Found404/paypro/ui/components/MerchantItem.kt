@@ -169,10 +169,12 @@ fun MerchantItem(
                 additionalInfo = newInfo
             },
             merchantService = MerchantService(),
-            onClose = {
+            onClose = { navController ->
                 showDeleteMerchantPopup = false
                 resetPressState = !resetPressState
-            }
+                navController.navigate("AddingMerchants")
+            },
+            navController = navController
         )
     }
 
