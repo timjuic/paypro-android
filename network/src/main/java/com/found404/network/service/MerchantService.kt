@@ -113,7 +113,7 @@ class MerchantService {
         merchantStreetName: String,
         merchantCityName: String,
         merchantPostCode: Int,
-        merchantStreetNumber: Int,
+        merchantStreetNumber: String,
         acceptedCards: List<Map<String, Any>>,
         statusFlag: Int
     ): MerchantEditResponse = withContext(Dispatchers.IO) {
