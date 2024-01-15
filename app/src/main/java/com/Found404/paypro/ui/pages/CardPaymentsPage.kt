@@ -58,7 +58,6 @@ fun CardPayments(
     val sharedPreferencesManager = getAllSavedData(context)
     val defaultStatus = "Active"
 
-    //val addingMerchantsService = AddingMerchantsServiceImplementation()
     val merchantService = MerchantService()
     val creditCardsService = CreditCardsService()
 

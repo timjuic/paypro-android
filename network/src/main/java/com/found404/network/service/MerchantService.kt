@@ -86,7 +86,6 @@ class MerchantService {
 
     suspend fun deleteMerchant(merchantId: Int, context: Context): RegistrationResponse? = withContext(Dispatchers.IO) {
         val url = "http://158.220.113.254:8086/api/merchant/$merchantId"
-        println("Postoji merchant sa ID" + merchantId)
         val jwtToken = authService.getAuthToken(context)
 
         val request = Request.Builder()
