@@ -40,8 +40,8 @@ import com.found404.core.models.Merchant
 import com.found404.core.models.MerchantViewModel
 import com.found404.core.models.SharedPreferencesManager
 import com.found404.network.result.AddingMerchantsResult
-import com.found404.network.service.implementation.AddingMerchantsServiceImplementation
 import com.found404.network.service.CreditCardsService
+import com.found404.network.service.MerchantService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -58,7 +58,8 @@ fun CardPayments(
     val sharedPreferencesManager = getAllSavedData(context)
     val defaultStatus = "Active"
 
-    val addingMerchantsService = AddingMerchantsServiceImplementation()
+    //val addingMerchantsService = AddingMerchantsServiceImplementation()
+    val merchantService = MerchantService()
     val creditCardsService = CreditCardsService()
 
     var addingMerchantsResult by remember {
@@ -151,7 +152,7 @@ fun CardPayments(
                             }
 
                             if (selectedCards.isNotEmpty()) {
-                                addingMerchantsResult = addingMerchantsService.addMerchant(
+                                addingMerchantsResult = merchantService.addMerchant(
                                     context,
                                     sharedPreferencesManager.merchantData.fullName,
                                     sharedPreferencesManager.merchantData.streetName,
