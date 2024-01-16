@@ -163,17 +163,30 @@ fun CardPayments(
                                 )
                             } else {
                                 withContext(Dispatchers.Main) {
-                                    showErrorMessage = true
-                                    Toast.makeText(
-                                        context,
-                                        "Please select at least one option!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    Toast.makeText(context, "Please select at least one option!", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                            if (atLeastOneChecked) {
-                                navController.navigate("merchantCreated")
-                                showErrorMessage = false
+                            withContext(Dispatchers.Main) {
+                                when (addingMerchantsResult?.errorMessage) {
+                                    "ERR_INVALID_MERCHANT_NAME" -> {
+                                        Toast.makeText(context, "Merchant name is in invalid format or not provided", Toast.LENGTH_LONG).show()
+                                    }
+                                    "ERR_MERCHANT_ALREADY_EXISTS" -> {
+                                        Toast.makeText(context, "Merchant with the same name already exists", Toast.LENGTH_LONG).show()
+                                    }
+                                    "ERR_ACCEPTED_CARDS_NOT_DEFINED" -> {
+                                        Toast.makeText(context, "Not a single accepted card defined", Toast.LENGTH_LONG).show()
+                                    }
+                                    null, "" -> {
+                                        if (atLeastOneChecked) {
+                                            navController.navigate("merchantCreated")
+                                            showErrorMessage = false
+                                        }
+                                    }
+                                    else -> {
+                                        Toast.makeText(context, "An unknown error occurred", Toast.LENGTH_LONG).show()
+                                    }
+                                }
                             }
                         }
                     },
