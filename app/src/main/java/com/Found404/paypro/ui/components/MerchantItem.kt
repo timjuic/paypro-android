@@ -144,10 +144,6 @@ fun MerchantItem(
                     tint = PayProBlack
                 )
             }
-
-
-
-
         }
     }
 

@@ -33,8 +33,9 @@
         var postalCode by remember { mutableStateOf(editMerchant.address.postalCode.toString()) }
         var streetNumber by remember { mutableStateOf(editMerchant.address.streetNumber.toString()) }
         var cardTypes: List<CreditCardType> by remember { mutableStateOf(emptyList()) }
-        var selectedCardTypes: List<CreditCardType> by remember { mutableStateOf(emptyList()) }
+        var selectedCardTypes: List<CreditCardType> by remember { mutableStateOf(editMerchant.acceptedCards) }
         var selectedStatus by remember { mutableStateOf(editMerchant.status) }
+        println("selectedCardTypes " + selectedCardTypes)
 
         val coroutineScope = rememberCoroutineScope()
         val creditCardsService = CreditCardsService()
@@ -103,7 +104,7 @@
 
                 Column(modifier = Modifier.fillMaxWidth()) {
                     cardTypes.forEach { cardType ->
-                        var isChecked by remember { mutableStateOf(cardType in selectedCardTypes) }
+                        var isChecked by remember { mutableStateOf(cardType.cardBrandId in selectedCardTypes.map { it.cardBrandId }) }
                         CreateRow(
                             cardName = cardType.name,
                             cardId = cardType.cardBrandId,
@@ -113,11 +114,12 @@
                             if (isChecked) {
                                 selectedCardTypes = selectedCardTypes + cardType
                             } else {
-                                selectedCardTypes = selectedCardTypes - cardType
+                                selectedCardTypes = selectedCardTypes.filter { it.cardBrandId != cardType.cardBrandId }
                             }
                         }
                     }
                 }
+
 
                 Text("Status:", style = TextStyle(fontSize = 18.sp))
                 Row {
