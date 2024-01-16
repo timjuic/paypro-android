@@ -36,10 +36,17 @@ fun MerchantAddress(
     navController: NavController
 ) {
 
-    var merchantCity by remember { mutableStateOf("") }
-    var merchantPostalCode by remember { mutableStateOf(0) }
-    var merchantStreetName by remember { mutableStateOf("") }
-    var merchantStreetNumber by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val savedMerchantCity = SharedPreferencesManager.getMerchantCity(context) ?: ""
+    val savedMerchantStreetName = SharedPreferencesManager.getMerchantStreetName(context) ?: ""
+    val savedMerchantStreetNumber = SharedPreferencesManager.getMerchantStreetNumber(context) ?: ""
+    val savedMerchantPostalCode = SharedPreferencesManager.getMerchantPostCode(context)
+
+    var merchantCity by remember { mutableStateOf(savedMerchantCity) }
+    var merchantStreetName by remember { mutableStateOf(savedMerchantStreetName) }
+    var merchantStreetNumber by remember { mutableStateOf(savedMerchantStreetNumber) }
+    var merchantPostalCode by remember { mutableStateOf(savedMerchantPostalCode) }
+
     var showErrorMessage by remember { mutableStateOf(false) }
 
     val validator = MerchantDataValidator()
@@ -66,7 +73,10 @@ fun MerchantAddress(
         PayProLabeledTextInput(
             label = "City Name",
             value = merchantCity,
-            onValueChange = { merchantCity = it },
+            onValueChange = {
+                merchantCity = it
+                SharedPreferencesManager.saveMerchantCity(context, it)
+            },
             validation = { merchantCity -> validator.validateCityName(merchantCity).success },
             modifier = Modifier.padding(horizontal = 16.dp)
         )
@@ -74,7 +84,10 @@ fun MerchantAddress(
         PayProLabeledTextInput(
             label = "Street Name",
             value = merchantStreetName,
-            onValueChange = { merchantStreetName = it },
+            onValueChange = {
+                merchantStreetName = it
+                SharedPreferencesManager.saveMerchantStreetName(context, it)
+            },
             validation = { merchantStreetName -> validator.validateStreetName(merchantStreetName).success },
             modifier = Modifier.padding(horizontal = 16.dp)
         )
@@ -82,7 +95,10 @@ fun MerchantAddress(
         PayProLabeledTextInput(
             label = "Street Number",
             value = merchantStreetNumber,
-            onValueChange = { merchantStreetNumber = it },
+            onValueChange = {
+                merchantStreetNumber = it
+                SharedPreferencesManager.saveMerchantStreetNumber(context, it)
+            },
             validation = { merchantStreetNumber -> validator.validateStreetNumber(merchantStreetNumber).success },
             modifier = Modifier.padding(horizontal = 16.dp)
         )
@@ -90,7 +106,10 @@ fun MerchantAddress(
         PayProLabeledTextInput(
             label = "Postal Code",
             value = if (merchantPostalCode == 0) "" else merchantPostalCode.toString(),
-            onValueChange = { merchantPostalCode = it.toIntOrNull() ?: 0 },
+            onValueChange = {
+                merchantPostalCode = it.toIntOrNull() ?: 0
+                SharedPreferencesManager.saveMerchantPostCode(context, merchantPostalCode)
+            },
             validation = { merchantPostalCode -> validator.validatePostCode(merchantPostalCode.toInt()).success },
             modifier = Modifier.padding(horizontal = 16.dp)
         )

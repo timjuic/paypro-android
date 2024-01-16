@@ -22,6 +22,7 @@ import com.found404.network.service.MerchantService
 import androidx.compose.ui.platform.LocalContext
 import com.Found404.paypro.ui.components.PayProNavigationDrawer
 import com.found404.core.models.MerchantResponse
+import com.found404.core.models.SharedPreferencesManager
 import kotlinx.coroutines.launch
 
 enum class LoadingState {
@@ -111,7 +112,9 @@ fun AddingMerchants(navController: NavController) {
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(16.dp),
-                onClick = { navController.navigate("merchantName") },
+                onClick = {
+                    SharedPreferencesManager.clearAll(context)
+                    navController.navigate("merchantName") },
                 shape = CircleShape,
                 containerColor = Color.Blue,
                 contentColor = Color.White
