@@ -1,17 +1,24 @@
-    import androidx.compose.foundation.layout.*
-    import androidx.compose.foundation.text.KeyboardOptions
-    import androidx.compose.material3.Button
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
     import androidx.compose.material3.OutlinedTextField
     import androidx.compose.material3.RadioButton
     import androidx.compose.material3.Text
     import androidx.compose.runtime.*
     import androidx.compose.ui.Alignment
     import androidx.compose.ui.Modifier
-    import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
     import androidx.compose.ui.text.TextStyle
     import androidx.compose.ui.text.input.KeyboardType
     import androidx.compose.ui.unit.dp
     import androidx.compose.ui.unit.sp
+    import androidx.compose.ui.window.Dialog
     import com.Found404.paypro.ui.pages.CreateRow
     import com.found404.core.models.CreditCardType
     import com.found404.core.models.EditMerchant
@@ -35,7 +42,7 @@
         var cardTypes: List<CreditCardType> by remember { mutableStateOf(emptyList()) }
         var selectedCardTypes: List<CreditCardType> by remember { mutableStateOf(editMerchant.acceptedCards) }
         var selectedStatus by remember { mutableStateOf(editMerchant.status) }
-        println("selectedCardTypes " + selectedCardTypes)
+        val scrollState = rememberScrollState()
 
         val coroutineScope = rememberCoroutineScope()
         val creditCardsService = CreditCardsService()
@@ -58,112 +65,121 @@
             }
         }
 
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Column(
+        Dialog(
+           onDismissRequest = onCancel
+        ){
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .size(width = 300.dp, height = 600.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color.Gray)
             ) {
-                Text("Edit Merchant", style = androidx.compose.ui.text.TextStyle(fontSize = 20.sp))
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .verticalScroll(scrollState)
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("Edit Merchant", style = androidx.compose.ui.text.TextStyle(fontSize = 20.sp))
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                OutlinedTextField(
-                    value = merchantName,
-                    onValueChange = { merchantName = it },
-                    label = { Text("Merchant Name") }
-                )
+                    OutlinedTextField(
+                        value = merchantName,
+                        onValueChange = { merchantName = it },
+                        label = { Text("Merchant Name") }
+                    )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
-                    value = city,
-                    onValueChange = { city = it },
-                    label = { Text("City") }
-                )
+                    OutlinedTextField(
+                        value = city,
+                        onValueChange = { city = it },
+                        label = { Text("City") }
+                    )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
-                    value = streetName,
-                    onValueChange = { streetName = it },
-                    label = { Text("Street Name") }
-                )
+                    OutlinedTextField(
+                        value = streetName,
+                        onValueChange = { streetName = it },
+                        label = { Text("Street Name") }
+                    )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
-                    value = postalCode,
-                    onValueChange = { postalCode = it },
-                    label = { Text("Postal Code") }
-                )
+                    OutlinedTextField(
+                        value = postalCode,
+                        onValueChange = { postalCode = it },
+                        label = { Text("Postal Code") }
+                    )
 
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    cardTypes.forEach { cardType ->
-                        var isChecked by remember { mutableStateOf(cardType.cardBrandId in selectedCardTypes.map { it.cardBrandId }) }
-                        CreateRow(
-                            cardName = cardType.name,
-                            cardId = cardType.cardBrandId,
-                            isChecked = isChecked
-                        ) { checked ->
-                            isChecked = checked
-                            if (isChecked) {
-                                selectedCardTypes = selectedCardTypes + cardType
-                            } else {
-                                selectedCardTypes = selectedCardTypes.filter { it.cardBrandId != cardType.cardBrandId }
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        cardTypes.forEach { cardType ->
+                            var isChecked by remember { mutableStateOf(cardType.cardBrandId in selectedCardTypes.map { it.cardBrandId }) }
+                            CreateRow(
+                                cardName = cardType.name,
+                                cardId = cardType.cardBrandId,
+                                isChecked = isChecked
+                            ) { checked ->
+                                isChecked = checked
+                                if (isChecked) {
+                                    selectedCardTypes = selectedCardTypes + cardType
+                                } else {
+                                    selectedCardTypes = selectedCardTypes.filter { it.cardBrandId != cardType.cardBrandId }
+                                }
                             }
                         }
                     }
-                }
 
 
-                Text("Status:", style = TextStyle(fontSize = 18.sp))
-                Row {
-                    RadioButton(
-                        selected = selectedStatus == 1,
-                        onClick = { selectedStatus = 1 }
-                    )
-                    Text("Active")
-
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    RadioButton(
-                        selected = selectedStatus == 2,
-                        onClick = { selectedStatus = 2 }
-                    )
-                    Text("Disabled")
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row {
-                    Button(onClick = {
-                        val updatedMerchant = editMerchant.copy(
-                            merchantName = merchantName,
-                            address = editMerchant.address.copy(
-                                city = city,
-                                streetName = streetName,
-                                postalCode = postalCode.toInt(),
-                                streetNumber = streetNumber,
-                            ),
-                            acceptedCards = selectedCardTypes,
-                            status = selectedStatus
+                    Text("Status:", style = TextStyle(fontSize = 18.sp))
+                    Row {
+                        RadioButton(
+                            selected = selectedStatus == 1,
+                            onClick = { selectedStatus = 1 }
                         )
-                        onConfirm(updatedMerchant)
-                    }) {
-                        Text("Save")
+                        Text("Active")
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        RadioButton(
+                            selected = selectedStatus == 2,
+                            onClick = { selectedStatus = 2 }
+                        )
+                        Text("Disabled")
                     }
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                    Button(onClick = onCancel) {
-                        Text("Cancel")
+                    Row {
+                        Button(onClick = {
+                            val updatedMerchant = editMerchant.copy(
+                                merchantName = merchantName,
+                                address = editMerchant.address.copy(
+                                    city = city,
+                                    streetName = streetName,
+                                    postalCode = postalCode.toInt(),
+                                    streetNumber = streetNumber,
+                                ),
+                                acceptedCards = selectedCardTypes,
+                                status = selectedStatus
+                            )
+                            onConfirm(updatedMerchant)
+                        }) {
+                            Text("Save")
+                        }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Button(onClick = onCancel) {
+                            Text("Cancel")
+                        }
                     }
                 }
             }
         }
+
     }
