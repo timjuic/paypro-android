@@ -39,7 +39,6 @@ import kotlinx.coroutines.launch
 fun WelcomePage(navController: NavController) {
     val loginProvidersViewModel: LoginProvidersViewModel = viewModel()
     val authModules = loginProvidersViewModel.authModules
-    val authCallback = remember { AuthCallbackImpl(navController) }
     var loginErrorMessage by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
 
@@ -47,7 +46,7 @@ fun WelcomePage(navController: NavController) {
 
     val authService = AuthDependencyProvider.getInstance().getAuthService()
 
-    val authCallbacks = object : AuthCallbacks<LoginResponse> {
+    val authCallback = object : AuthCallbacks<LoginResponse> {
         override fun onSuccessfulLogin(response: LoginResponse) {
             coroutineScope.launch(Dispatchers.Main) {
                 authService.saveLoggedInUser(response.data, context)
@@ -108,7 +107,7 @@ fun WelcomePage(navController: NavController) {
                 factory = { ctx ->
                     LayoutInflater.from(ctx).inflate(layoutId, null, false).apply {
                         findViewById<LinearLayout>(buttonId).setOnClickListener {
-                            authProvider.onButtonClick(ctx, authCallback, authCallbacks)
+                            authProvider.onButtonClick(ctx, authCallback)
                         }
                     }
                 }

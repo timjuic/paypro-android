@@ -57,10 +57,9 @@ class CredentialsAuthProvider(private val baseUrl: String) :
         }
     }
 
-    override fun onButtonClick(context: Context, authCallback: AuthCallback/*, signInLauncher: ActivityResultLauncher<Intent>*/, callbacks: AuthCallbacks<LoginResponse>) {
-        // Invoke the callback
-        authCallback.navigateTo("login")
-//        callback(context)
+    override fun onButtonClick(context: Context, authCallback: AuthCallbacks<LoginResponse>) {
+        val intent = Intent(context, EmailLoginActivity::class.java)
+        context.startActivity(intent)
     }
 
     override fun getButtonLayout(context: Context): Int {

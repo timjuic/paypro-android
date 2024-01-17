@@ -57,10 +57,9 @@ class GoogleAuthProvider(private val baseUrl: String) : AuthModule<String, Login
 
     override fun onButtonClick(
         context: Context,
-        authCallback: AuthCallback,
-        callbacks: AuthCallbacks<LoginResponse>
+        authCallback: AuthCallbacks<LoginResponse>
     ) {
-        AuthProviderHolder.authCallbacks = callbacks
+        AuthProviderHolder.authCallbacks = authCallback
         AuthProviderHolder.googleAuthProvider = this
         val intent = Intent(context, GoogleLoginActivity::class.java)
         context.startActivity(intent)
