@@ -19,7 +19,9 @@ import androidx.compose.ui.platform.LocalContext
     import androidx.compose.ui.unit.dp
     import androidx.compose.ui.unit.sp
     import androidx.compose.ui.window.Dialog
-    import com.Found404.paypro.ui.pages.CreateRow
+import com.Found404.paypro.ui.components.PayProButton
+import com.Found404.paypro.ui.components.PayProTextInput
+import com.Found404.paypro.ui.pages.CreateRow
     import com.found404.core.models.CreditCardType
     import com.found404.core.models.EditMerchant
     import com.found404.core.models.Merchant
@@ -28,93 +30,90 @@ import androidx.compose.ui.platform.LocalContext
     import com.found404.network.service.CreditCardsService
     import kotlinx.coroutines.launch
 
-    @Composable
-    fun EditMerchantPopup(
-        editMerchant: EditMerchant,
-        onConfirm: (EditMerchant) -> Unit,
-        onCancel: () -> Unit
-    ) {
-        var merchantName by remember { mutableStateOf(editMerchant.merchantName) }
-        var city by remember { mutableStateOf(editMerchant.address.city) }
-        var streetName by remember { mutableStateOf(editMerchant.address.streetName) }
-        var postalCode by remember { mutableStateOf(editMerchant.address.postalCode.toString()) }
-        var streetNumber by remember { mutableStateOf(editMerchant.address.streetNumber.toString()) }
-        var cardTypes: List<CreditCardType> by remember { mutableStateOf(emptyList()) }
-        var selectedCardTypes: List<CreditCardType> by remember { mutableStateOf(editMerchant.acceptedCards) }
-        var selectedStatus by remember { mutableStateOf(editMerchant.status) }
-        val scrollState = rememberScrollState()
+@Composable
+fun EditMerchantPopup(
+    editMerchant: EditMerchant,
+    onConfirm: (EditMerchant) -> Unit,
+    onCancel: () -> Unit
+) {
+    var merchantName by remember { mutableStateOf(editMerchant.merchantName) }
+    var city by remember { mutableStateOf(editMerchant.address.city) }
+    var streetName by remember { mutableStateOf(editMerchant.address.streetName) }
+    var postalCode by remember { mutableStateOf(editMerchant.address.postalCode.toString()) }
+    var streetNumber by remember { mutableStateOf(editMerchant.address.streetNumber.toString()) }
+    var cardTypes: List<CreditCardType> by remember { mutableStateOf(emptyList()) }
+    var selectedCardTypes: List<CreditCardType> by remember { mutableStateOf(editMerchant.acceptedCards) }
+    var selectedStatus by remember { mutableStateOf(editMerchant.status) }
+    val scrollState = rememberScrollState()
 
-        val coroutineScope = rememberCoroutineScope()
-        val creditCardsService = CreditCardsService()
-        val context = LocalContext.current
-        var merchantModel by remember { mutableStateOf(Merchant()) }
+    val coroutineScope = rememberCoroutineScope()
+    val creditCardsService = CreditCardsService()
+    val context = LocalContext.current
 
-        LaunchedEffect(key1 = true) {
-            coroutineScope.launch {
-                try {
-                    val retrievedCardTypes = creditCardsService.getCreditCardTypes(context)
-                    if (retrievedCardTypes != null && retrievedCardTypes.isNotEmpty()) {
-                        cardTypes = retrievedCardTypes
-                    } else {
-                        println("Unable to retrieve credit cards.")
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    println("Error while retrieving credit card types.")
+    LaunchedEffect(key1 = true) {
+        coroutineScope.launch {
+            try {
+                val retrievedCardTypes = creditCardsService.getCreditCardTypes(context)
+                if (retrievedCardTypes != null && retrievedCardTypes.isNotEmpty()) {
+                    cardTypes = retrievedCardTypes
+                } else {
+                    println("Unable to retrieve credit cards.")
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                println("Error while retrieving credit card types.")
             }
         }
+    }
 
-        Dialog(
-           onDismissRequest = onCancel
-        ){
-            Box(
-                contentAlignment = Alignment.Center,
+    Dialog(onDismissRequest = onCancel) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(width = 300.dp, height = 600.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(Color.Gray)
+        ) {
+            Column(
                 modifier = Modifier
-                    .size(width = 300.dp, height = 600.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color.Gray)
+                    .fillMaxWidth(0.8f)
+                    .verticalScroll(scrollState)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .verticalScroll(scrollState)
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text("Edit Merchant", style = androidx.compose.ui.text.TextStyle(fontSize = 20.sp))
+                PayProButton("Edit Merchant", onClick = {}, enabled = false)
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                    OutlinedTextField(
-                        value = merchantName,
-                        onValueChange = { merchantName = it },
-                        label = { Text("Merchant Name") }
-                    )
+                PayProTextInput(
+                    value = merchantName,
+                    onValueChange = { merchantName = it },
+                    placeholder = "Merchant Name"
+                )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-                    OutlinedTextField(
-                        value = city,
-                        onValueChange = { city = it },
-                        label = { Text("City") }
-                    )
+                PayProTextInput(
+                    value = city,
+                    onValueChange = { city = it },
+                    placeholder = "City"
+                )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-                    OutlinedTextField(
-                        value = streetName,
-                        onValueChange = { streetName = it },
-                        label = { Text("Street Name") }
-                    )
+                PayProTextInput(
+                    value = streetName,
+                    onValueChange = { streetName = it },
+                    placeholder = "Street Name"
+                )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-                    OutlinedTextField(
-                        value = postalCode,
-                        onValueChange = { postalCode = it },
-                        label = { Text("Postal Code") }
-                    )
+                PayProTextInput(
+                    value = postalCode,
+                    onValueChange = { postalCode = it },
+                    placeholder = "Postal Code"
+                )
 
                     Column(modifier = Modifier.fillMaxWidth()) {
                         cardTypes.forEach { cardType ->
@@ -134,52 +133,28 @@ import androidx.compose.ui.platform.LocalContext
                         }
                     }
 
-
-                    Text("Status:", style = TextStyle(fontSize = 18.sp))
-                    Row {
-                        RadioButton(
-                            selected = selectedStatus == 1,
-                            onClick = { selectedStatus = 1 }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    PayProButton(text = "Save", onClick = {
+                        val updatedMerchant = editMerchant.copy(
+                            merchantName = merchantName,
+                            address = editMerchant.address.copy(
+                                city = city,
+                                streetName = streetName,
+                                postalCode = postalCode.toInt(),
+                                streetNumber = streetNumber
+                            ),
+                            acceptedCards = selectedCardTypes,
+                            status = selectedStatus
                         )
-                        Text("Active")
+                        onConfirm(updatedMerchant)
+                    })
 
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        RadioButton(
-                            selected = selectedStatus == 2,
-                            onClick = { selectedStatus = 2 }
-                        )
-                        Text("Disabled")
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Row {
-                        Button(onClick = {
-                            val updatedMerchant = editMerchant.copy(
-                                merchantName = merchantName,
-                                address = editMerchant.address.copy(
-                                    city = city,
-                                    streetName = streetName,
-                                    postalCode = postalCode.toInt(),
-                                    streetNumber = streetNumber,
-                                ),
-                                acceptedCards = selectedCardTypes,
-                                status = selectedStatus
-                            )
-                            onConfirm(updatedMerchant)
-                        }) {
-                            Text("Save")
-                        }
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Button(onClick = onCancel) {
-                            Text("Cancel")
-                        }
-                    }
+                    PayProButton(text = "Cancel", onClick = onCancel)
                 }
             }
         }
-
     }
+}
