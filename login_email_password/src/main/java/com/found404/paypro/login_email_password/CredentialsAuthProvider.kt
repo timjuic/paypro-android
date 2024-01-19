@@ -3,8 +3,6 @@ package com.found404.paypro.login_email_password
 
 import android.content.Context
 import android.content.Intent
-import androidx.activity.result.ActivityResultLauncher
-import com.found404.core.auth.AuthCallback
 import com.found404.core.auth.AuthCallbacks
 import com.found404.core.auth.AuthModule
 import com.found404.core.auth.LoginCredentials
@@ -17,6 +15,11 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+
+object AuthProviderHolder {
+    var authCallbacks: AuthCallbacks<LoginResponse>? = null
+    var credentialsAuthProvider: CredentialsAuthProvider? = null
+}
 
 class CredentialsAuthProvider(private val baseUrl: String) :
     AuthModule<LoginCredentials, LoginResponse> {
@@ -58,6 +61,9 @@ class CredentialsAuthProvider(private val baseUrl: String) :
     }
 
     override fun onButtonClick(context: Context, authCallback: AuthCallbacks<LoginResponse>) {
+        AuthProviderHolder.authCallbacks = authCallback
+        AuthProviderHolder.credentialsAuthProvider = this
+
         val intent = Intent(context, EmailLoginActivity::class.java)
         context.startActivity(intent)
     }

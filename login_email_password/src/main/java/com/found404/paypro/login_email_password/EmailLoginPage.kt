@@ -1,6 +1,7 @@
 package com.found404.paypro.login_email_password
 
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,6 +37,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.found404.core.auth.LoginCredentials
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -216,8 +218,11 @@ fun LoginButton(
     OutlinedButton(
         onClick = {
             coroutineScope.launch {
-                // Perform validation (if necessary)
-                Toast.makeText(context, emailState.text, Toast.LENGTH_SHORT).show()
+                if(Validation(emailState, passwordState)) {
+                    val loginCredentials = LoginCredentials(emailState.text, passwordState.text)
+                    AuthProviderHolder.credentialsAuthProvider!!.loginUser("/api/auth/login", loginCredentials, AuthProviderHolder.authCallbacks!!)
+                    (context as? ComponentActivity)?.finish()
+                }
             }
         },
         modifier = Modifier
@@ -236,6 +241,17 @@ fun LoginButton(
             fontFamily = customFontFamily
         )
     }
+}
+
+fun Validation(
+    emailState: InputState,
+    passwordState: InputState
+): Boolean {
+    val emailRegex = """^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}${'$'}""".toRegex()
+    emailState.isError = !emailRegex.matches(emailState.text)
+    passwordState.isError = passwordState.text.length < 8
+
+    return !emailState.isError && !passwordState.isError
 }
 
 class InputState(initial: String = "") {
