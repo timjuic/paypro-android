@@ -97,17 +97,18 @@ fun WelcomePage(navController: NavController) {
 
         // Load the buttons here
         authModules.forEach { authProvider ->
-            val layoutId = authProvider.getButtonLayout(LocalContext.current)
+            val buttonLayout = authProvider.getButtonLayout(LocalContext.current)
             val buttonId = authProvider.getButtonId()
+            authProvider.initializeState(authCallback)
             AndroidView(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 10.dp),
 
                 factory = { ctx ->
-                    LayoutInflater.from(ctx).inflate(layoutId, null, false).apply {
+                    LayoutInflater.from(ctx).inflate(buttonLayout, null, false).apply {
                         findViewById<LinearLayout>(buttonId).setOnClickListener {
-                            authProvider.onButtonClick(ctx, authCallback)
+                            authProvider.startActivity(ctx)
                         }
                     }
                 }

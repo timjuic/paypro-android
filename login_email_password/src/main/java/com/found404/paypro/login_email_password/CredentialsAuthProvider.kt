@@ -28,8 +28,7 @@ class CredentialsAuthProvider(private val baseUrl: String) :
 
     override suspend fun loginUser(
         endpointPath: String,
-        loginCredentials: LoginCredentials,
-        callbacks: AuthCallbacks<LoginResponse>
+        loginCredentials: LoginCredentials
     ) {
         val requestBody = gson.toJson(
             mapOf(
@@ -43,29 +42,29 @@ class CredentialsAuthProvider(private val baseUrl: String) :
             .post(requestBody)
             .build()
 
-        withContext(Dispatchers.IO) {
-            try {
-                val response = client.newCall(request).execute()
-                val responseBody = response.body?.string()
-                val loginResponse = gson.fromJson(responseBody, LoginResponse::class.java)
-
-                if (loginResponse.success) {
-                    callbacks.onSuccessfulLogin(loginResponse)
-                } else {
-                    callbacks.onFailedLogin(loginResponse)
-                }
-            } catch (e: Exception) {
-                callbacks.onServerUnreachable(ServerUnreachableException("Server couldn't be reached! Please try again later."))
-            }
-        }
+//        withContext(Dispatchers.IO) {
+//            try {
+//                val response = client.newCall(request).execute()
+//                val responseBody = response.body?.string()
+//                val loginResponse = gson.fromJson(responseBody, LoginResponse::class.java)
+//
+//                if (loginResponse.success) {
+//                    callbacks.onSuccessfulLogin(loginResponse)
+//                } else {
+//                    callbacks.onFailedLogin(loginResponse)
+//                }
+//            } catch (e: Exception) {
+//                callbacks.onServerUnreachable(ServerUnreachableException("Server couldn't be reached! Please try again later."))
+//            }
+//        }
     }
 
-    override fun onButtonClick(context: Context, authCallback: AuthCallbacks<LoginResponse>) {
-        AuthProviderHolder.authCallbacks = authCallback
-        AuthProviderHolder.credentialsAuthProvider = this
+    override fun initializeState(callbacks: AuthCallbacks<LoginResponse>) {
 
-        val intent = Intent(context, EmailLoginActivity::class.java)
-        context.startActivity(intent)
+    }
+
+    override fun startActivity(context: Context) {
+
     }
 
     override fun getButtonLayout(context: Context): Int {

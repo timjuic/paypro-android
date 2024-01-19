@@ -220,7 +220,7 @@ fun LoginButton(
             coroutineScope.launch {
                 if(Validation(emailState, passwordState)) {
                     val loginCredentials = LoginCredentials(emailState.text, passwordState.text)
-                    AuthProviderHolder.credentialsAuthProvider!!.loginUser("/api/auth/login", loginCredentials, AuthProviderHolder.authCallbacks!!)
+                    //AuthProviderHolder.credentialsAuthProvider!!.loginUser("/api/auth/login", loginCredentials, AuthProviderHolder.authCallbacks!!)
                     (context as? ComponentActivity)?.finish()
                 }
             }

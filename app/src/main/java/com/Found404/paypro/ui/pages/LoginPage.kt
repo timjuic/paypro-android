@@ -102,7 +102,7 @@ fun LoginPage(navController: NavController) {
                             }
                         }
 
-                        credentialsAuthProvider.loginUser(endpointPath, loginCredentials, authCallbacks)
+                        //credentialsAuthProvider.loginUser(endpointPath, loginCredentials, authCallbacks)
                     } catch (e: Exception) {
                         println("An error occurred: ${e.message}")
                     }

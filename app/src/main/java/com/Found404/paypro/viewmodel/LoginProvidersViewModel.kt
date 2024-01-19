@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.found404.core.AppConfig
 import com.found404.core.auth.AuthModule
 import com.found404.paypro.login_email_password.CredentialsAuthProvider
-import com.found404.paypro.login_google.GoogleAuthProvider
+import com.found404.paypro.login_google.auth.GoogleAuthProvider
 
 
 class LoginProvidersViewModel : ViewModel() {
