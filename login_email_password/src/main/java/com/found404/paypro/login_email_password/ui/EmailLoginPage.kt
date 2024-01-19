@@ -1,9 +1,8 @@
-package com.found404.paypro.login_email_password
+package com.found404.paypro.login_email_password.ui
 
-import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,12 +36,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.found404.core.auth.LoginCredentials
+import com.found404.paypro.login_email_password.R
+import com.found404.paypro.login_email_password.auth.EmailLoginController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun EmailLoginPage() {
+fun EmailLoginPage(emailLoginController: EmailLoginController) {
     val emailState = rememberInputState()
     val passwordState = rememberInputState()
     val coroutineScope = rememberCoroutineScope()
@@ -55,10 +55,12 @@ fun EmailLoginPage() {
     ) {
         Header()
         LoginForm(emailState = emailState, passwordState = passwordState)
+        Spacer(modifier = Modifier.weight(1f))
         LoginButton(
             emailState = emailState,
             passwordState = passwordState,
-            coroutineScope = coroutineScope
+            coroutineScope = coroutineScope,
+            emailLoginController
         )
     }
 }
@@ -112,8 +114,7 @@ fun EmailInputField(emailState: InputState) {
         fontSize = 16.sp,
         fontWeight = FontWeight.Medium,
         fontFamily = customFontFamily,
-        modifier = Modifier
-            .padding(bottom = 3.dp, top = 8.dp)
+        modifier = Modifier.padding(bottom = 3.dp, top = 8.dp)
     )
 
     OutlinedTextField(
@@ -122,13 +123,11 @@ fun EmailInputField(emailState: InputState) {
             emailState.text = newText
         },
         singleLine = true,
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         placeholder = { Text("Email") },
         textStyle = LocalTextStyle.current.copy(fontSize = 16.sp),
         keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Email,
-            imeAction = ImeAction.Next
+            keyboardType = KeyboardType.Email, imeAction = ImeAction.Next
         ),
         shape = RoundedCornerShape(12.dp),
         colors = OutlinedTextFieldDefaults.colors(
@@ -163,8 +162,7 @@ fun PasswordInputField(passwordState: InputState) {
         fontSize = 16.sp,
         fontWeight = FontWeight.Medium,
         fontFamily = customFontFamily,
-        modifier = Modifier
-            .padding(bottom = 3.dp, top = 8.dp)
+        modifier = Modifier.padding(bottom = 3.dp, top = 8.dp)
     )
 
     OutlinedTextField(
@@ -173,13 +171,11 @@ fun PasswordInputField(passwordState: InputState) {
             passwordState.text = newText
         },
         singleLine = true,
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         placeholder = { Text("Password") },
         textStyle = LocalTextStyle.current.copy(fontSize = 16.sp),
         keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Password,
-            imeAction = ImeAction.Done
+            keyboardType = KeyboardType.Password, imeAction = ImeAction.Done
         ),
         shape = RoundedCornerShape(12.dp),
         colors = OutlinedTextFieldDefaults.colors(
@@ -208,7 +204,8 @@ fun PasswordInputField(passwordState: InputState) {
 fun LoginButton(
     emailState: InputState,
     passwordState: InputState,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    emailLoginController: EmailLoginController
 ) {
     val customFontFamily = FontFamily(
         Font(R.font.montserrat_black, FontWeight.Black),
@@ -218,10 +215,8 @@ fun LoginButton(
     OutlinedButton(
         onClick = {
             coroutineScope.launch {
-                if(Validation(emailState, passwordState)) {
-                    val loginCredentials = LoginCredentials(emailState.text, passwordState.text)
-                    //AuthProviderHolder.credentialsAuthProvider!!.loginUser("/api/auth/login", loginCredentials, AuthProviderHolder.authCallbacks!!)
-                    (context as? ComponentActivity)?.finish()
+                if (emailLoginController.validation(emailState, passwordState)) {
+                    emailLoginController.performLogin(emailState.text, passwordState.text, context)
                 }
             }
         },
@@ -241,17 +236,6 @@ fun LoginButton(
             fontFamily = customFontFamily
         )
     }
-}
-
-fun Validation(
-    emailState: InputState,
-    passwordState: InputState
-): Boolean {
-    val emailRegex = """^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}${'$'}""".toRegex()
-    emailState.isError = !emailRegex.matches(emailState.text)
-    passwordState.isError = passwordState.text.length < 8
-
-    return !emailState.isError && !passwordState.isError
 }
 
 class InputState(initial: String = "") {

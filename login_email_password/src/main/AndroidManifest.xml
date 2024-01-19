@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application>
-        <activity android:name="com.found404.paypro.login_email_password.EmailLoginActivity">
+        <activity android:name="com.found404.paypro.login_email_password.ui.EmailLoginActivity">
 
         </activity>
     </application>

@@ -31,7 +31,7 @@ import com.found404.core.AppConfig
 import com.found404.core.auth.AuthCallbacks
 import com.found404.core.auth.LoginCredentials
 import com.found404.core.auth.LoginResponse
-import com.found404.paypro.login_email_password.CredentialsAuthProvider
+import com.found404.paypro.login_email_password.auth.CredentialsAuthProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
