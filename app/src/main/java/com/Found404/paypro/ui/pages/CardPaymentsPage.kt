@@ -40,8 +40,8 @@ import com.found404.core.models.Merchant
 import com.found404.core.models.MerchantViewModel
 import com.found404.core.models.SharedPreferencesManager
 import com.found404.network.result.AddingMerchantsResult
-import com.found404.network.service.implementation.AddingMerchantsServiceImplementation
 import com.found404.network.service.CreditCardsService
+import com.found404.network.service.MerchantService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -58,7 +58,7 @@ fun CardPayments(
     val sharedPreferencesManager = getAllSavedData(context)
     val defaultStatus = "Active"
 
-    val addingMerchantsService = AddingMerchantsServiceImplementation()
+    val merchantService = MerchantService()
     val creditCardsService = CreditCardsService()
 
     var addingMerchantsResult by remember {
@@ -151,7 +151,7 @@ fun CardPayments(
                             }
 
                             if (selectedCards.isNotEmpty()) {
-                                addingMerchantsResult = addingMerchantsService.addMerchant(
+                                addingMerchantsResult = merchantService.addMerchant(
                                     context,
                                     sharedPreferencesManager.merchantData.fullName,
                                     sharedPreferencesManager.merchantData.streetName,
@@ -163,17 +163,30 @@ fun CardPayments(
                                 )
                             } else {
                                 withContext(Dispatchers.Main) {
-                                    showErrorMessage = true
-                                    Toast.makeText(
-                                        context,
-                                        "Please select at least one option!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    Toast.makeText(context, "Please select at least one option!", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                            if (atLeastOneChecked) {
-                                navController.navigate("merchantCreated")
-                                showErrorMessage = false
+                            withContext(Dispatchers.Main) {
+                                when (addingMerchantsResult?.errorMessage) {
+                                    "ERR_INVALID_MERCHANT_NAME" -> {
+                                        Toast.makeText(context, "Merchant name is in invalid format or not provided", Toast.LENGTH_LONG).show()
+                                    }
+                                    "ERR_MERCHANT_ALREADY_EXISTS" -> {
+                                        Toast.makeText(context, "Merchant with the same name already exists", Toast.LENGTH_LONG).show()
+                                    }
+                                    "ERR_ACCEPTED_CARDS_NOT_DEFINED" -> {
+                                        Toast.makeText(context, "Not a single accepted card defined", Toast.LENGTH_LONG).show()
+                                    }
+                                    null, "" -> {
+                                        if (atLeastOneChecked) {
+                                            navController.navigate("merchantCreated")
+                                            showErrorMessage = false
+                                        }
+                                    }
+                                    else -> {
+                                        Toast.makeText(context, "An unknown error occurred", Toast.LENGTH_LONG).show()
+                                    }
+                                }
                             }
                         }
                     },

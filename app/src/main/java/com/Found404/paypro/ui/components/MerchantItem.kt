@@ -110,9 +110,7 @@ fun MerchantItem(
                                     selectedTerminalId = terminal.terminalKey
                                     showPopup = true
                                     CoroutineScope(Dispatchers.IO).launch {
-                                        println("mid tid " + merchant.id + " " +  terminal.terminalKey,)
                                         val response = merchantService.deleteTerminal(merchant.id, terminal.terminalId!!, context)
-                                        println("response brisanje " + response)
                                         withContext(Dispatchers.Main) {
                                             if (response?.success == true) {
                                                 showToast = true
@@ -134,22 +132,18 @@ fun MerchantItem(
                     navController.navigate("addingMerchants?mid=$mid")
                 },
                 modifier = Modifier
-                    .size(35.dp) // Adjust the size as needed
-                    .padding(top = 8.dp) // Add 8dp padding to all sides (acts as margin)
-                    .background(PayProForeground2, CircleShape) // Use PayProForeground2 for light gray
-                    .border(1.dp, PayProBlack, CircleShape) // Add a black border with 1dp width
+                    .size(35.dp)
+                    .padding(top = 8.dp)
+                    .background(PayProForeground2, CircleShape)
+                    .border(1.dp, PayProBlack, CircleShape)
                     .align(Alignment.CenterHorizontally)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add",
-                    tint = PayProBlack // Use PayProBlack for black icon color
+                    tint = PayProBlack
                 )
             }
-
-
-
-
         }
     }
 
