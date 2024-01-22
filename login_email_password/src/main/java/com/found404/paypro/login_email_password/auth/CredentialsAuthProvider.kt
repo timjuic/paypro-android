@@ -37,7 +37,7 @@ class CredentialsAuthProvider(private val baseUrl: String) :
                 "emailAddress" to loginCredentials.email,
                 "password" to LoginUtils.hashPassword(loginCredentials.password)
             )
-        ).toRequestBody("application/json".toMediaType())
+        ).toRequestBody(mediaType)
 
         val request = Request.Builder().url("${baseUrl}${endpointPath}").post(requestBody).build()
 
