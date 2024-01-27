@@ -62,7 +62,7 @@ class MerchantService {
 
 
     suspend fun deleteTerminal(merchantId: Int, terminalId: Int, context: Context): ApiResponse<Unit>? = withContext(Dispatchers.IO) {
-        val url = "${serverIP}/${merchantId}/terminal/${terminalId}"
+        val url = "${serverIP}/api/merchant/${merchantId}/terminal/${terminalId}"
         val jwtToken = authService.getAuthToken(context)
 
         val request = Request.Builder()
@@ -87,7 +87,7 @@ class MerchantService {
     }
 
     suspend fun deleteMerchant(merchantId: Int, context: Context): RegistrationResponse? = withContext(Dispatchers.IO) {
-        val url = "${serverIP}/$merchantId"
+        val url = "${serverIP}/api/merchant/$merchantId"
         val jwtToken = authService.getAuthToken(context)
 
         val request = Request.Builder()
@@ -125,7 +125,8 @@ class MerchantService {
             else -> "1" to "Active"
         }
 
-        val url = "${serverIP}/${merchantId}"
+        val url = "${serverIP}/api/merchant/${merchantId}"
+
         val requestBody = gson.toJson(
             mapOf(
                 "merchantName" to merchantName,
@@ -172,6 +173,7 @@ class MerchantService {
     ): AddingMerchantsResult = withContext(Dispatchers.IO) {
 
         val currentUser = authService.getLoggedInUser(context)
+        val url = "${serverIP}/api/merchant/${currentUser.userId}"
 
         val requestBody = gson.toJson(
             mapOf(
@@ -189,7 +191,7 @@ class MerchantService {
 
         val jwtToken = authService.getAuthToken(context)
         val request = Request.Builder()
-            .url("${serverIP}/${currentUser.userId}")
+            .url(url)
             .header("Authorization", "Bearer $jwtToken")
             .post(requestBody)
             .build()
