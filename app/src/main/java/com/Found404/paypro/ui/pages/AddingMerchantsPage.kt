@@ -20,6 +20,8 @@ import androidx.navigation.NavController
 import com.Found404.paypro.ui.components.PayProTitle
 import com.found404.network.service.MerchantService
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.Found404.paypro.R
 import com.Found404.paypro.ui.components.PayProNavigationDrawer
 import com.found404.core.models.MerchantResponse
 import com.found404.core.models.SharedPreferencesManager
@@ -36,6 +38,8 @@ fun AddingMerchants(navController: NavController) {
     var merchants by remember { mutableStateOf<List<MerchantResponse>>(emptyList()) }
     var loadingState by remember { mutableStateOf(LoadingState.Loading) }
     val coroutineScope = rememberCoroutineScope()
+    val addingMerchantsPath = stringResource(id = R.string.adding_merchants_page)
+    val merchantNamePagePath = stringResource(id = R.string.merchant_name_page)
 
     fun updateMerchantsList() {
         loadingState = LoadingState.Loading
@@ -93,7 +97,7 @@ fun AddingMerchants(navController: NavController) {
                                             updatedMerchant.status
                                         )
                                         if (response?.success == true) {
-                                            navController.navigate("AddingMerchants")
+                                            navController.navigate(addingMerchantsPath)
                                         } else {
                                             println("Error updating merchant: ${response?.errorMessage}")
                                         }
@@ -114,7 +118,7 @@ fun AddingMerchants(navController: NavController) {
                     .padding(16.dp),
                 onClick = {
                     SharedPreferencesManager.clearAll(context)
-                    navController.navigate("merchantName") },
+                    navController.navigate(merchantNamePagePath) },
                 shape = CircleShape,
                 containerColor = Color.Blue,
                 contentColor = Color.White

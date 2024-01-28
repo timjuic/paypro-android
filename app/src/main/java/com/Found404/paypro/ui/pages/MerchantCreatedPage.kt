@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -33,6 +34,7 @@ import com.Found404.paypro.ui.components.PayProHeadline
 fun MerchantCreated(
     navController: NavController
 ) {
+    val addingMerchantsPath = stringResource(id = R.string.adding_merchants_page)
 
     Column(
         modifier = Modifier
@@ -87,6 +89,6 @@ fun MerchantCreated(
             )
         }
 
-        PayProButton(text = "Finish", onClick = { navController.navigate("addingMerchants") })
+        PayProButton(text = "Finish", onClick = { navController.navigate(addingMerchantsPath) })
     }
 }

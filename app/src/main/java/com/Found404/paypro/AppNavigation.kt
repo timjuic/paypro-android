@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -22,13 +23,21 @@ import com.Found404.paypro.ui.pages.WelcomePage
 
 @Composable
 fun AppNavigation() {
+    val welcomePath = stringResource(id = R.string.welcome_page)
+    val loginPath = stringResource(R.string.login_page)
+    val registerPath = stringResource(id = R.string.registration_page)
+    val addingMerchantsPath = stringResource(R.string.adding_merchants_page)
+    val merchantNamePath = stringResource(id = R.string.merchant_name_page)
+    val merchantAddressPath = stringResource(R.string.merchant_address_page)
+    val cardPaymentsPath = stringResource(id = R.string.card_payments_page)
+    val merchantCreatedPath = stringResource(R.string.merchant_created_page)
 
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = "welcome"){
+    NavHost(navController, startDestination = welcomePath){
         val authServiceImpl = AuthDependencyProvider.getInstance().getAuthService()
 
-        composable("welcome") {
+        composable(welcomePath) {
             val context = LocalContext.current
             var isJwtValid by remember {
                 mutableStateOf<Boolean?>(false)
@@ -45,25 +54,25 @@ fun AppNavigation() {
             }
         }
 
-        composable("login") {
+        composable(loginPath) {
             LoginPage(navController = navController)
         }
-        composable("registration") {
+        composable(registerPath) {
             RegisterPage(navController = navController)
         }
-        composable("addingMerchants") {
+        composable(addingMerchantsPath) {
             AddingMerchants(navController = navController)
         }
-        composable("merchantName") {
+        composable(merchantNamePath) {
             MerchantName(navController = navController)
         }
-        composable("merchantAddress") {
+        composable(merchantAddressPath) {
             MerchantAddress(navController = navController)
         }
-        composable("cardPayments") {
+        composable(cardPaymentsPath) {
             CardPayments(navController = navController)
         }
-        composable("merchantCreated") {
+        composable(merchantCreatedPath) {
             MerchantCreated(navController = navController)
         }
         composable("addingMerchants?mid={mid}") { backStackEntry ->
