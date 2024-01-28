@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -92,16 +93,30 @@ fun MerchantItem(
                     )
                 }
             }
+            Text(
+                text = "Active Terminals",
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold),
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
 
             if (merchant.terminals.isEmpty()) {
                 Text("This merchant has no terminals.", style = TextStyle(fontSize = 16.sp))
             } else {
                 merchant.terminals.forEach { terminal ->
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+                            .padding(8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Terminal: ${terminal.terminalKey}")
+                        Text(text = terminal.terminalKey,
+                            modifier = Modifier
+                                .weight(1f)
+                                .align(Alignment.CenterVertically)
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = "Delete Terminal",
