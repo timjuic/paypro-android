@@ -205,6 +205,7 @@ fun MerchantItem(
             onConfirm = { updatedMerchant ->
                 onEditMerchant(updatedMerchant)
                 showEditMerchantPopup = false
+                navController.navigate(addingMerchantsPath)
             },
             onCancel = { showEditMerchantPopup = false }
         )
