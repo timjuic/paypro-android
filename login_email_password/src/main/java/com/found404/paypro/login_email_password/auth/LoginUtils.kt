@@ -1,4 +1,4 @@
-package com.found404.paypro.login_email_password
+package com.found404.paypro.login_email_password.auth
 
 import java.security.MessageDigest
 

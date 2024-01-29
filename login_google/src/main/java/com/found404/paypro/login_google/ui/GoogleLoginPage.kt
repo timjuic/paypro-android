@@ -1,4 +1,4 @@
-package com.found404.paypro.login_google
+package com.found404.paypro.login_google.ui
 
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
@@ -17,12 +17,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 
 @Composable
 fun GoogleLoginPage(
-    context: Context,
-    googleSignInClient: GoogleSignInClient,
-    onSignInRequest: (GoogleSignInClient) -> Unit
+    onSignInRequest: () -> Unit
 ) {
     LaunchedEffect(Unit) {
-        onSignInRequest(googleSignInClient)
+        onSignInRequest()
     }
 
     Column(
