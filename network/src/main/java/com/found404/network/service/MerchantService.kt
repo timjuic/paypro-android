@@ -4,6 +4,8 @@ import android.content.Context
 import com.Found404.paypro.AuthDependencyProvider
 import com.Found404.paypro.responses.RegistrationResponse
 import com.found404.core.AppConfig
+import com.found404.core.enums.CardBrandType
+import com.found404.core.models.CreditCardType
 import com.found404.core.models.MerchantEditResponse
 import com.found404.core.models.MerchantResponse
 import com.found404.network.result.AddingMerchantsResult
@@ -116,13 +118,19 @@ class MerchantService {
         merchantCityName: String,
         merchantPostCode: Int,
         merchantStreetNumber: String,
-        acceptedCards: List<Map<String, Any>>,
+        acceptedCards: List<CreditCardType>,
         statusFlag: Int
     ): MerchantEditResponse = withContext(Dispatchers.IO) {
         val (statusId, statusName) = when (statusFlag) {
             1 -> "1" to "Active"
             2 -> "2" to "Disabled"
             else -> "1" to "Active"
+        }
+
+        for(card in acceptedCards) {
+            if(card.name == null) {
+                card.name = CardBrandType.getTextById(card.cardBrandId)
+            }
         }
 
         val url = "${serverIP}/api/merchant/${merchantId}"
