@@ -66,7 +66,7 @@ fun AddingTerminal(navController: NavController, mid: Int = 2) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = PurpleGrey40, shapes.medium)
+                .background(color = Color.LightGray, shapes.medium)
                 .padding(
                     top = 10.dp,
                     start = 16.dp,
