@@ -60,7 +60,7 @@ fun RegisterPage(navController: NavController) {
     var registrationErrorMessage by remember { mutableStateOf<String?>(null) }
 
     val context = LocalContext.current
-    val loginPagePath = stringResource(id = R.string.login_page)
+    val welcomePagePath = stringResource(id = R.string.welcome_page)
 
     Column(
         modifier = Modifier
@@ -135,7 +135,7 @@ fun RegisterPage(navController: NavController) {
 
                         Toast.makeText(context, "You've successfully registered!", Toast.LENGTH_SHORT).show()
 
-                        navController.navigate(loginPagePath)
+                        navController.navigate(welcomePagePath)
                     }
                 }
             }
@@ -167,7 +167,7 @@ fun RegisterPage(navController: NavController) {
 
         TextButton(
             onClick = {
-                navController.navigate(loginPagePath)
+                navController.navigate(welcomePagePath)
             },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
