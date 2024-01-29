@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -40,8 +41,8 @@ import com.found404.core.models.Merchant
 import com.found404.core.models.MerchantViewModel
 import com.found404.core.models.SharedPreferencesManager
 import com.found404.network.result.AddingMerchantsResult
-import com.found404.network.service.implementation.AddingMerchantsServiceImplementation
 import com.found404.network.service.CreditCardsService
+import com.found404.network.service.MerchantService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -58,7 +59,7 @@ fun CardPayments(
     val sharedPreferencesManager = getAllSavedData(context)
     val defaultStatus = "Active"
 
-    val addingMerchantsService = AddingMerchantsServiceImplementation()
+    val merchantService = MerchantService()
     val creditCardsService = CreditCardsService()
 
     var addingMerchantsResult by remember {
@@ -73,15 +74,14 @@ fun CardPayments(
         coroutineScope.launch {
             try {
                 val retrievedCardTypes = creditCardsService.getCreditCardTypes(context)
-                print("retrievedCardTypes " + retrievedCardTypes)
                 if (retrievedCardTypes != null && retrievedCardTypes.isNotEmpty()) {
                     cardTypes = retrievedCardTypes
                 } else {
-                    println("Dohvaćanje tipova kartica nije uspjelo.")
+                    println("Unable to retrieve credit cards.")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                println("Greška prilikom dohvaćanja tipova kartica.")
+                println("Error while retrieving credit card types.")
             }
         }
     }
@@ -95,10 +95,11 @@ fun CardPayments(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState()) // Added vertical scroll to the Column
+                .verticalScroll(rememberScrollState())
         ) {
             PayProHeadline(
                 text = "Select card payments that you accept",
+                textAlignment = TextAlign.Start,
                 modifier = Modifier.padding(
                     vertical = 32.dp,
                     horizontal = 16.dp
@@ -152,7 +153,7 @@ fun CardPayments(
                             }
 
                             if (selectedCards.isNotEmpty()) {
-                                addingMerchantsResult = addingMerchantsService.addMerchant(
+                                addingMerchantsResult = merchantService.addMerchant(
                                     context,
                                     sharedPreferencesManager.merchantData.fullName,
                                     sharedPreferencesManager.merchantData.streetName,
@@ -162,23 +163,32 @@ fun CardPayments(
                                     selectedCards,
                                     defaultStatus
                                 )
-                                println(
-                                    "adding merchants result " + addingMerchantsResult!!.success + " " + addingMerchantsResult!!.errorMessage + " " + addingMerchantsResult!!.message + " "
-
-                                )
                             } else {
                                 withContext(Dispatchers.Main) {
-                                    showErrorMessage = true
-                                    Toast.makeText(
-                                        context,
-                                        "Please select at least one option!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    Toast.makeText(context, "Please select at least one option!", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                            if (atLeastOneChecked) {
-                                navController.navigate("merchantCreated")
-                                showErrorMessage = false
+                            withContext(Dispatchers.Main) {
+                                when (addingMerchantsResult?.errorMessage) {
+                                    "ERR_INVALID_MERCHANT_NAME" -> {
+                                        Toast.makeText(context, "Merchant name is in invalid format or not provided", Toast.LENGTH_LONG).show()
+                                    }
+                                    "ERR_MERCHANT_ALREADY_EXISTS" -> {
+                                        Toast.makeText(context, "Merchant with the same name already exists", Toast.LENGTH_LONG).show()
+                                    }
+                                    "ERR_ACCEPTED_CARDS_NOT_DEFINED" -> {
+                                        Toast.makeText(context, "Not a single accepted card defined", Toast.LENGTH_LONG).show()
+                                    }
+                                    null, "" -> {
+                                        if (atLeastOneChecked) {
+                                            navController.navigate("merchantCreated")
+                                            showErrorMessage = false
+                                        }
+                                    }
+                                    else -> {
+                                        Toast.makeText(context, "An unknown error occurred", Toast.LENGTH_LONG).show()
+                                    }
+                                }
                             }
                         }
                     },
@@ -228,7 +238,7 @@ fun getAllSavedData(context: Context): MerchantViewModel {
     merchantViewModel.merchantData.streetName = SharedPreferencesManager.getMerchantStreetName(context).toString()
     merchantViewModel.merchantData.cityName = SharedPreferencesManager.getMerchantCity(context).toString()
     merchantViewModel.merchantData.postCode = SharedPreferencesManager.getMerchantPostCode(context)
-    merchantViewModel.merchantData.streetNumber = SharedPreferencesManager.getMerchantStreetNumber(context)
+    merchantViewModel.merchantData.streetNumber = SharedPreferencesManager.getMerchantStreetNumber(context).toString()
 
     return merchantViewModel
 }

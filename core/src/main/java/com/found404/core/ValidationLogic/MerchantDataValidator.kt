@@ -12,8 +12,8 @@ class MerchantDataValidator {
         }
     }
 
-    fun validateStreetName(merchantStreetName: String) : ValidationStatus {
-        val streetNameRegex = "^[a-zA-Z]+$"
+    fun validateStreetName(merchantStreetName: String): ValidationStatus {
+        val streetNameRegex = "^[a-zA-Z]+(\\s[a-zA-Z]+)*$"
 
         return if (merchantStreetName.matches(streetNameRegex.toRegex())) {
             ValidationStatus(true)
@@ -22,18 +22,18 @@ class MerchantDataValidator {
         }
     }
 
-    fun validateCityName(merchantCityName : String) : ValidationStatus {
-        val cityNameRegex = "^[a-zA-Z]+$"
+    fun validateCityName(merchantCityName: String): ValidationStatus {
+        val cityNameRegex = "^[a-zA-Z]+(\\s[a-zA-Z]+)*$"
 
-        return if (merchantCityName.matches(cityNameRegex.toRegex())){
+        return if (merchantCityName.matches(cityNameRegex.toRegex())) {
             ValidationStatus(true)
         } else {
-            return ValidationStatus(false, "Invalid city name!")
+            ValidationStatus(false, "Invalid city name!")
         }
     }
 
     fun validatePostCode(merchantPostCode : Int) : ValidationStatus {
-        val postCodeRegex = "^[1-9]+$"
+        val postCodeRegex = "^[0-9]+$"
 
         return if (merchantPostCode.toString().matches(postCodeRegex.toRegex())) {
             ValidationStatus(true)
@@ -42,10 +42,10 @@ class MerchantDataValidator {
         }
     }
 
-    fun validateStreetNumber(merchantStreetNumber: Int) : ValidationStatus {
-        val streetNumberRegex = "^[1-9]+$"
+    fun validateStreetNumber(merchantStreetNumber: String): ValidationStatus {
+        val streetNumberRegex = "^[a-zA-Z0-9]+$"
 
-        return if (merchantStreetNumber.toString().matches(streetNumberRegex.toRegex())){
+        return if (merchantStreetNumber.matches(streetNumberRegex.toRegex())) {
             ValidationStatus(true)
         } else {
             ValidationStatus(false, "Invalid street number!")

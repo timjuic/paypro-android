@@ -36,7 +36,10 @@ import com.found404.core.models.SharedPreferencesManager
 fun MerchantName(
     navController: NavController
 ) {
-    var merchantName by remember { mutableStateOf( "") }
+    val context = LocalContext.current
+    val savedMerchantName = SharedPreferencesManager.getMerchantName(context) ?: ""
+
+    var merchantName by remember { mutableStateOf(savedMerchantName) }
     var showErrorMessage by remember { mutableStateOf(false) }
     val merchantViewModel = MerchantViewModel()
 
