@@ -3,6 +3,7 @@ package com.found404.network.service
 import android.content.Context
 import com.Found404.paypro.AuthDependencyProvider
 import com.Found404.paypro.responses.RegistrationResponse
+import com.found404.core.AppConfig
 import com.found404.core.models.MerchantEditResponse
 import com.found404.core.models.MerchantResponse
 import com.found404.network.result.AddingMerchantsResult
@@ -24,12 +25,13 @@ class MerchantService {
     private val dependencyProvider = AuthDependencyProvider.getInstance()
     private val authService = dependencyProvider.getAuthService()
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private val serverIP = AppConfig.BASE_URL
     fun getMerchantsForUser(context: Context, callback: (List<MerchantResponse>?, String?) -> Unit) {
         coroutineScope.launch {
             try {
                 val user = authService.getLoggedInUser(context)
                 val userID = user.userId
-                val url = "http://158.220.113.254:8086/api/merchant/${userID}"
+                val url = "${serverIP}/api/merchant/${userID}"
                 val jwtToken = authService.getAuthToken(context)
 
                 val request = Request.Builder()
@@ -60,7 +62,7 @@ class MerchantService {
 
 
     suspend fun deleteTerminal(merchantId: Int, terminalId: Int, context: Context): ApiResponse<Unit>? = withContext(Dispatchers.IO) {
-        val url = "http://158.220.113.254:8086/api/merchant/${merchantId}/terminal/${terminalId}"
+        val url = "${serverIP}/api/merchant/${merchantId}/terminal/${terminalId}"
         val jwtToken = authService.getAuthToken(context)
 
         val request = Request.Builder()
@@ -85,7 +87,7 @@ class MerchantService {
     }
 
     suspend fun deleteMerchant(merchantId: Int, context: Context): RegistrationResponse? = withContext(Dispatchers.IO) {
-        val url = "http://158.220.113.254:8086/api/merchant/$merchantId"
+        val url = "${serverIP}/api/merchant/$merchantId"
         val jwtToken = authService.getAuthToken(context)
 
         val request = Request.Builder()
@@ -123,7 +125,8 @@ class MerchantService {
             else -> "1" to "Active"
         }
 
-        val url = "http://158.220.113.254:8086/api/merchant/${merchantId}"
+        val url = "${serverIP}/api/merchant/${merchantId}"
+
         val requestBody = gson.toJson(
             mapOf(
                 "merchantName" to merchantName,
@@ -148,7 +151,6 @@ class MerchantService {
             .header("Authorization", "Bearer $jwtToken")
             .put(requestBody)
             .build()
-        println("request  " + request)
         return@withContext try {
             val response = client.newCall(request).execute()
             val responseBody = response.body?.string()
@@ -171,6 +173,7 @@ class MerchantService {
     ): AddingMerchantsResult = withContext(Dispatchers.IO) {
 
         val currentUser = authService.getLoggedInUser(context)
+        val url = "${serverIP}/api/merchant/${currentUser.userId}"
 
         val requestBody = gson.toJson(
             mapOf(
@@ -188,7 +191,7 @@ class MerchantService {
 
         val jwtToken = authService.getAuthToken(context)
         val request = Request.Builder()
-            .url("http://158.220.113.254:8086/api/merchant/${currentUser.userId}")
+            .url(url)
             .header("Authorization", "Bearer $jwtToken")
             .post(requestBody)
             .build()
