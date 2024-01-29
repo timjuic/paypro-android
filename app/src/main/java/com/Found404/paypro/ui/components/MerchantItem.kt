@@ -16,11 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.Found404.paypro.R
 import com.Found404.paypro.ui.components.DeleteMerchantPopup
 import com.Found404.paypro.ui.components.MessagePopup
 import com.Found404.paypro.ui.components.PressForDurationIcon
@@ -50,6 +52,8 @@ fun MerchantItem(
     var selectedTerminalId by remember { mutableStateOf("") }
     var additionalInfo by remember { mutableStateOf("") }
     var resetPressState by remember { mutableStateOf(false) }
+
+    val addingMerchantsPath = stringResource(id = R.string.adding_merchants_page)
 
     Box(
         modifier = Modifier
@@ -181,7 +185,7 @@ fun MerchantItem(
             onClose = { navController ->
                 showDeleteMerchantPopup = false
                 resetPressState = !resetPressState
-                navController.navigate("AddingMerchants")
+                navController.navigate(addingMerchantsPath)
             },
             navController = navController
         )
@@ -212,7 +216,7 @@ fun MerchantItem(
             onDismiss = {
                 showToast = false
                 showMessage = false
-                navController.navigate("AddingMerchants")
+                navController.navigate(addingMerchantsPath)
             }
         )
     }

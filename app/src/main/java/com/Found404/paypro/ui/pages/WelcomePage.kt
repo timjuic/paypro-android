@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -44,15 +45,17 @@ fun WelcomePage(navController: NavController) {
     val context = LocalContext.current
 
     val coroutineScope = rememberCoroutineScope()
-
+    val addingMerchantsPath = stringResource(id = R.string.adding_merchants_page)
+    val welcomePagePath = stringResource(id = R.string.welcome_page)
+    val registerPagePath = stringResource(id = R.string.registration_page)
     val authService = AuthDependencyProvider.getInstance().getAuthService()
 
     val authCallbacks = object : AuthCallbacks<LoginResponse> {
         override fun onSuccessfulLogin(response: LoginResponse) {
             coroutineScope.launch(Dispatchers.Main) {
                 authService.saveLoggedInUser(response.data, context)
-                navController.navigate("addingMerchants") {
-                    popUpTo("welcome") {
+                navController.navigate(addingMerchantsPath) {
+                    popUpTo(welcomePagePath) {
                         inclusive = true
                     }
                 }
@@ -79,7 +82,7 @@ fun WelcomePage(navController: NavController) {
 
         PayProButton(
             text = "Sign Up",
-            onClick = { navController.navigate("registration") },
+            onClick = { navController.navigate(registerPagePath) },
             modifier = Modifier.padding(bottom = 20.dp)
         )
 

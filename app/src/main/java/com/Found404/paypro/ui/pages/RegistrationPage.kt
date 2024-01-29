@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
@@ -59,6 +60,7 @@ fun RegisterPage(navController: NavController) {
     var registrationErrorMessage by remember { mutableStateOf<String?>(null) }
 
     val context = LocalContext.current
+    val loginPagePath = stringResource(id = R.string.login_page)
 
     Column(
         modifier = Modifier
@@ -133,7 +135,7 @@ fun RegisterPage(navController: NavController) {
 
                         Toast.makeText(context, "You've successfully registered!", Toast.LENGTH_SHORT).show()
 
-                        navController.navigate("login")
+                        navController.navigate(loginPagePath)
                     }
                 }
             }
@@ -165,7 +167,7 @@ fun RegisterPage(navController: NavController) {
 
         TextButton(
             onClick = {
-                navController.navigate("login")
+                navController.navigate(loginPagePath)
             },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)

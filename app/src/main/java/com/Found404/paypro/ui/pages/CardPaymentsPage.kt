@@ -29,10 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.Found404.paypro.R
 import com.Found404.paypro.ui.components.PayProButton
 import com.Found404.paypro.ui.components.PayProHeadline
 import com.Found404.paypro.ui.components.PayProTitle
@@ -69,6 +71,8 @@ fun CardPayments(
     var cardTypes: List<CreditCardType> by remember { mutableStateOf(emptyList()) }
 
     val coroutineScope = rememberCoroutineScope()
+    val merchantAddressPage = stringResource(id = R.string.merchant_address_page)
+    val merchantCreatedPage = stringResource(id = R.string.merchant_created_page)
 
     LaunchedEffect(key1 = true) {
         coroutineScope.launch {
@@ -136,7 +140,7 @@ fun CardPayments(
                 PayProButton(
                     text = "Previous",
                     onClick = {
-                        navController.navigate("merchantAddress")
+                        navController.navigate(merchantAddressPage)
                     },
                     buttonColor = Color.Gray,
                     modifier = Modifier.size(150.dp, 70.dp)
@@ -181,7 +185,7 @@ fun CardPayments(
                                     }
                                     null, "" -> {
                                         if (atLeastOneChecked) {
-                                            navController.navigate("merchantCreated")
+                                            navController.navigate(merchantCreatedPage)
                                             showErrorMessage = false
                                         }
                                     }
