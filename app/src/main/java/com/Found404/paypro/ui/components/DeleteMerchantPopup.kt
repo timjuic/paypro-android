@@ -1,17 +1,17 @@
 package com.Found404.paypro.ui.components
 
-import android.widget.Toast
+
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +26,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.compose.runtime.*
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 
 @Composable
@@ -45,24 +48,23 @@ fun DeleteMerchantPopup(
     var userInput by remember { mutableStateOf("") }
     var showMessage by remember { mutableStateOf(false) }
 
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Transparent),
-        shape = RoundedCornerShape(16.dp),
-        color = Color.Transparent
+    Dialog(
+        onDismissRequest = {
+            onCancel()
+        },
+        properties = DialogProperties(dismissOnClickOutside = false),
     ) {
-        Box(
+        Box(contentAlignment = Alignment.Center,
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .background(color = Color.LightGray, shape = RoundedCornerShape(16.dp))
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("Please confirm that you want to delete $merchantName.")
+                .size(width = 300.dp, height = 300.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(Color.Gray))
+        {
+            Column {
+                PayProTitle(
+                    "Please confirm that you want to delete $merchantName.",
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+                )
                 Spacer(modifier = Modifier.height(8.dp))
 
                 PayProTextInput(
@@ -74,47 +76,57 @@ fun DeleteMerchantPopup(
                     placeholder = "Enter your full merchant name to delete",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp)
+                        .padding(vertical = 8.dp, horizontal = 16.dp)
                 )
 
-                PayProButton(
-                    text = "Confirm",
-                    onClick = {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val response = merchantService.deleteMerchant(merchantId, context)
-                            withContext(Dispatchers.Main) {
-                                if (response?.success == true) {
-                                    showToast = true
-                                    showMessage = true
-                                    onConfirm()
-                                } else {
-                                    showToast = false
-                                    onCancel()
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp, start = 16.dp, end = 16.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    PayProButton(
+                        text = "Cancel",
+                        onClick = { onCancel() },
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .weight(1f)
+                    )
+
+                    PayProButton(
+                        text = "Confirm",
+                        onClick = {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                val response =
+                                    merchantService.deleteMerchant(merchantId, context)
+                                withContext(Dispatchers.Main) {
+                                    if (response?.success == true) {
+                                        showToast = true
+                                        showMessage = true
+                                        onConfirm()
+                                    } else {
+                                        showToast = false
+                                        onCancel()
+                                    }
                                 }
                             }
-                        }
-                    },
-                    enabled = userInput == merchantName
-                )
-                Spacer(modifier = Modifier.height(8.dp))
+                        },
+                        enabled = userInput == merchantName,
+                        modifier = Modifier
+                            .weight(1f)
+                    )
+                }
 
-                PayProButton(
-                    text = "Cancel",
-                    onClick = {
-                        showToast = false
-                        onCancel()
-                    }
-                )
-            }
-            if (showToast && showMessage) {
-                MessagePopup(
-                    message = "Merchant $merchantName was successfully deleted",
-                    onDismiss = {
-                        showToast = false
-                        showMessage = false
-                        onClose(navController)
-                    }
-                )
+                if (showToast && showMessage) {
+                    MessagePopup(
+                        message = "Merchant $merchantName was successfully deleted",
+                        onDismiss = {
+                            showToast = false
+                            showMessage = false
+                            onClose(navController)
+                        }
+                    )
+                }
             }
         }
     }
