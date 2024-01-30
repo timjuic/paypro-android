@@ -64,6 +64,9 @@ fun PayProNavigationDrawer(
 ) {
     val context = LocalContext.current
     val authService = AuthDependencyProvider.getInstance().getAuthService()
+    val addingMerchantsPath = stringResource(id = R.string.adding_merchants_page)
+    val welcomePagePath = stringResource(id = R.string.welcome_page)
+
 
     val navigationItems = listOf(
         NavigationItem(
@@ -78,8 +81,8 @@ fun PayProNavigationDrawer(
             onClick = {
                 authService.logoutUser(context)
 
-                navController.navigate("welcome") {
-                    popUpTo("addingMerchants") {
+                navController.navigate(welcomePagePath) {
+                    popUpTo(addingMerchantsPath) {
                         inclusive = true
                     }
                 }

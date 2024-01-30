@@ -22,9 +22,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.Found404.paypro.R
 import com.Found404.paypro.ui.components.PayProButton
 import com.Found404.paypro.ui.components.PayProHeadline
 import com.Found404.paypro.ui.components.PayProLabeledDropdown
@@ -49,6 +51,7 @@ fun AddingTerminal(navController: NavController, mid: Int = 2) {
     val validator = TerminalDataValidator()
     val context = LocalContext.current
     val terminalService = TerminalServiceImpl(context)
+    val addingMerchantsPath = stringResource(id = R.string.adding_merchants_page)
 
     Column(
         modifier = Modifier
@@ -63,7 +66,7 @@ fun AddingTerminal(navController: NavController, mid: Int = 2) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = PurpleGrey40, shapes.medium)
+                .background(color = Color.LightGray, shapes.medium)
                 .padding(
                     top = 10.dp,
                     start = 16.dp,
@@ -100,7 +103,7 @@ fun AddingTerminal(navController: NavController, mid: Int = 2) {
             ) {
                 PayProButton(
                     text = "Cancel",
-                    onClick = { navController.navigate("addingMerchants") },
+                    onClick = { navController.navigate(addingMerchantsPath) },
                     buttonColor = Color.DarkGray,
                     modifier = Modifier.width(150.dp)
                 )
@@ -117,7 +120,7 @@ fun AddingTerminal(navController: NavController, mid: Int = 2) {
                                     withContext(Dispatchers.Main) {
                                         if(response.success) {
                                             Toast.makeText(context, response.message, Toast.LENGTH_SHORT).show()
-                                            navController.navigate("addingMerchants")
+                                            navController.navigate(addingMerchantsPath)
                                         }
                                         else {
                                             Toast.makeText(context, response.errorMessage, Toast.LENGTH_SHORT).show()

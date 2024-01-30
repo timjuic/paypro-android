@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,20 +40,21 @@ import kotlinx.coroutines.launch
 fun WelcomePage(navController: NavController) {
     val loginProvidersViewModel: LoginProvidersViewModel = viewModel()
     val authModules = loginProvidersViewModel.authModules
-    val authCallback = remember { AuthCallbackImpl(navController) }
     var loginErrorMessage by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
 
     val coroutineScope = rememberCoroutineScope()
-
+    val addingMerchantsPath = stringResource(id = R.string.adding_merchants_page)
+    val welcomePagePath = stringResource(id = R.string.welcome_page)
+    val registerPagePath = stringResource(id = R.string.registration_page)
     val authService = AuthDependencyProvider.getInstance().getAuthService()
 
-    val authCallbacks = object : AuthCallbacks<LoginResponse> {
+    val authCallback = object : AuthCallbacks<LoginResponse> {
         override fun onSuccessfulLogin(response: LoginResponse) {
             coroutineScope.launch(Dispatchers.Main) {
                 authService.saveLoggedInUser(response.data, context)
-                navController.navigate("addingMerchants") {
-                    popUpTo("welcome") {
+                navController.navigate(addingMerchantsPath) {
+                    popUpTo(welcomePagePath) {
                         inclusive = true
                     }
                 }
@@ -79,7 +81,7 @@ fun WelcomePage(navController: NavController) {
 
         PayProButton(
             text = "Sign Up",
-            onClick = { navController.navigate("registration") },
+            onClick = { navController.navigate(registerPagePath) },
             modifier = Modifier.padding(bottom = 20.dp)
         )
 
@@ -98,17 +100,18 @@ fun WelcomePage(navController: NavController) {
 
         // Load the buttons here
         authModules.forEach { authProvider ->
-            val layoutId = authProvider.getButtonLayout(LocalContext.current)
+            val buttonLayout = authProvider.getButtonLayout(LocalContext.current)
             val buttonId = authProvider.getButtonId()
+            authProvider.initializeState(authCallback)
             AndroidView(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 10.dp),
 
                 factory = { ctx ->
-                    LayoutInflater.from(ctx).inflate(layoutId, null, false).apply {
+                    LayoutInflater.from(ctx).inflate(buttonLayout, null, false).apply {
                         findViewById<LinearLayout>(buttonId).setOnClickListener {
-                            authProvider.onButtonClick(ctx, authCallback, authCallbacks)
+                            authProvider.startActivity(ctx)
                         }
                     }
                 }

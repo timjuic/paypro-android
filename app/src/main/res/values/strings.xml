@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">PayPro</string>
     <string name="err_server_unreachable">Server couldn\'t be reached. Try again later</string>
+    <string name="welcome_page">welcome</string>
+    <string name="login_page">login</string>
+    <string name="registration_page">registration</string>
+    <string name="adding_merchants_page">addingMerchants</string>
+    <string name="merchant_name_page">merchantName</string>
+    <string name="merchant_address_page">merchantAddress</string>
+    <string name="card_payments_page">cardPayments</string>
+    <string name="merchant_created_page">merchantCreated</string>
 </resources>

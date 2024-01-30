@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -31,7 +32,7 @@ import com.found404.core.AppConfig
 import com.found404.core.auth.AuthCallbacks
 import com.found404.core.auth.LoginCredentials
 import com.found404.core.auth.LoginResponse
-import com.found404.paypro.login_email_password.CredentialsAuthProvider
+import com.found404.paypro.login_email_password.auth.CredentialsAuthProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -46,8 +47,8 @@ fun LoginPage(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
     var loginErrorMessage by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
-
-
+    val addingMerchantsPath = stringResource(id = R.string.adding_merchants_page)
+    val welcomePagePath = stringResource(id = R.string.welcome_page)
 
     Column(
         modifier = Modifier
@@ -85,8 +86,8 @@ fun LoginPage(navController: NavController) {
                             override fun onSuccessfulLogin(response: LoginResponse) {
                                 launch(Dispatchers.Main) {
                                     authService.saveLoggedInUser(response.data, context)
-                                    navController.navigate("addingMerchants") {
-                                        popUpTo("welcome") {
+                                    navController.navigate(addingMerchantsPath) {
+                                        popUpTo(welcomePagePath) {
                                             inclusive = true
                                         }
                                     }
@@ -102,7 +103,7 @@ fun LoginPage(navController: NavController) {
                             }
                         }
 
-                        credentialsAuthProvider.loginUser(endpointPath, loginCredentials, authCallbacks)
+                        //credentialsAuthProvider.loginUser(endpointPath, loginCredentials, authCallbacks)
                     } catch (e: Exception) {
                         println("An error occurred: ${e.message}")
                     }

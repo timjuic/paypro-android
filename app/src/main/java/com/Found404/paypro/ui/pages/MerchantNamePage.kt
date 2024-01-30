@@ -21,10 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.Found404.paypro.R
 import com.Found404.paypro.ui.components.PayProButton
 import com.Found404.paypro.ui.components.PayProHeadline
 import com.Found404.paypro.ui.components.PayProTextInput
@@ -42,8 +44,9 @@ fun MerchantName(
     var merchantName by remember { mutableStateOf(savedMerchantName) }
     var showErrorMessage by remember { mutableStateOf(false) }
     val merchantViewModel = MerchantViewModel()
-
+    val addingMerchantsPath = stringResource(id = R.string.adding_merchants_page)
     val validator = MerchantDataValidator()
+    val merchantAddressPage = stringResource(id = R.string.merchant_address_page)
 
     val bundle = Bundle()
 
@@ -89,7 +92,7 @@ fun MerchantName(
 
                         SharedPreferencesManager.saveMerchantName(context, merchantName)
 
-                        navController.navigate("merchantAddress")
+                        navController.navigate(merchantAddressPage)
                     }
                     else {
                         showErrorMessage = true
@@ -109,7 +112,7 @@ fun MerchantName(
             )
             PayProButton(
                 text = "Previous",
-                onClick = { navController.navigate("addingMerchants") },
+                onClick = { navController.navigate(addingMerchantsPath) },
                 buttonColor = Color.Gray,
                 modifier = Modifier
                     .align(Alignment.BottomStart)
